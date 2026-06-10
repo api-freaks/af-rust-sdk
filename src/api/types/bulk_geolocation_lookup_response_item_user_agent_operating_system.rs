@@ -51,7 +51,7 @@ impl BulkGeolocationLookupResponseItemUserAgentOperatingSystemBuilder {
         self
     }
 
-    pub fn build(mut self, value: impl Into<String>) -> Self {
+    pub fn os_build(mut self, value: impl Into<String>) -> Self {
         self.build = Some(value.into());
         self
     }
