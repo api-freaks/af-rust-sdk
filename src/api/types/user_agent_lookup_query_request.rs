@@ -10,6 +10,10 @@ pub struct UserAgentLookupQueryRequest {
     /// Format of the response
     #[serde(skip_serializing_if = "Option::is_none")]
     pub format: Option<UserAgentLookupRequestFormat>,
+    /// The User-Agent string to parse. Sent as the `User-Agent` HTTP header.
+    #[serde(skip_serializing)]
+    #[serde(default)]
+    pub user_agent: String,
 }
 
 impl UserAgentLookupQueryRequest {
@@ -23,6 +27,7 @@ impl UserAgentLookupQueryRequest {
 pub struct UserAgentLookupQueryRequestBuilder {
     api_key: Option<String>,
     format: Option<UserAgentLookupRequestFormat>,
+    user_agent: Option<String>,
 }
 
 impl UserAgentLookupQueryRequestBuilder {
@@ -36,15 +41,24 @@ impl UserAgentLookupQueryRequestBuilder {
         self
     }
 
+    pub fn user_agent(mut self, value: impl Into<String>) -> Self {
+        self.user_agent = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`UserAgentLookupQueryRequest`].
     /// This method will fail if any of the following fields are not set:
     /// - [`api_key`](UserAgentLookupQueryRequestBuilder::api_key)
+    /// - [`user_agent`](UserAgentLookupQueryRequestBuilder::user_agent)
     pub fn build(self) -> Result<UserAgentLookupQueryRequest, BuildError> {
         Ok(UserAgentLookupQueryRequest {
             api_key: self
                 .api_key
                 .ok_or_else(|| BuildError::missing_field("api_key"))?,
             format: self.format,
+            user_agent: self
+                .user_agent
+                .ok_or_else(|| BuildError::missing_field("user_agent"))?,
         })
     }
 }

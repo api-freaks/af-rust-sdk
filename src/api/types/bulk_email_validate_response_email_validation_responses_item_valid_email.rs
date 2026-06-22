@@ -5,6 +5,8 @@ pub use crate::prelude::*;
 pub enum BulkEmailValidateResponseEmailValidationResponsesItemValidEmail {
     Valid,
     Invalid,
+    Unknown,
+    Risky,
     /// This variant is used for forward compatibility.
     /// If the server sends a value not recognized by the current SDK version,
     /// it will be captured here with the raw string value.
@@ -14,7 +16,9 @@ impl Serialize for BulkEmailValidateResponseEmailValidationResponsesItemValidEma
     fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         match self {
             Self::Valid => serializer.serialize_str("valid"),
-            Self::Invalid => serializer.serialize_str("invalid"),
+            Self::Invalid => serializer.serialize_str("Invalid"),
+            Self::Unknown => serializer.serialize_str("Unknown"),
+            Self::Risky => serializer.serialize_str("Risky"),
             Self::__Unknown(val) => serializer.serialize_str(val),
         }
     }
@@ -25,7 +29,9 @@ impl<'de> Deserialize<'de> for BulkEmailValidateResponseEmailValidationResponses
         let value = String::deserialize(deserializer)?;
         match value.as_str() {
             "valid" => Ok(Self::Valid),
-            "invalid" => Ok(Self::Invalid),
+            "Invalid" => Ok(Self::Invalid),
+            "Unknown" => Ok(Self::Unknown),
+            "Risky" => Ok(Self::Risky),
             _ => Ok(Self::__Unknown(value)),
         }
     }
@@ -35,7 +41,9 @@ impl fmt::Display for BulkEmailValidateResponseEmailValidationResponsesItemValid
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Valid => write!(f, "valid"),
-            Self::Invalid => write!(f, "invalid"),
+            Self::Invalid => write!(f, "Invalid"),
+            Self::Unknown => write!(f, "Unknown"),
+            Self::Risky => write!(f, "Risky"),
             Self::__Unknown(val) => write!(f, "{}", val),
         }
     }

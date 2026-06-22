@@ -6,8 +6,8 @@ pub struct SubdomainsLookupResponseSubdomainsItem {
     pub subdomain: String,
     #[serde(default)]
     pub first_seen: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub last_seen: Option<String>,
+    #[serde(default)]
+    pub last_seen: String,
     /// The date from which the subdomain is considered inactive. Appears only if the subdomain is no longer active.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inactive_from: Option<String>,
@@ -53,6 +53,7 @@ impl SubdomainsLookupResponseSubdomainsItemBuilder {
     /// This method will fail if any of the following fields are not set:
     /// - [`subdomain`](SubdomainsLookupResponseSubdomainsItemBuilder::subdomain)
     /// - [`first_seen`](SubdomainsLookupResponseSubdomainsItemBuilder::first_seen)
+    /// - [`last_seen`](SubdomainsLookupResponseSubdomainsItemBuilder::last_seen)
     pub fn build(self) -> Result<SubdomainsLookupResponseSubdomainsItem, BuildError> {
         Ok(SubdomainsLookupResponseSubdomainsItem {
             subdomain: self
@@ -61,7 +62,9 @@ impl SubdomainsLookupResponseSubdomainsItemBuilder {
             first_seen: self
                 .first_seen
                 .ok_or_else(|| BuildError::missing_field("first_seen"))?,
-            last_seen: self.last_seen,
+            last_seen: self
+                .last_seen
+                .ok_or_else(|| BuildError::missing_field("last_seen"))?,
             inactive_from: self.inactive_from,
         })
     }

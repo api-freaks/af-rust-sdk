@@ -4,7 +4,7 @@ pub use crate::prelude::*;
 pub struct ZipcodeDistanceResponse {
     /// Number of distance results returned
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub results_count: Option<String>,
+    pub result_count: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub results: Option<Vec<ZipcodeDistanceResponseResultsItem>>,
 }
@@ -18,13 +18,13 @@ impl ZipcodeDistanceResponse {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct ZipcodeDistanceResponseBuilder {
-    results_count: Option<String>,
+    result_count: Option<i64>,
     results: Option<Vec<ZipcodeDistanceResponseResultsItem>>,
 }
 
 impl ZipcodeDistanceResponseBuilder {
-    pub fn results_count(mut self, value: impl Into<String>) -> Self {
-        self.results_count = Some(value.into());
+    pub fn result_count(mut self, value: i64) -> Self {
+        self.result_count = Some(value);
         self
     }
 
@@ -36,7 +36,7 @@ impl ZipcodeDistanceResponseBuilder {
     /// Consumes the builder and constructs a [`ZipcodeDistanceResponse`].
     pub fn build(self) -> Result<ZipcodeDistanceResponse, BuildError> {
         Ok(ZipcodeDistanceResponse {
-            results_count: self.results_count,
+            result_count: self.result_count,
             results: self.results,
         })
     }

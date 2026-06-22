@@ -1,23 +1,27 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct TimezoneLookupResponseLoCodeDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub lo_code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default)]
-    pub lo_code: String,
+    #[serde(with = "crate::core::number_serializers::option")]
+    pub longitude: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default)]
-    pub city: String,
-    #[serde(default)]
-    pub longitude: String,
-    #[serde(default)]
-    pub latitude: String,
-    #[serde(default)]
-    pub state_code: String,
-    #[serde(default)]
-    pub country_code: String,
-    #[serde(default)]
-    pub country_name: String,
-    #[serde(default)]
-    pub location_type: String,
+    #[serde(with = "crate::core::number_serializers::option")]
+    pub latitude: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state_code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country_code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub location_type: Option<String>,
 }
 
 impl TimezoneLookupResponseLoCodeDetails {
@@ -31,8 +35,8 @@ impl TimezoneLookupResponseLoCodeDetails {
 pub struct TimezoneLookupResponseLoCodeDetailsBuilder {
     lo_code: Option<String>,
     city: Option<String>,
-    longitude: Option<String>,
-    latitude: Option<String>,
+    longitude: Option<f64>,
+    latitude: Option<f64>,
     state_code: Option<String>,
     country_code: Option<String>,
     country_name: Option<String>,
@@ -50,13 +54,13 @@ impl TimezoneLookupResponseLoCodeDetailsBuilder {
         self
     }
 
-    pub fn longitude(mut self, value: impl Into<String>) -> Self {
-        self.longitude = Some(value.into());
+    pub fn longitude(mut self, value: f64) -> Self {
+        self.longitude = Some(value);
         self
     }
 
-    pub fn latitude(mut self, value: impl Into<String>) -> Self {
-        self.latitude = Some(value.into());
+    pub fn latitude(mut self, value: f64) -> Self {
+        self.latitude = Some(value);
         self
     }
 
@@ -81,39 +85,16 @@ impl TimezoneLookupResponseLoCodeDetailsBuilder {
     }
 
     /// Consumes the builder and constructs a [`TimezoneLookupResponseLoCodeDetails`].
-    /// This method will fail if any of the following fields are not set:
-    /// - [`lo_code`](TimezoneLookupResponseLoCodeDetailsBuilder::lo_code)
-    /// - [`city`](TimezoneLookupResponseLoCodeDetailsBuilder::city)
-    /// - [`longitude`](TimezoneLookupResponseLoCodeDetailsBuilder::longitude)
-    /// - [`latitude`](TimezoneLookupResponseLoCodeDetailsBuilder::latitude)
-    /// - [`state_code`](TimezoneLookupResponseLoCodeDetailsBuilder::state_code)
-    /// - [`country_code`](TimezoneLookupResponseLoCodeDetailsBuilder::country_code)
-    /// - [`country_name`](TimezoneLookupResponseLoCodeDetailsBuilder::country_name)
-    /// - [`location_type`](TimezoneLookupResponseLoCodeDetailsBuilder::location_type)
     pub fn build(self) -> Result<TimezoneLookupResponseLoCodeDetails, BuildError> {
         Ok(TimezoneLookupResponseLoCodeDetails {
-            lo_code: self
-                .lo_code
-                .ok_or_else(|| BuildError::missing_field("lo_code"))?,
-            city: self.city.ok_or_else(|| BuildError::missing_field("city"))?,
-            longitude: self
-                .longitude
-                .ok_or_else(|| BuildError::missing_field("longitude"))?,
-            latitude: self
-                .latitude
-                .ok_or_else(|| BuildError::missing_field("latitude"))?,
-            state_code: self
-                .state_code
-                .ok_or_else(|| BuildError::missing_field("state_code"))?,
-            country_code: self
-                .country_code
-                .ok_or_else(|| BuildError::missing_field("country_code"))?,
-            country_name: self
-                .country_name
-                .ok_or_else(|| BuildError::missing_field("country_name"))?,
-            location_type: self
-                .location_type
-                .ok_or_else(|| BuildError::missing_field("location_type"))?,
+            lo_code: self.lo_code,
+            city: self.city,
+            longitude: self.longitude,
+            latitude: self.latitude,
+            state_code: self.state_code,
+            country_code: self.country_code,
+            country_name: self.country_name,
+            location_type: self.location_type,
         })
     }
 }

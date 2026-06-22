@@ -19,7 +19,7 @@ pub struct BulkGeolocationLookupResponseItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub security: Option<BulkGeolocationLookupResponseItemSecurity>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub abuse: Option<Vec<BulkGeolocationLookupResponseItemAbuseItem>>,
+    pub abuse: Option<BulkGeolocationLookupResponseItemAbuseItem>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub time_zone: Option<BulkGeolocationLookupResponseItemTimeZone>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -42,7 +42,7 @@ pub struct BulkGeolocationLookupResponseItemBuilder {
     network: Option<BulkGeolocationLookupResponseItemNetwork>,
     currency: Option<BulkGeolocationLookupResponseItemCurrency>,
     security: Option<BulkGeolocationLookupResponseItemSecurity>,
-    abuse: Option<Vec<BulkGeolocationLookupResponseItemAbuseItem>>,
+    abuse: Option<BulkGeolocationLookupResponseItemAbuseItem>,
     time_zone: Option<BulkGeolocationLookupResponseItemTimeZone>,
     user_agent: Option<BulkGeolocationLookupResponseItemUserAgent>,
 }
@@ -86,7 +86,7 @@ impl BulkGeolocationLookupResponseItemBuilder {
         self
     }
 
-    pub fn abuse(mut self, value: Vec<BulkGeolocationLookupResponseItemAbuseItem>) -> Self {
+    pub fn abuse(mut self, value: BulkGeolocationLookupResponseItemAbuseItem) -> Self {
         self.abuse = Some(value);
         self
     }

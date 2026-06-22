@@ -2,9 +2,9 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct BulkDomainAvailabilityCheckResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub bulk_domain_available_response:
-        Option<Vec<BulkDomainAvailabilityCheckResponseBulkDomainAvailableResponseItem>>,
+        Vec<BulkDomainAvailabilityCheckResponseBulkDomainAvailableResponseItem>,
 }
 
 impl BulkDomainAvailabilityCheckResponse {
@@ -30,9 +30,13 @@ impl BulkDomainAvailabilityCheckResponseBuilder {
     }
 
     /// Consumes the builder and constructs a [`BulkDomainAvailabilityCheckResponse`].
+    /// This method will fail if any of the following fields are not set:
+    /// - [`bulk_domain_available_response`](BulkDomainAvailabilityCheckResponseBuilder::bulk_domain_available_response)
     pub fn build(self) -> Result<BulkDomainAvailabilityCheckResponse, BuildError> {
         Ok(BulkDomainAvailabilityCheckResponse {
-            bulk_domain_available_response: self.bulk_domain_available_response,
+            bulk_domain_available_response: self
+                .bulk_domain_available_response
+                .ok_or_else(|| BuildError::missing_field("bulk_domain_available_response"))?,
         })
     }
 }

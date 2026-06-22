@@ -3,8 +3,7 @@ pub use crate::prelude::*;
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct EmailValidateResponseAddressSecurity {
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers")]
-    pub threat_score: f64,
+    pub threat_score: i64,
     #[serde(default)]
     pub is_tor: bool,
     #[serde(default)]
@@ -36,7 +35,7 @@ impl EmailValidateResponseAddressSecurity {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct EmailValidateResponseAddressSecurityBuilder {
-    threat_score: Option<f64>,
+    threat_score: Option<i64>,
     is_tor: Option<bool>,
     is_proxy: Option<bool>,
     proxy_type: Option<String>,
@@ -50,7 +49,7 @@ pub struct EmailValidateResponseAddressSecurityBuilder {
 }
 
 impl EmailValidateResponseAddressSecurityBuilder {
-    pub fn threat_score(mut self, value: f64) -> Self {
+    pub fn threat_score(mut self, value: i64) -> Self {
         self.threat_score = Some(value);
         self
     }

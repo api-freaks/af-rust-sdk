@@ -2,13 +2,13 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct BulkDomainAvailabilityCheckResponseBulkDomainAvailableResponseItem {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub domain: Option<String>,
+    #[serde(default)]
+    pub domain: String,
     #[serde(rename = "domainAvailability")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub domain_availability: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<bool>,
+    #[serde(default)]
+    pub domain_availability: bool,
+    #[serde(default)]
+    pub status: bool,
 }
 
 impl BulkDomainAvailabilityCheckResponseBulkDomainAvailableResponseItem {
@@ -42,15 +42,25 @@ impl BulkDomainAvailabilityCheckResponseBulkDomainAvailableResponseItemBuilder {
     }
 
     /// Consumes the builder and constructs a [`BulkDomainAvailabilityCheckResponseBulkDomainAvailableResponseItem`].
+    /// This method will fail if any of the following fields are not set:
+    /// - [`domain`](BulkDomainAvailabilityCheckResponseBulkDomainAvailableResponseItemBuilder::domain)
+    /// - [`domain_availability`](BulkDomainAvailabilityCheckResponseBulkDomainAvailableResponseItemBuilder::domain_availability)
+    /// - [`status`](BulkDomainAvailabilityCheckResponseBulkDomainAvailableResponseItemBuilder::status)
     pub fn build(
         self,
     ) -> Result<BulkDomainAvailabilityCheckResponseBulkDomainAvailableResponseItem, BuildError>
     {
         Ok(
             BulkDomainAvailabilityCheckResponseBulkDomainAvailableResponseItem {
-                domain: self.domain,
-                domain_availability: self.domain_availability,
-                status: self.status,
+                domain: self
+                    .domain
+                    .ok_or_else(|| BuildError::missing_field("domain"))?,
+                domain_availability: self
+                    .domain_availability
+                    .ok_or_else(|| BuildError::missing_field("domain_availability"))?,
+                status: self
+                    .status
+                    .ok_or_else(|| BuildError::missing_field("status"))?,
             },
         )
     }

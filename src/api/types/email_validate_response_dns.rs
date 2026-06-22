@@ -7,8 +7,8 @@ pub struct EmailValidateResponseDns {
     pub mx_records: Vec<String>,
     /// Collection of A (Address) records for the domain.
     #[serde(rename = "aRecords")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub a_records: Option<Vec<String>>,
+    #[serde(default)]
+    pub a_records: Vec<String>,
 }
 
 impl EmailValidateResponseDns {
@@ -38,12 +38,15 @@ impl EmailValidateResponseDnsBuilder {
     /// Consumes the builder and constructs a [`EmailValidateResponseDns`].
     /// This method will fail if any of the following fields are not set:
     /// - [`mx_records`](EmailValidateResponseDnsBuilder::mx_records)
+    /// - [`a_records`](EmailValidateResponseDnsBuilder::a_records)
     pub fn build(self) -> Result<EmailValidateResponseDns, BuildError> {
         Ok(EmailValidateResponseDns {
             mx_records: self
                 .mx_records
                 .ok_or_else(|| BuildError::missing_field("mx_records"))?,
-            a_records: self.a_records,
+            a_records: self
+                .a_records
+                .ok_or_else(|| BuildError::missing_field("a_records"))?,
         })
     }
 }

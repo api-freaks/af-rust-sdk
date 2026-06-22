@@ -21,8 +21,9 @@ pub struct BulkEmailValidateResponseEmailValidationResponsesItem {
     pub account: BulkEmailValidateResponseEmailValidationResponsesItemAccount,
     #[serde(default)]
     pub dns: BulkEmailValidateResponseEmailValidationResponsesItemDns,
+    #[serde(rename = "ipAddress")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip: Option<String>,
+    pub ip_address: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<BulkEmailValidateResponseEmailValidationResponsesItemAddress>,
 }
@@ -45,7 +46,7 @@ pub struct BulkEmailValidateResponseEmailValidationResponsesItemBuilder {
     domain: Option<BulkEmailValidateResponseEmailValidationResponsesItemDomain>,
     account: Option<BulkEmailValidateResponseEmailValidationResponsesItemAccount>,
     dns: Option<BulkEmailValidateResponseEmailValidationResponsesItemDns>,
-    ip: Option<String>,
+    ip_address: Option<String>,
     address: Option<BulkEmailValidateResponseEmailValidationResponsesItemAddress>,
 }
 
@@ -104,8 +105,8 @@ impl BulkEmailValidateResponseEmailValidationResponsesItemBuilder {
         self
     }
 
-    pub fn ip(mut self, value: impl Into<String>) -> Self {
-        self.ip = Some(value.into());
+    pub fn ip_address(mut self, value: impl Into<String>) -> Self {
+        self.ip_address = Some(value.into());
         self
     }
 
@@ -151,7 +152,7 @@ impl BulkEmailValidateResponseEmailValidationResponsesItemBuilder {
                 .account
                 .ok_or_else(|| BuildError::missing_field("account"))?,
             dns: self.dns.ok_or_else(|| BuildError::missing_field("dns"))?,
-            ip: self.ip,
+            ip_address: self.ip_address,
             address: self.address,
         })
     }

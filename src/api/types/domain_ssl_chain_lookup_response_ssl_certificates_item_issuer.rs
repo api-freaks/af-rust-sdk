@@ -5,8 +5,8 @@ pub struct DomainSslChainLookupResponseSslCertificatesItemIssuer {
     #[serde(rename = "commonName")]
     #[serde(default)]
     pub common_name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub organization: Option<String>,
+    #[serde(default)]
+    pub organization: String,
     #[serde(rename = "organizationalUnit")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub organizational_unit: Option<String>,
@@ -14,8 +14,8 @@ pub struct DomainSslChainLookupResponseSslCertificatesItemIssuer {
     pub locality: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<String>,
+    #[serde(default)]
+    pub country: String,
     #[serde(rename = "incCountry")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inc_country: Option<String>,
@@ -122,6 +122,8 @@ impl DomainSslChainLookupResponseSslCertificatesItemIssuerBuilder {
     /// Consumes the builder and constructs a [`DomainSslChainLookupResponseSslCertificatesItemIssuer`].
     /// This method will fail if any of the following fields are not set:
     /// - [`common_name`](DomainSslChainLookupResponseSslCertificatesItemIssuerBuilder::common_name)
+    /// - [`organization`](DomainSslChainLookupResponseSslCertificatesItemIssuerBuilder::organization)
+    /// - [`country`](DomainSslChainLookupResponseSslCertificatesItemIssuerBuilder::country)
     pub fn build(
         self,
     ) -> Result<DomainSslChainLookupResponseSslCertificatesItemIssuer, BuildError> {
@@ -129,11 +131,15 @@ impl DomainSslChainLookupResponseSslCertificatesItemIssuerBuilder {
             common_name: self
                 .common_name
                 .ok_or_else(|| BuildError::missing_field("common_name"))?,
-            organization: self.organization,
+            organization: self
+                .organization
+                .ok_or_else(|| BuildError::missing_field("organization"))?,
             organizational_unit: self.organizational_unit,
             locality: self.locality,
             state: self.state,
-            country: self.country,
+            country: self
+                .country
+                .ok_or_else(|| BuildError::missing_field("country"))?,
             inc_country: self.inc_country,
             inc_state: self.inc_state,
             business_category: self.business_category,

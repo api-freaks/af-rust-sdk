@@ -7,8 +7,6 @@ pub struct ZipcodeSearchByRadiusResponseResultsItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub region_code: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub district: Option<String>,
@@ -29,7 +27,6 @@ impl ZipcodeSearchByRadiusResponseResultsItem {
 pub struct ZipcodeSearchByRadiusResponseResultsItemBuilder {
     code: Option<String>,
     region: Option<String>,
-    region_code: Option<String>,
     city: Option<String>,
     district: Option<String>,
     distance: Option<f64>,
@@ -43,11 +40,6 @@ impl ZipcodeSearchByRadiusResponseResultsItemBuilder {
 
     pub fn region(mut self, value: impl Into<String>) -> Self {
         self.region = Some(value.into());
-        self
-    }
-
-    pub fn region_code(mut self, value: impl Into<String>) -> Self {
-        self.region_code = Some(value.into());
         self
     }
 
@@ -71,7 +63,6 @@ impl ZipcodeSearchByRadiusResponseResultsItemBuilder {
         Ok(ZipcodeSearchByRadiusResponseResultsItem {
             code: self.code,
             region: self.region,
-            region_code: self.region_code,
             city: self.city,
             district: self.district,
             distance: self.distance,

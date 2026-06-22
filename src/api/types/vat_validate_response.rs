@@ -6,10 +6,10 @@ pub struct VatValidateResponse {
     pub country_code: String,
     #[serde(default)]
     pub vat_number: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub requester_country_code: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub requester_vat_number: Option<String>,
+    #[serde(default)]
+    pub requester_country_code: String,
+    #[serde(default)]
+    pub requester_vat_number: String,
     #[serde(default)]
     #[serde(with = "crate::core::flexible_datetime::offset")]
     pub requested_at: DateTime<FixedOffset>,
@@ -77,6 +77,8 @@ impl VatValidateResponseBuilder {
     /// This method will fail if any of the following fields are not set:
     /// - [`country_code`](VatValidateResponseBuilder::country_code)
     /// - [`vat_number`](VatValidateResponseBuilder::vat_number)
+    /// - [`requester_country_code`](VatValidateResponseBuilder::requester_country_code)
+    /// - [`requester_vat_number`](VatValidateResponseBuilder::requester_vat_number)
     /// - [`requested_at`](VatValidateResponseBuilder::requested_at)
     /// - [`validation`](VatValidateResponseBuilder::validation)
     /// - [`company`](VatValidateResponseBuilder::company)
@@ -88,8 +90,12 @@ impl VatValidateResponseBuilder {
             vat_number: self
                 .vat_number
                 .ok_or_else(|| BuildError::missing_field("vat_number"))?,
-            requester_country_code: self.requester_country_code,
-            requester_vat_number: self.requester_vat_number,
+            requester_country_code: self
+                .requester_country_code
+                .ok_or_else(|| BuildError::missing_field("requester_country_code"))?,
+            requester_vat_number: self
+                .requester_vat_number
+                .ok_or_else(|| BuildError::missing_field("requester_vat_number"))?,
             requested_at: self
                 .requested_at
                 .ok_or_else(|| BuildError::missing_field("requested_at"))?,

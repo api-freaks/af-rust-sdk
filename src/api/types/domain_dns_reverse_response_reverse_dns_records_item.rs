@@ -10,8 +10,8 @@ pub struct DomainDnsReverseResponseReverseDnsRecordsItem {
     #[serde(default)]
     pub domain_name: String,
     #[serde(rename = "domainRegistered")]
-    #[serde(default)]
-    pub domain_registered: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub domain_registered: Option<bool>,
     #[serde(rename = "dnsTypes")]
     #[serde(default)]
     pub dns_types: DomainDnsReverseResponseReverseDnsRecordsItemDnsTypes,
@@ -72,7 +72,6 @@ impl DomainDnsReverseResponseReverseDnsRecordsItemBuilder {
     /// This method will fail if any of the following fields are not set:
     /// - [`query_time`](DomainDnsReverseResponseReverseDnsRecordsItemBuilder::query_time)
     /// - [`domain_name`](DomainDnsReverseResponseReverseDnsRecordsItemBuilder::domain_name)
-    /// - [`domain_registered`](DomainDnsReverseResponseReverseDnsRecordsItemBuilder::domain_registered)
     /// - [`dns_types`](DomainDnsReverseResponseReverseDnsRecordsItemBuilder::dns_types)
     /// - [`dns_records`](DomainDnsReverseResponseReverseDnsRecordsItemBuilder::dns_records)
     pub fn build(self) -> Result<DomainDnsReverseResponseReverseDnsRecordsItem, BuildError> {
@@ -83,9 +82,7 @@ impl DomainDnsReverseResponseReverseDnsRecordsItemBuilder {
             domain_name: self
                 .domain_name
                 .ok_or_else(|| BuildError::missing_field("domain_name"))?,
-            domain_registered: self
-                .domain_registered
-                .ok_or_else(|| BuildError::missing_field("domain_registered"))?,
+            domain_registered: self.domain_registered,
             dns_types: self
                 .dns_types
                 .ok_or_else(|| BuildError::missing_field("dns_types"))?,

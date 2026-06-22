@@ -2,14 +2,11 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct DomainAvailabilitySuggestionsResponseDomainAvailableResponseItem {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub domain: Option<String>,
+    #[serde(default)]
+    pub domain: String,
     #[serde(rename = "domainAvailability")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub domain_availability: Option<bool>,
-    /// Extra details if the domain is not registered.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub message: Option<String>,
+    #[serde(default)]
+    pub domain_availability: bool,
 }
 
 impl DomainAvailabilitySuggestionsResponseDomainAvailableResponseItem {
@@ -23,7 +20,6 @@ impl DomainAvailabilitySuggestionsResponseDomainAvailableResponseItem {
 pub struct DomainAvailabilitySuggestionsResponseDomainAvailableResponseItemBuilder {
     domain: Option<String>,
     domain_availability: Option<bool>,
-    message: Option<String>,
 }
 
 impl DomainAvailabilitySuggestionsResponseDomainAvailableResponseItemBuilder {
@@ -37,20 +33,21 @@ impl DomainAvailabilitySuggestionsResponseDomainAvailableResponseItemBuilder {
         self
     }
 
-    pub fn message(mut self, value: impl Into<String>) -> Self {
-        self.message = Some(value.into());
-        self
-    }
-
     /// Consumes the builder and constructs a [`DomainAvailabilitySuggestionsResponseDomainAvailableResponseItem`].
+    /// This method will fail if any of the following fields are not set:
+    /// - [`domain`](DomainAvailabilitySuggestionsResponseDomainAvailableResponseItemBuilder::domain)
+    /// - [`domain_availability`](DomainAvailabilitySuggestionsResponseDomainAvailableResponseItemBuilder::domain_availability)
     pub fn build(
         self,
     ) -> Result<DomainAvailabilitySuggestionsResponseDomainAvailableResponseItem, BuildError> {
         Ok(
             DomainAvailabilitySuggestionsResponseDomainAvailableResponseItem {
-                domain: self.domain,
-                domain_availability: self.domain_availability,
-                message: self.message,
+                domain: self
+                    .domain
+                    .ok_or_else(|| BuildError::missing_field("domain"))?,
+                domain_availability: self
+                    .domain_availability
+                    .ok_or_else(|| BuildError::missing_field("domain_availability"))?,
             },
         )
     }

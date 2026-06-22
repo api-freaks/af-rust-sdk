@@ -1423,6 +1423,7 @@ async fn main() {
                 api_key: "apiKey".to_string(),
                 r#type: vec![Some("type".to_string())],
                 domain_names: vec!["domainNames".to_string()],
+                ip_addresses: None,
                 format: None,
             },
             None,
@@ -1444,6 +1445,14 @@ async fn main() {
 <dd>
 
 **domain_names:** `Vec<String>` — List of hostnames to lookup DNS records for
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ip_addresses:** `Option<Vec<String>>` — Optional list of IP addresses for reverse/PTR lookups
     
 </dd>
 </dl>
@@ -2720,7 +2729,7 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">domain_availability_suggestions</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;DomainAvailabilitySuggestionsRequestFormat&gt;&gt;, domain: Option&lt;String&gt;, source: Option&lt;Option&lt;DomainAvailabilitySuggestionsRequestSource&gt;&gt;, count: Option&lt;Option&lt;i64&gt;&gt;) -> Result&lt;DomainAvailabilitySuggestionsResponse, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">domain_availability_suggestions</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;DomainAvailabilitySuggestionsRequestFormat&gt;&gt;, domain: Option&lt;String&gt;, source: Option&lt;Option&lt;DomainAvailabilitySuggestionsRequestSource&gt;&gt;, count: Option&lt;Option&lt;i64&gt;&gt;, sug: Option&lt;Option&lt;bool&gt;&gt;) -> Result&lt;DomainAvailabilitySuggestionsResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -2763,6 +2772,7 @@ async fn main() {
                 format: None,
                 source: None,
                 count: None,
+                sug: None,
             },
             None,
         )
@@ -2815,6 +2825,14 @@ async fn main() {
 <dd>
 
 **count:** `Option<i64>` — Number of suggestions to retrieve.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sug:** `Option<bool>` — Whether to include domain name suggestions in the response.
     
 </dd>
 </dl>
@@ -5393,6 +5411,14 @@ async fn main() {
 <dl>
 <dd>
 
+**file:** `Vec<Vec<u8>>` — The file(s) to upload. **Required**
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **api_key:** `String` — Your API key
     
 </dd>
@@ -6849,7 +6875,7 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">currency_convert_latest</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CurrencyConvertLatestRequestFormat&gt;&gt;, from: Option&lt;String&gt;, to: Option&lt;String&gt;, amount: Option&lt;Option&lt;f64&gt;&gt;, updates: Option&lt;Option&lt;CurrencyConvertLatestRequestUpdates&gt;&gt;) -> Result&lt;CurrencyConvertLatestResponse, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">currency_convert_latest</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CurrencyConvertLatestRequestFormat&gt;&gt;, from: Option&lt;String&gt;, to: Option&lt;String&gt;, amount: Option&lt;Option&lt;String&gt;&gt;, updates: Option&lt;Option&lt;CurrencyConvertLatestRequestUpdates&gt;&gt;) -> Result&lt;CurrencyConvertLatestResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -6944,7 +6970,7 @@ async fn main() {
 <dl>
 <dd>
 
-**amount:** `Option<f64>` — Amount to convert
+**amount:** `Option<String>` — Amount to convert
     
 </dd>
 </dl>
@@ -6964,7 +6990,7 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">currency_convert_historical</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CurrencyConvertHistoricalRequestFormat&gt;&gt;, from: Option&lt;String&gt;, to: Option&lt;String&gt;, amount: Option&lt;Option&lt;f64&gt;&gt;, date: Option&lt;String&gt;) -> Result&lt;CurrencyConvertHistoricalResponse, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">currency_convert_historical</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CurrencyConvertHistoricalRequestFormat&gt;&gt;, from: Option&lt;String&gt;, to: Option&lt;String&gt;, amount: Option&lt;Option&lt;String&gt;&gt;, date: Option&lt;String&gt;) -> Result&lt;CurrencyConvertHistoricalResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -7059,7 +7085,7 @@ async fn main() {
 <dl>
 <dd>
 
-**amount:** `Option<f64>` — The Amount to be converted
+**amount:** `Option<String>` — The Amount to be converted
     
 </dd>
 </dl>
@@ -7309,7 +7335,7 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">currency_convert_by_ip</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CurrencyConvertByIpRequestFormat&gt;&gt;, updates: Option&lt;Option&lt;CurrencyConvertByIpRequestUpdates&gt;&gt;, from: Option&lt;String&gt;, ip: Option&lt;Option&lt;String&gt;&gt;, amount: Option&lt;Option&lt;f64&gt;&gt;) -> Result&lt;CurrencyConvertByIpResponse, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">currency_convert_by_ip</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CurrencyConvertByIpRequestFormat&gt;&gt;, updates: Option&lt;Option&lt;CurrencyConvertByIpRequestUpdates&gt;&gt;, from: Option&lt;String&gt;, ip: Option&lt;Option&lt;String&gt;&gt;, amount: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;CurrencyConvertByIpResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -7412,7 +7438,7 @@ async fn main() {
 <dl>
 <dd>
 
-**amount:** `Option<f64>` — Amount to convert
+**amount:** `Option<String>` — Amount to convert
     
 </dd>
 </dl>
@@ -12047,7 +12073,7 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">user_agent_lookup</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;UserAgentLookupRequestFormat&gt;&gt;) -> Result&lt;UserAgentLookupResponse, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">user_agent_lookup</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;UserAgentLookupRequestFormat&gt;&gt;, user_agent: Option&lt;String&gt;) -> Result&lt;UserAgentLookupResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -12086,6 +12112,7 @@ async fn main() {
         .user_agent_lookup(
             &UserAgentLookupQueryRequest {
                 api_key: "apiKey".to_string(),
+                user_agent: "Mozilla/5.0".to_string(),
                 format: None,
             },
             None,
@@ -12115,6 +12142,14 @@ async fn main() {
 <dd>
 
 **format:** `Option<UserAgentLookupRequestFormat>` — Format of the response
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**user_agent:** `String` — The User-Agent string to parse. Sent as the `User-Agent` HTTP header. **Required**
     
 </dd>
 </dl>

@@ -7,8 +7,8 @@ pub struct BulkEmailValidateResponseEmailValidationResponsesItemDns {
     pub mx_records: Vec<String>,
     /// Collection of A (Address) records for the domain.
     #[serde(rename = "aRecords")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub a_records: Option<Vec<String>>,
+    #[serde(default)]
+    pub a_records: Vec<String>,
 }
 
 impl BulkEmailValidateResponseEmailValidationResponsesItemDns {
@@ -38,6 +38,7 @@ impl BulkEmailValidateResponseEmailValidationResponsesItemDnsBuilder {
     /// Consumes the builder and constructs a [`BulkEmailValidateResponseEmailValidationResponsesItemDns`].
     /// This method will fail if any of the following fields are not set:
     /// - [`mx_records`](BulkEmailValidateResponseEmailValidationResponsesItemDnsBuilder::mx_records)
+    /// - [`a_records`](BulkEmailValidateResponseEmailValidationResponsesItemDnsBuilder::a_records)
     pub fn build(
         self,
     ) -> Result<BulkEmailValidateResponseEmailValidationResponsesItemDns, BuildError> {
@@ -45,7 +46,9 @@ impl BulkEmailValidateResponseEmailValidationResponsesItemDnsBuilder {
             mx_records: self
                 .mx_records
                 .ok_or_else(|| BuildError::missing_field("mx_records"))?,
-            a_records: self.a_records,
+            a_records: self
+                .a_records
+                .ok_or_else(|| BuildError::missing_field("a_records"))?,
         })
     }
 }

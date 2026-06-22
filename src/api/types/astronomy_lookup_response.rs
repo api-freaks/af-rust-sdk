@@ -4,8 +4,8 @@ pub use crate::prelude::*;
 pub struct AstronomyLookupResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
-    #[serde(default)]
-    pub location: AstronomyLookupResponseLocation,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub location: Option<AstronomyLookupResponseLocation>,
     #[serde(default)]
     pub astronomy: AstronomyLookupResponseAstronomy,
 }
@@ -42,14 +42,11 @@ impl AstronomyLookupResponseBuilder {
 
     /// Consumes the builder and constructs a [`AstronomyLookupResponse`].
     /// This method will fail if any of the following fields are not set:
-    /// - [`location`](AstronomyLookupResponseBuilder::location)
     /// - [`astronomy`](AstronomyLookupResponseBuilder::astronomy)
     pub fn build(self) -> Result<AstronomyLookupResponse, BuildError> {
         Ok(AstronomyLookupResponse {
             ip: self.ip,
-            location: self
-                .location
-                .ok_or_else(|| BuildError::missing_field("location"))?,
+            location: self.location,
             astronomy: self
                 .astronomy
                 .ok_or_else(|| BuildError::missing_field("astronomy"))?,

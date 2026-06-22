@@ -30,24 +30,13 @@ pub struct TimezoneLookupResponseTimeZone {
     #[serde(default)]
     pub time12: String,
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers")]
-    pub week: f64,
+    pub week: i64,
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers")]
-    pub month: f64,
+    pub month: i64,
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers")]
-    pub year: f64,
+    pub year: i64,
     #[serde(default)]
     pub year_abbr: String,
-    #[serde(default)]
-    pub current_tz_abbreviation: String,
-    #[serde(default)]
-    pub current_tz_full_name: String,
-    #[serde(default)]
-    pub standard_tz_abbreviation: String,
-    #[serde(default)]
-    pub standard_tz_full_name: String,
     #[serde(default)]
     pub is_dst: bool,
     #[serde(default)]
@@ -55,10 +44,10 @@ pub struct TimezoneLookupResponseTimeZone {
     pub dst_savings: f64,
     #[serde(default)]
     pub dst_exists: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub dst_start: Option<TimezoneLookupResponseTimeZoneDstStart>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub dst_end: Option<TimezoneLookupResponseTimeZoneDstEnd>,
+    #[serde(default)]
+    pub dst_start: TimezoneLookupResponseTimeZoneDstStart,
+    #[serde(default)]
+    pub dst_end: TimezoneLookupResponseTimeZoneDstEnd,
     /// Additional properties that are not part of the defined schema.
     #[serde(flatten)]
     pub extra: std::collections::HashMap<String, serde_json::Value>,
@@ -84,14 +73,10 @@ pub struct TimezoneLookupResponseTimeZoneBuilder {
     date_time_unix: Option<f64>,
     time24: Option<String>,
     time12: Option<String>,
-    week: Option<f64>,
-    month: Option<f64>,
-    year: Option<f64>,
+    week: Option<i64>,
+    month: Option<i64>,
+    year: Option<i64>,
     year_abbr: Option<String>,
-    current_tz_abbreviation: Option<String>,
-    current_tz_full_name: Option<String>,
-    standard_tz_abbreviation: Option<String>,
-    standard_tz_full_name: Option<String>,
     is_dst: Option<bool>,
     dst_savings: Option<f64>,
     dst_exists: Option<bool>,
@@ -155,43 +140,23 @@ impl TimezoneLookupResponseTimeZoneBuilder {
         self
     }
 
-    pub fn week(mut self, value: f64) -> Self {
+    pub fn week(mut self, value: i64) -> Self {
         self.week = Some(value);
         self
     }
 
-    pub fn month(mut self, value: f64) -> Self {
+    pub fn month(mut self, value: i64) -> Self {
         self.month = Some(value);
         self
     }
 
-    pub fn year(mut self, value: f64) -> Self {
+    pub fn year(mut self, value: i64) -> Self {
         self.year = Some(value);
         self
     }
 
     pub fn year_abbr(mut self, value: impl Into<String>) -> Self {
         self.year_abbr = Some(value.into());
-        self
-    }
-
-    pub fn current_tz_abbreviation(mut self, value: impl Into<String>) -> Self {
-        self.current_tz_abbreviation = Some(value.into());
-        self
-    }
-
-    pub fn current_tz_full_name(mut self, value: impl Into<String>) -> Self {
-        self.current_tz_full_name = Some(value.into());
-        self
-    }
-
-    pub fn standard_tz_abbreviation(mut self, value: impl Into<String>) -> Self {
-        self.standard_tz_abbreviation = Some(value.into());
-        self
-    }
-
-    pub fn standard_tz_full_name(mut self, value: impl Into<String>) -> Self {
-        self.standard_tz_full_name = Some(value.into());
         self
     }
 
@@ -237,13 +202,11 @@ impl TimezoneLookupResponseTimeZoneBuilder {
     /// - [`month`](TimezoneLookupResponseTimeZoneBuilder::month)
     /// - [`year`](TimezoneLookupResponseTimeZoneBuilder::year)
     /// - [`year_abbr`](TimezoneLookupResponseTimeZoneBuilder::year_abbr)
-    /// - [`current_tz_abbreviation`](TimezoneLookupResponseTimeZoneBuilder::current_tz_abbreviation)
-    /// - [`current_tz_full_name`](TimezoneLookupResponseTimeZoneBuilder::current_tz_full_name)
-    /// - [`standard_tz_abbreviation`](TimezoneLookupResponseTimeZoneBuilder::standard_tz_abbreviation)
-    /// - [`standard_tz_full_name`](TimezoneLookupResponseTimeZoneBuilder::standard_tz_full_name)
     /// - [`is_dst`](TimezoneLookupResponseTimeZoneBuilder::is_dst)
     /// - [`dst_savings`](TimezoneLookupResponseTimeZoneBuilder::dst_savings)
     /// - [`dst_exists`](TimezoneLookupResponseTimeZoneBuilder::dst_exists)
+    /// - [`dst_start`](TimezoneLookupResponseTimeZoneBuilder::dst_start)
+    /// - [`dst_end`](TimezoneLookupResponseTimeZoneBuilder::dst_end)
     pub fn build(self) -> Result<TimezoneLookupResponseTimeZone, BuildError> {
         Ok(TimezoneLookupResponseTimeZone {
             name: self.name.ok_or_else(|| BuildError::missing_field("name"))?,
@@ -283,18 +246,6 @@ impl TimezoneLookupResponseTimeZoneBuilder {
             year_abbr: self
                 .year_abbr
                 .ok_or_else(|| BuildError::missing_field("year_abbr"))?,
-            current_tz_abbreviation: self
-                .current_tz_abbreviation
-                .ok_or_else(|| BuildError::missing_field("current_tz_abbreviation"))?,
-            current_tz_full_name: self
-                .current_tz_full_name
-                .ok_or_else(|| BuildError::missing_field("current_tz_full_name"))?,
-            standard_tz_abbreviation: self
-                .standard_tz_abbreviation
-                .ok_or_else(|| BuildError::missing_field("standard_tz_abbreviation"))?,
-            standard_tz_full_name: self
-                .standard_tz_full_name
-                .ok_or_else(|| BuildError::missing_field("standard_tz_full_name"))?,
             is_dst: self
                 .is_dst
                 .ok_or_else(|| BuildError::missing_field("is_dst"))?,
@@ -304,8 +255,12 @@ impl TimezoneLookupResponseTimeZoneBuilder {
             dst_exists: self
                 .dst_exists
                 .ok_or_else(|| BuildError::missing_field("dst_exists"))?,
-            dst_start: self.dst_start,
-            dst_end: self.dst_end,
+            dst_start: self
+                .dst_start
+                .ok_or_else(|| BuildError::missing_field("dst_start"))?,
+            dst_end: self
+                .dst_end
+                .ok_or_else(|| BuildError::missing_field("dst_end"))?,
             extra: Default::default(),
         })
     }

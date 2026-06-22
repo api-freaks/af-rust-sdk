@@ -22,8 +22,7 @@ pub struct CurrencyConvertByIpQueryRequest {
     /// Amount to convert
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers::option")]
-    pub amount: Option<f64>,
+    pub amount: Option<String>,
 }
 
 impl CurrencyConvertByIpQueryRequest {
@@ -40,7 +39,7 @@ pub struct CurrencyConvertByIpQueryRequestBuilder {
     updates: Option<CurrencyConvertByIpRequestUpdates>,
     from: Option<String>,
     ip: Option<String>,
-    amount: Option<f64>,
+    amount: Option<String>,
 }
 
 impl CurrencyConvertByIpQueryRequestBuilder {
@@ -69,8 +68,8 @@ impl CurrencyConvertByIpQueryRequestBuilder {
         self
     }
 
-    pub fn amount(mut self, value: f64) -> Self {
-        self.amount = Some(value);
+    pub fn amount(mut self, value: impl Into<String>) -> Self {
+        self.amount = Some(value.into());
         self
     }
 

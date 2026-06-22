@@ -9,9 +9,6 @@ pub struct DomainDnsHistoryResponseHistoricalDnsRecordsItem {
     #[serde(rename = "domainName")]
     #[serde(default)]
     pub domain_name: String,
-    #[serde(rename = "domainRegistered")]
-    #[serde(default)]
-    pub domain_registered: bool,
     #[serde(rename = "dnsTypes")]
     #[serde(default)]
     pub dns_types: DomainDnsHistoryResponseHistoricalDnsRecordsItemDnsTypes,
@@ -31,7 +28,6 @@ impl DomainDnsHistoryResponseHistoricalDnsRecordsItem {
 pub struct DomainDnsHistoryResponseHistoricalDnsRecordsItemBuilder {
     query_time: Option<DateTime<FixedOffset>>,
     domain_name: Option<String>,
-    domain_registered: Option<bool>,
     dns_types: Option<DomainDnsHistoryResponseHistoricalDnsRecordsItemDnsTypes>,
     dns_records: Option<Vec<DomainDnsHistoryResponseHistoricalDnsRecordsItemDnsRecordsItem>>,
 }
@@ -44,11 +40,6 @@ impl DomainDnsHistoryResponseHistoricalDnsRecordsItemBuilder {
 
     pub fn domain_name(mut self, value: impl Into<String>) -> Self {
         self.domain_name = Some(value.into());
-        self
-    }
-
-    pub fn domain_registered(mut self, value: bool) -> Self {
-        self.domain_registered = Some(value);
         self
     }
 
@@ -72,7 +63,6 @@ impl DomainDnsHistoryResponseHistoricalDnsRecordsItemBuilder {
     /// This method will fail if any of the following fields are not set:
     /// - [`query_time`](DomainDnsHistoryResponseHistoricalDnsRecordsItemBuilder::query_time)
     /// - [`domain_name`](DomainDnsHistoryResponseHistoricalDnsRecordsItemBuilder::domain_name)
-    /// - [`domain_registered`](DomainDnsHistoryResponseHistoricalDnsRecordsItemBuilder::domain_registered)
     /// - [`dns_types`](DomainDnsHistoryResponseHistoricalDnsRecordsItemBuilder::dns_types)
     /// - [`dns_records`](DomainDnsHistoryResponseHistoricalDnsRecordsItemBuilder::dns_records)
     pub fn build(self) -> Result<DomainDnsHistoryResponseHistoricalDnsRecordsItem, BuildError> {
@@ -83,9 +73,6 @@ impl DomainDnsHistoryResponseHistoricalDnsRecordsItemBuilder {
             domain_name: self
                 .domain_name
                 .ok_or_else(|| BuildError::missing_field("domain_name"))?,
-            domain_registered: self
-                .domain_registered
-                .ok_or_else(|| BuildError::missing_field("domain_registered"))?,
             dns_types: self
                 .dns_types
                 .ok_or_else(|| BuildError::missing_field("dns_types"))?,

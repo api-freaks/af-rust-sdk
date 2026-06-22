@@ -19,8 +19,7 @@ pub struct CurrencyConvertLatestQueryRequest {
     /// Amount to convert
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers::option")]
-    pub amount: Option<f64>,
+    pub amount: Option<String>,
     /// Exchange rates update period (1d=daily, 1h=hourly, 10m=10 minutes, 1m=1 minute)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updates: Option<CurrencyConvertLatestRequestUpdates>,
@@ -39,7 +38,7 @@ pub struct CurrencyConvertLatestQueryRequestBuilder {
     format: Option<CurrencyConvertLatestRequestFormat>,
     from: Option<String>,
     to: Option<String>,
-    amount: Option<f64>,
+    amount: Option<String>,
     updates: Option<CurrencyConvertLatestRequestUpdates>,
 }
 
@@ -64,8 +63,8 @@ impl CurrencyConvertLatestQueryRequestBuilder {
         self
     }
 
-    pub fn amount(mut self, value: f64) -> Self {
-        self.amount = Some(value);
+    pub fn amount(mut self, value: impl Into<String>) -> Self {
+        self.amount = Some(value.into());
         self
     }
 

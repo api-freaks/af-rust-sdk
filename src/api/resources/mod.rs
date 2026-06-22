@@ -949,6 +949,7 @@ impl ApiFreaks {
                     .string("domain", request.domain.clone())
                     .serialize("source", request.source.clone())
                     .int("count", request.count.clone())
+                    .bool("sug", request.sug.clone())
                     .build(),
                 options,
             )
@@ -2304,7 +2305,7 @@ impl ApiFreaks {
                     .serialize("format", request.format.clone())
                     .string("from", request.from.clone())
                     .string("to", request.to.clone())
-                    .float("amount", request.amount.clone())
+                    .string("amount", request.amount.clone())
                     .serialize("updates", request.updates.clone())
                     .build(),
                 options,
@@ -2342,7 +2343,7 @@ impl ApiFreaks {
                     .serialize("format", request.format.clone())
                     .string("from", request.from.clone())
                     .string("to", request.to.clone())
-                    .float("amount", request.amount.clone())
+                    .string("amount", request.amount.clone())
                     .date("date", request.date.clone())
                     .build(),
                 options,
@@ -2457,7 +2458,7 @@ impl ApiFreaks {
                     .serialize("updates", request.updates.clone())
                     .string("from", request.from.clone())
                     .string("ip", request.ip.clone())
-                    .float("amount", request.amount.clone())
+                    .string("amount", request.amount.clone())
                     .build(),
                 options,
             )
@@ -3935,6 +3936,10 @@ impl ApiFreaks {
         request: &UserAgentLookupQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<UserAgentLookupResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        options
+            .additional_headers
+            .insert("User-Agent".to_string(), request.user_agent.clone());
         self.http_client
             .execute_request(
                 Method::GET,
@@ -3944,7 +3949,7 @@ impl ApiFreaks {
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }

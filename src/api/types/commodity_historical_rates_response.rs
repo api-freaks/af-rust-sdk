@@ -6,19 +6,15 @@ pub struct CommodityHistoricalRatesResponse {
     #[serde(default)]
     pub success: bool,
     /// Unix timestamp indicating when the response was generated.
-    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers::option")]
-    pub timestamp: Option<f64>,
+    #[serde(with = "crate::core::number_serializers")]
+    pub timestamp: f64,
+    /// Map containing rate data for all the requested commodities.
+    #[serde(default)]
+    pub rates: HashMap<String, f64>,
     /// Map containing detailed information for all the requested commodities keyed by commodity symbol.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<HashMap<String, CommodityHistoricalRatesResponseMetadataValue>>,
-    /// Date for which the user requested the commodity price. Format: YYYY-MM-DD.
     #[serde(default)]
-    pub date: String,
-    /// Map containing rate data for each available requested commodity symbol, keyed by symbol.
-    #[serde(default)]
-    pub rates: HashMap<String, CommodityHistoricalRatesResponseRatesValue>,
+    pub metadata: HashMap<String, CommodityHistoricalRatesResponseMetadataValue>,
 }
 
 impl CommodityHistoricalRatesResponse {
@@ -32,9 +28,8 @@ impl CommodityHistoricalRatesResponse {
 pub struct CommodityHistoricalRatesResponseBuilder {
     success: Option<bool>,
     timestamp: Option<f64>,
+    rates: Option<HashMap<String, f64>>,
     metadata: Option<HashMap<String, CommodityHistoricalRatesResponseMetadataValue>>,
-    date: Option<String>,
-    rates: Option<HashMap<String, CommodityHistoricalRatesResponseRatesValue>>,
 }
 
 impl CommodityHistoricalRatesResponseBuilder {
@@ -48,6 +43,11 @@ impl CommodityHistoricalRatesResponseBuilder {
         self
     }
 
+    pub fn rates(mut self, value: HashMap<String, f64>) -> Self {
+        self.rates = Some(value);
+        self
+    }
+
     pub fn metadata(
         mut self,
         value: HashMap<String, CommodityHistoricalRatesResponseMetadataValue>,
@@ -56,35 +56,26 @@ impl CommodityHistoricalRatesResponseBuilder {
         self
     }
 
-    pub fn date(mut self, value: impl Into<String>) -> Self {
-        self.date = Some(value.into());
-        self
-    }
-
-    pub fn rates(
-        mut self,
-        value: HashMap<String, CommodityHistoricalRatesResponseRatesValue>,
-    ) -> Self {
-        self.rates = Some(value);
-        self
-    }
-
     /// Consumes the builder and constructs a [`CommodityHistoricalRatesResponse`].
     /// This method will fail if any of the following fields are not set:
     /// - [`success`](CommodityHistoricalRatesResponseBuilder::success)
-    /// - [`date`](CommodityHistoricalRatesResponseBuilder::date)
+    /// - [`timestamp`](CommodityHistoricalRatesResponseBuilder::timestamp)
     /// - [`rates`](CommodityHistoricalRatesResponseBuilder::rates)
+    /// - [`metadata`](CommodityHistoricalRatesResponseBuilder::metadata)
     pub fn build(self) -> Result<CommodityHistoricalRatesResponse, BuildError> {
         Ok(CommodityHistoricalRatesResponse {
             success: self
                 .success
                 .ok_or_else(|| BuildError::missing_field("success"))?,
-            timestamp: self.timestamp,
-            metadata: self.metadata,
-            date: self.date.ok_or_else(|| BuildError::missing_field("date"))?,
+            timestamp: self
+                .timestamp
+                .ok_or_else(|| BuildError::missing_field("timestamp"))?,
             rates: self
                 .rates
                 .ok_or_else(|| BuildError::missing_field("rates"))?,
+            metadata: self
+                .metadata
+                .ok_or_else(|| BuildError::missing_field("metadata"))?,
         })
     }
 }

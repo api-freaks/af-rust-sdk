@@ -13,30 +13,30 @@ pub struct AstronomyLookupResponseLocation {
     pub country_code2: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country_code3: Option<String>,
-    #[serde(default)]
-    pub country_name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country_name_official: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_eu: Option<bool>,
-    #[serde(default)]
-    pub state_prov: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state_prov: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state_code: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub district: Option<String>,
-    #[serde(default)]
-    pub city: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub zipcode: Option<String>,
-    #[serde(default)]
-    pub latitude: String,
-    #[serde(default)]
-    pub longitude: String,
-    #[serde(default)]
-    pub locality: String,
-    #[serde(default)]
-    pub elevation: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub latitude: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub longitude: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub locality: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub elevation: Option<String>,
     /// Additional properties that are not part of the defined schema.
     #[serde(flatten)]
     pub extra: std::collections::HashMap<String, serde_json::Value>,
@@ -157,14 +157,6 @@ impl AstronomyLookupResponseLocationBuilder {
     }
 
     /// Consumes the builder and constructs a [`AstronomyLookupResponseLocation`].
-    /// This method will fail if any of the following fields are not set:
-    /// - [`country_name`](AstronomyLookupResponseLocationBuilder::country_name)
-    /// - [`state_prov`](AstronomyLookupResponseLocationBuilder::state_prov)
-    /// - [`city`](AstronomyLookupResponseLocationBuilder::city)
-    /// - [`latitude`](AstronomyLookupResponseLocationBuilder::latitude)
-    /// - [`longitude`](AstronomyLookupResponseLocationBuilder::longitude)
-    /// - [`locality`](AstronomyLookupResponseLocationBuilder::locality)
-    /// - [`elevation`](AstronomyLookupResponseLocationBuilder::elevation)
     pub fn build(self) -> Result<AstronomyLookupResponseLocation, BuildError> {
         Ok(AstronomyLookupResponseLocation {
             location_string: self.location_string,
@@ -172,30 +164,18 @@ impl AstronomyLookupResponseLocationBuilder {
             continent_name: self.continent_name,
             country_code2: self.country_code2,
             country_code3: self.country_code3,
-            country_name: self
-                .country_name
-                .ok_or_else(|| BuildError::missing_field("country_name"))?,
+            country_name: self.country_name,
             country_name_official: self.country_name_official,
             is_eu: self.is_eu,
-            state_prov: self
-                .state_prov
-                .ok_or_else(|| BuildError::missing_field("state_prov"))?,
+            state_prov: self.state_prov,
             state_code: self.state_code,
             district: self.district,
-            city: self.city.ok_or_else(|| BuildError::missing_field("city"))?,
+            city: self.city,
             zipcode: self.zipcode,
-            latitude: self
-                .latitude
-                .ok_or_else(|| BuildError::missing_field("latitude"))?,
-            longitude: self
-                .longitude
-                .ok_or_else(|| BuildError::missing_field("longitude"))?,
-            locality: self
-                .locality
-                .ok_or_else(|| BuildError::missing_field("locality"))?,
-            elevation: self
-                .elevation
-                .ok_or_else(|| BuildError::missing_field("elevation"))?,
+            latitude: self.latitude,
+            longitude: self.longitude,
+            locality: self.locality,
+            elevation: self.elevation,
             extra: Default::default(),
         })
     }
