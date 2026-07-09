@@ -4189,4 +4189,224 @@ impl ApiFreaks {
             )
             .await
     }
+
+    /// `v2.0` — Get detailed geolocation data for an IP address including country, city, timezone, currency, and optional security and user-agent information.
+    ///
+    /// This is the `/v2.0/geolocation/lookup` version of [`Self::geolocation_lookup`]. The
+    /// legacy `/v1.0` endpoint remains available via [`Self::geolocation_lookup`].
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - Query parameters for the lookup.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn geolocation_lookup_v2(
+        &self,
+        request: &GeolocationLookupQueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<GeolocationLookupV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v2.0/geolocation/lookup",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .string("ip", request.ip.clone())
+                    .serialize("lang", request.lang.clone())
+                    .string("fields", request.fields.clone())
+                    .string("excludes", request.excludes.clone())
+                    .string("include", request.include.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// `v2.0` — Retrieve detailed geolocation data for multiple IP addresses in a single request.
+    /// Supports up to `50,000` IP-addresses/host-names per request.
+    ///
+    /// This is the `/v2.0/geolocation/lookup` version of [`Self::bulk_geolocation_lookup`]. The
+    /// legacy `/v1.0` endpoint remains available via [`Self::bulk_geolocation_lookup`].
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - The bulk lookup request body and query parameters.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn bulk_geolocation_lookup_v2(
+        &self,
+        request: &BulkGeolocationLookupRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<Vec<BulkGeolocationLookupV2ResponseItem>, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::POST,
+                "v2.0/geolocation/lookup",
+                Some(serde_json::to_value(request).map_err(ApiError::Serialization)?),
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .string("lang", request.lang.clone())
+                    .string("fields", request.fields.clone())
+                    .string("excludes", request.excludes.clone())
+                    .string("include", request.include.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// `v2.0` — Get the timezone information for a location specified by IP, coordinates, address, or airport/UN-LOCODE codes.
+    ///
+    /// This is the `/v2.0/geolocation/timezone` version of [`Self::timezone_lookup`]. The
+    /// legacy `/v1.0` endpoint remains available via [`Self::timezone_lookup`].
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - Query parameters for the timezone lookup.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn timezone_lookup_v2(
+        &self,
+        request: &TimezoneLookupQueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<TimezoneLookupV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v2.0/geolocation/timezone",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .string("ip", request.ip.clone())
+                    .string("tz", request.tz.clone())
+                    .string("location", request.location.clone())
+                    .float("lat", request.lat.clone())
+                    .float("long", request.long.clone())
+                    .serialize("lang", request.lang.clone())
+                    .string("iata_code", request.iata_code.clone())
+                    .string("icao_code", request.icao_code.clone())
+                    .string("lo_code", request.lo_code.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// `v2.0` — Get astronomy data (sun and moon positions, rise/set times, twilight, etc.) for a location.
+    ///
+    /// This is the `/v2.0/geolocation/astronomy` version of [`Self::astronomy_lookup`]. The
+    /// legacy `/v1.0` endpoint remains available via [`Self::astronomy_lookup`].
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - Query parameters for the astronomy lookup.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn astronomy_lookup_v2(
+        &self,
+        request: &AstronomyLookupQueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<AstronomyLookupV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v2.0/geolocation/astronomy",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .string("location", request.location.clone())
+                    .float("lat", request.lat.clone())
+                    .float("long", request.long.clone())
+                    .string("ip", request.ip.clone())
+                    .string("lang", request.lang.clone())
+                    .date("date", request.date.clone())
+                    .float("elevation", request.elevation.clone())
+                    .string("time_zone", request.time_zone.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// `v2.0` — Get WHOIS registration details for a domain via live lookup.
+    ///
+    /// This is the `/v2.0/domain/whois/live` version of [`Self::domain_whois_lookup`]. The
+    /// legacy `/v1.0` endpoint remains available via [`Self::domain_whois_lookup`].
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - Query parameters for the WHOIS lookup.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn domain_whois_lookup_v2(
+        &self,
+        request: &DomainWhoisLookupQueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<DomainWhoisLookupV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v2.0/domain/whois/live",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .string("domainName", request.domain_name.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// `v2.0` — Retrieve WHOIS information for `100 Domains per Request`.
+    ///
+    /// This is the `/v2.0/domain/whois/live` version of [`Self::bulk_domain_whois_lookup`]. The
+    /// legacy `/v1.0` endpoint remains available via [`Self::bulk_domain_whois_lookup`].
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - The bulk WHOIS request body and query parameters.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn bulk_domain_whois_lookup_v2(
+        &self,
+        request: &BulkDomainWhoisLookupRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<BulkDomainWhoisLookupV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::POST,
+                "v2.0/domain/whois/live",
+                Some(serde_json::to_value(request).map_err(ApiError::Serialization)?),
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
 }

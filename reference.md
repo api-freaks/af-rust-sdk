@@ -12889,3 +12889,753 @@ async fn main() {
 </dl>
 </details>
 
+
+<details><summary><code>client.<a href="/src/client.rs">geolocation_lookup_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;GeolocationLookupRequestFormat&gt;&gt;, ip: Option&lt;Option&lt;String&gt;&gt;, lang: Option&lt;Option&lt;GeolocationLookupRequestLang&gt;&gt;, fields: Option&lt;Option&lt;String&gt;&gt;, excludes: Option&lt;Option&lt;String&gt;&gt;, include: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;GeolocationLookupV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+> `v2.0` endpoint (`v2.0/geolocation/lookup`). The legacy `v1.0` method `geolocation_lookup` is unchanged.
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get detailed geolocation data for an IP address including country, city, timezone, currency, and optional security and user-agent information
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .geolocation_lookup_v2(
+            &GeolocationLookupQueryRequest {
+                api_key: "apiKey".to_string(),
+                format: None,
+                ip: None,
+                lang: None,
+                fields: None,
+                excludes: None,
+                include: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<GeolocationLookupRequestFormat>` — Format of the response.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ip:** `Option<String>` — IPv4, IPv6, or hostname for geolocation lookup
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lang:** `Option<GeolocationLookupRequestLang>` — Response language for location fields
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**fields:** `Option<String>` — Comma separated list of fields to include in response
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**excludes:** `Option<String>` — Comma separated list of fields to exclude from response
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**include:** `Option<String>` — Additional data to include (location, network, security, currency, time_zone, user_agent, country_metadata , hostname, liveHostname, hostnameFallbackLivet)
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">bulk_geolocation_lookup_v2</a>(request: BulkGeolocationLookupRequest, api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;BulkGeolocationLookupRequestFormat&gt;&gt;, lang: Option&lt;Option&lt;String&gt;&gt;, fields: Option&lt;Option&lt;String&gt;&gt;, excludes: Option&lt;Option&lt;String&gt;&gt;, include: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;Vec&lt;BulkGeolocationLookupV2ResponseItem&gt;, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+> `v2.0` endpoint (`v2.0/geolocation/lookup`). The legacy `v1.0` method `bulk_geolocation_lookup` is unchanged.
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve detailed geolocation data for multiple IP addresses in a single request.
+Supports up to `50,000` IP-addresses/host-names per request.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .bulk_geolocation_lookup_v2(
+            &BulkGeolocationLookupRequest {
+                api_key: "apiKey".to_string(),
+                ips: vec!["ips".to_string()],
+                format: None,
+                lang: None,
+                fields: None,
+                excludes: None,
+                include: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**ips:** `Vec<String>` — List of IP addresses or hostnames to lookup
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<BulkGeolocationLookupRequestFormat>` — Format of the response.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lang:** `Option<String>` — Language of the response.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**fields:** `Option<String>` — Comma-separated list of fields to include in the response. Can include "geo".
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**excludes:** `Option<String>` — Comma-separated list of fields to exclude from the response (except "ip").
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**include:** `Option<String>` — Comma-separated list of additional information to include in the response.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">domain_whois_lookup_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;DomainWhoisLookupRequestFormat&gt;&gt;, domain_name: Option&lt;String&gt;) -> Result&lt;DomainWhoisLookupV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+> `v2.0` endpoint (`v2.0/domain/whois/live`). The legacy `v1.0` method `domain_whois_lookup` is unchanged.
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve current WHOIS information for a domain name.
+This endpoint provides detailed registration information including registrar details,
+dates, nameservers, and registrant information.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .domain_whois_lookup_v2(
+            &DomainWhoisLookupQueryRequest {
+                api_key: "apiKey".to_string(),
+                domain_name: "domainName".to_string(),
+                format: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<DomainWhoisLookupRequestFormat>` — Response format (defaults to json)
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**domain_name:** `String` — Domain name for WHOIS lookup
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">bulk_domain_whois_lookup_v2</a>(request: BulkDomainWhoisLookupRequest, api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;BulkDomainWhoisLookupRequestFormat&gt;&gt;) -> Result&lt;BulkDomainWhoisLookupV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+> `v2.0` endpoint (`v2.0/domain/whois/live`). The legacy `v1.0` method `bulk_domain_whois_lookup` is unchanged.
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve WHOIS information for `100 Domains per Request`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .bulk_domain_whois_lookup_v2(
+            &BulkDomainWhoisLookupRequest {
+                api_key: "apiKey".to_string(),
+                domain_names: vec!["domainNames".to_string()],
+                format: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**domain_names:** `Vec<String>` — A list of domain names for which WHOIS data is requested.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<BulkDomainWhoisLookupRequestFormat>` — Format of the response.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">timezone_lookup_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;TimezoneLookupRequestFormat&gt;&gt;, ip: Option&lt;Option&lt;String&gt;&gt;, tz: Option&lt;Option&lt;String&gt;&gt;, location: Option&lt;Option&lt;String&gt;&gt;, lat: Option&lt;Option&lt;String&gt;&gt;, long: Option&lt;Option&lt;String&gt;&gt;, lang: Option&lt;Option&lt;TimezoneLookupRequestLang&gt;&gt;, iata_code: Option&lt;Option&lt;String&gt;&gt;, icao_code: Option&lt;Option&lt;String&gt;&gt;, lo_code: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;TimezoneLookupV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+> `v2.0` endpoint (`v2.0/geolocation/timezone`). The legacy `v1.0` method `timezone_lookup` is unchanged.
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve current time, date, and timezone-related information by specifying a timezone name, location address, location coordinates, IP address, or use the client IP address if no parameter is passed.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .timezone_lookup_v2(
+            &TimezoneLookupQueryRequest {
+                api_key: "apiKey".to_string(),
+                format: None,
+                ip: None,
+                tz: None,
+                location: None,
+                lat: None,
+                long: None,
+                lang: None,
+                iata_code: None,
+                icao_code: None,
+                lo_code: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<TimezoneLookupRequestFormat>` — Format of the response
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ip:** `Option<String>` — IPv4 or IPv6 address to extract timezone information.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**tz:** `Option<String>` — Timezone name (e.g., "Asia/Kolkata") to retrieve information directly.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**location:** `Option<String>` — Location string (preferably city and country) to extract timezone.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lat:** `Option<String>` — Latitude for geolocation lookup.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**long:** `Option<String>` — Longitude for geolocation lookup.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lang:** `Option<TimezoneLookupRequestLang>` — Language code for response localization (default is "en").
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**iata_code:** `Option<String>` — 3-letter IATA airport code (e.g., JFK).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**icao_code:** `Option<String>` — 4-letter ICAO airport code (e.g., KJFK).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lo_code:** `Option<String>` — 5-letter UN/LO city code.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">astronomy_lookup_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;AstronomyLookupRequestFormat&gt;&gt;, location: Option&lt;Option&lt;String&gt;&gt;, lat: Option&lt;Option&lt;String&gt;&gt;, long: Option&lt;Option&lt;String&gt;&gt;, ip: Option&lt;Option&lt;String&gt;&gt;, lang: Option&lt;Option&lt;String&gt;&gt;, date: Option&lt;Option&lt;String&gt;&gt;, elevation: Option&lt;Option&lt;f64&gt;&gt;, time_zone: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;AstronomyLookupV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+> `v2.0` endpoint (`v2.0/geolocation/astronomy`). The legacy `v1.0` method `astronomy_lookup` is unchanged.
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve sunrise and sunset times, current position of the moon, and other related information by specifying a location address, location coordinates, IP address, or using the client IP address if no parameter is passed.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .astronomy_lookup_v2(
+            &AstronomyLookupQueryRequest {
+                api_key: "apiKey".to_string(),
+                format: None,
+                location: None,
+                lat: None,
+                long: None,
+                ip: None,
+                lang: None,
+                date: None,
+                elevation: None,
+                time_zone: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<AstronomyLookupRequestFormat>` — Format of the response.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**location:** `Option<String>` — Location name or address
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lat:** `Option<String>` — Latitude for location coordinates
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**long:** `Option<String>` — Longitude for location coordinates
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ip:** `Option<String>` — IP address for location detection
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lang:** `Option<String>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**date:** `Option<String>` — Date for astronomy data (YYYY-MM-DD)
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**elevation:** `Option<f64>` — Timezone of the location for which astronomy data is required
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**time_zone:** `Option<String>` — 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
