@@ -26,7 +26,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-apifreaks = "1.0.2"
+apifreaks = "1.0.3"
 ```
 
 Or install via cargo:
