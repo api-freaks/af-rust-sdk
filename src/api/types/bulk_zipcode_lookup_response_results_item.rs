@@ -9,6 +9,8 @@ pub struct BulkZipcodeLookupResponseResultsItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub region_code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub locality: Option<String>,
@@ -34,6 +36,7 @@ pub struct BulkZipcodeLookupResponseResultsItemBuilder {
     code: Option<String>,
     country_code: Option<String>,
     region: Option<String>,
+    region_code: Option<String>,
     city: Option<String>,
     locality: Option<String>,
     latitude: Option<f64>,
@@ -53,6 +56,11 @@ impl BulkZipcodeLookupResponseResultsItemBuilder {
 
     pub fn region(mut self, value: impl Into<String>) -> Self {
         self.region = Some(value.into());
+        self
+    }
+
+    pub fn region_code(mut self, value: impl Into<String>) -> Self {
+        self.region_code = Some(value.into());
         self
     }
 
@@ -82,6 +90,7 @@ impl BulkZipcodeLookupResponseResultsItemBuilder {
             code: self.code,
             country_code: self.country_code,
             region: self.region,
+            region_code: self.region_code,
             city: self.city,
             locality: self.locality,
             latitude: self.latitude,

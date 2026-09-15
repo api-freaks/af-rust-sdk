@@ -6,10 +6,6 @@ pub struct BulkDomainDnsLookupRequest {
     #[serde(rename = "domainNames")]
     #[serde(default)]
     pub domain_names: Vec<String>,
-    /// Optional list of IP addresses for reverse/PTR lookups
-    #[serde(rename = "ipAddresses")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_addresses: Option<Vec<String>>,
     /// Your API key
     #[serde(rename = "apiKey")]
     #[serde(skip_serializing)]
@@ -35,7 +31,6 @@ impl BulkDomainDnsLookupRequest {
 #[non_exhaustive]
 pub struct BulkDomainDnsLookupRequestBuilder {
     domain_names: Option<Vec<String>>,
-    ip_addresses: Option<Vec<String>>,
     api_key: Option<String>,
     format: Option<BulkDomainDnsLookupRequestFormat>,
     r#type: Option<Vec<Option<String>>>,
@@ -44,11 +39,6 @@ pub struct BulkDomainDnsLookupRequestBuilder {
 impl BulkDomainDnsLookupRequestBuilder {
     pub fn domain_names(mut self, value: Vec<String>) -> Self {
         self.domain_names = Some(value);
-        self
-    }
-
-    pub fn ip_addresses(mut self, value: Vec<String>) -> Self {
-        self.ip_addresses = Some(value);
         self
     }
 
@@ -77,7 +67,6 @@ impl BulkDomainDnsLookupRequestBuilder {
             domain_names: self
                 .domain_names
                 .ok_or_else(|| BuildError::missing_field("domain_names"))?,
-            ip_addresses: self.ip_addresses,
             api_key: self
                 .api_key
                 .ok_or_else(|| BuildError::missing_field("api_key"))?,

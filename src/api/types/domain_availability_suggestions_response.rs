@@ -2,9 +2,9 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct DomainAvailabilitySuggestionsResponse {
-    #[serde(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub domain_available_response:
-        Vec<DomainAvailabilitySuggestionsResponseDomainAvailableResponseItem>,
+        Option<Vec<DomainAvailabilitySuggestionsResponseDomainAvailableResponseItem>>,
 }
 
 impl DomainAvailabilitySuggestionsResponse {
@@ -30,13 +30,9 @@ impl DomainAvailabilitySuggestionsResponseBuilder {
     }
 
     /// Consumes the builder and constructs a [`DomainAvailabilitySuggestionsResponse`].
-    /// This method will fail if any of the following fields are not set:
-    /// - [`domain_available_response`](DomainAvailabilitySuggestionsResponseBuilder::domain_available_response)
     pub fn build(self) -> Result<DomainAvailabilitySuggestionsResponse, BuildError> {
         Ok(DomainAvailabilitySuggestionsResponse {
-            domain_available_response: self
-                .domain_available_response
-                .ok_or_else(|| BuildError::missing_field("domain_available_response"))?,
+            domain_available_response: self.domain_available_response,
         })
     }
 }

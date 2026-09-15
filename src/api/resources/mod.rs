@@ -949,7 +949,6 @@ impl ApiFreaks {
                     .string("domain", request.domain.clone())
                     .serialize("source", request.source.clone())
                     .int("count", request.count.clone())
-                    .bool("sug", request.sug.clone())
                     .build(),
                 options,
             )
@@ -990,6 +989,478 @@ impl ApiFreaks {
                     .date("before", request.before.clone())
                     .serialize("status", request.status.clone())
                     .string("page", request.page.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// The Domain Typosquatting API searches for registered domains that are typo or look-alike variants of a brand keyword, or that match a wildcard pattern. Results include registration lifecycle data and drop status across 1529+ TLDs, paginated at 100 domains per page.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Format of the response.
+    /// * `keyword` - Brand or label to find typo variants for. 3-63 characters, letters, digits, or hyphens, a single label with no dots. Case-insensitive. Use either keyword or pattern, never both.
+    /// * `pattern` - Wildcard search string that combines fuzzy matching with * wildcards. 3-63 characters total, * is the only supported wildcard and each one matches zero or more characters, maximum 3 asterisks per request. Use either keyword or pattern, never both.
+    /// * `page_token` - Token from nextPageToken in the previous response. Required to retrieve page 2 and onward. The original keyword or pattern must be passed alongside the token on every page request. Results page at 100 domains per page.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn domain_typosquatting(
+        &self,
+        request: &DomainTyposquattingQueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<DomainTyposquattingResponse, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v1.0/domain/typosquatting",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .string("keyword", request.keyword.clone())
+                    .string("pattern", request.pattern.clone())
+                    .string("pageToken", request.page_token.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// The Domain Reputation API evaluates a domain against threat intelligence sources, DGA (domain generation algorithm) scoring, trust signals, and email deliverability configuration, returning a consolidated risk assessment with a verdict, severity, and supporting evidence.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Format of the response.
+    /// * `domain_name` - The domain name to assess (e.g. example.com). Must contain at least one dot and be at most 253 characters. Automatically lowercased.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn domain_reputation(
+        &self,
+        request: &DomainReputationQueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<DomainReputationResponse, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v1.0/domain/reputation",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .string("domainName", request.domain_name.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Retrieve sunrise and sunset times, current position of the moon, and other related information by specifying a location address, location coordinates, IP address, or using the client IP address if no parameter is passed.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Format of the response. Can be "json" or "xml".
+    /// * `location` - Extract astronomy information using location (preferably city)
+    /// * `lat` - Latitude to extract astronomy information using location coordinates
+    /// * `long` - Longitude to extract astronomy information using location coordinates
+    /// * `ip` - IPv4 or IPv6 address to extract astronomy information using IP address
+    /// * `lang` - Response language of "location" field in case of lookup through IP address only.
+    /// * `date` - Specific date (format YYYY-MM-DD) for which astronomy data is required
+    /// * `elevation` - Elevation above sea level at the location, in meters. The value should be between 0 meter and a maximum value of 10,000 meters. Negative value is set to 0.
+    /// * `time_zone` - Time zone to receive all time-based data in your preferred local time.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn astronomy_lookup_v2(
+        &self,
+        request: &AstronomyLookupV2QueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<AstronomyLookupV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v2.0/geolocation/astronomy",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .string("location", request.location.clone())
+                    .float("lat", request.lat.clone())
+                    .float("long", request.long.clone())
+                    .string("ip", request.ip.clone())
+                    .serialize("lang", request.lang.clone())
+                    .date("date", request.date.clone())
+                    .float("elevation", request.elevation.clone())
+                    .string("time_zone", request.time_zone.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Get current time, date, and timezone details by specifying a timezone name, location address, GPS coordinates, IP address, IATA/ICAO airport code, UN/LOCODE, or use the client IP if no parameter is provided.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Format of the response. Possible values: json, xml.
+    /// * `ip` - IPv4 or IPv6 address to extract timezone information.
+    /// * `tz` - Timezone name in IANA format (e.g., Asia/Kolkata) to retrieve information directly.
+    /// * `location` - Location string (preferably city and country) to extract timezone.
+    /// * `lat` - Latitude for geolocation-based timezone lookup. Only time_zone is returned for this mode; no location object is included.
+    /// * `long` - Longitude for geolocation-based timezone lookup. Only time_zone is returned for this mode; no location object is included.
+    /// * `lang` - Response language for location fields. Default: en.
+    /// * `iata_code` - 3-letter IATA airport code (e.g., LHR) to extract timezone.
+    /// * `icao_code` - 4-letter ICAO airport code (e.g., KJFK) to extract timezone.
+    /// * `lo_code` - 5-letter UN/LOCODE city code to extract timezone.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn timezone_lookup_v2(
+        &self,
+        request: &TimezoneLookupV2QueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<TimezoneLookupV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v2.0/geolocation/timezone",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .string("ip", request.ip.clone())
+                    .string("tz", request.tz.clone())
+                    .string("location", request.location.clone())
+                    .float("lat", request.lat.clone())
+                    .float("long", request.long.clone())
+                    .serialize("lang", request.lang.clone())
+                    .string("iata_code", request.iata_code.clone())
+                    .string("icao_code", request.icao_code.clone())
+                    .string("lo_code", request.lo_code.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Get detailed IP geolocation data for an IP address including country, city, timezone, currency, and optional threat intelligence and user-agent information.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Format of the response.
+    /// * `ip` - IPv4, IPv6, or hostname for geolocation lookup.
+    /// * `lang` - Response language for location fields. Default: en.
+    /// * `fields` - Comma-separated list of fields to include in response. For example, `location` includes all location fields, `location.city` is a specific field.
+    /// * `excludes` - Comma-separated list of fields to exclude from response.
+    /// * `include` - Comma-separated list of additional data modules to include. Possible values: security (threat intelligence), hostname (IP-Hostname lookup), liveHostname (live hostname lookup), hostnameFallbackLive (hostname with live fallback), user_agent (parse User-Agent header), abuse (abuse contact info), dma_code (DMA code), geo_accuracy (accuracy_radius, confidence, locality), * (all modules).
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn geolocation_lookup_v2(
+        &self,
+        request: &GeolocationLookupV2QueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<GeolocationLookupV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v2.0/geolocation/lookup",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .string("ip", request.ip.clone())
+                    .serialize("lang", request.lang.clone())
+                    .string("fields", request.fields.clone())
+                    .string("excludes", request.excludes.clone())
+                    .string("include", request.include.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Get detailed IP geolocation data for multiple IP addresses including country, city, timezone, currency, and optional threat intelligence information. Supports up to 50,000 IP addresses per request.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Format of the response.
+    /// * `lang` - Response language for location fields. Default: en.
+    /// * `fields` - Comma-separated list of fields to include in the response. For example, `location` includes all location fields, `location.city` is a specific field.
+    /// * `excludes` - Comma-separated list of fields to exclude from response.
+    /// * `include` - Comma-separated list of additional data modules to include. Possible values: security (threat intelligence), hostname (IP-Hostname lookup), liveHostname (live hostname lookup), user_agent (parse User-Agent header), abuse (abuse contact info), * (all modules).
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn bulk_geolocation_lookup_v2(
+        &self,
+        request: &BulkGeolocationLookupV2Request,
+        options: Option<RequestOptions>,
+    ) -> Result<Vec<BulkGeolocationLookupV2ResponseItem>, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::POST,
+                "v2.0/geolocation/lookup",
+                Some(serde_json::to_value(request).map_err(ApiError::Serialization)?),
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .serialize("lang", request.lang.clone())
+                    .string("fields", request.fields.clone())
+                    .string("excludes", request.excludes.clone())
+                    .string("include", request.include.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Returns the current WHOIS record for the specified domain, including registrar details, registrant/administrative/technical/billing/reseller contacts, name servers, status codes, and raw WHOIS text.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Format of the response.
+    /// * `domain_name` - Domain name to retrieve WHOIS data for (e.g. example.com).
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn domain_whois_lookup_v2(
+        &self,
+        request: &DomainWhoisLookupV2QueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<DomainWhoisLookupV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v2.0/domain/whois/live",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .string("domainName", request.domain_name.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Returns the current WHOIS record for each requested domain, in request order. Supports up to 100 domain names per request; a domain that fails to resolve yields an error item instead of failing the whole batch.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Format of the response.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn bulk_domain_whois_lookup_v2(
+        &self,
+        request: &BulkDomainWhoisLookupV2Request,
+        options: Option<RequestOptions>,
+    ) -> Result<BulkDomainWhoisLookupV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::POST,
+                "v2.0/domain/whois/live",
+                Some(serde_json::to_value(request).map_err(ApiError::Serialization)?),
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Returns the current live price for the requested commodity symbols. Unresolved symbols degrade to a 206 partial response instead of failing the whole request.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Response format. Currently only `json` is supported.
+    /// * `symbols` - Comma-separated list of commodity symbols (e.g., XAU, WTIOIL-SPOT). Case-insensitive; duplicates are deduplicated server-side, with one response entry and one credit charge per unique symbol.
+    /// * `quote` - Target currency for the exchange rate. If omitted (or set to `default`), the default quote currency of each commodity is used. Requires a premium plan; ignored on lower-tier plans.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn commodity_latest_rates_v2(
+        &self,
+        request: &CommodityLatestRatesV2QueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<CommodityLatestRatesV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v2.0/commodity/rates/latest",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .string_array("symbols", request.symbols.clone())
+                    .string("quote", request.quote.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Returns OHLC price data for the requested commodity symbols on a specific date. Falls back to the nearest earlier rate if none exists for the exact date. Unresolved symbols degrade to a 206 partial response instead of failing the whole request.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Response format. Currently only `json` is supported.
+    /// * `symbols` - Comma-separated list of commodity symbols. Case-insensitive; duplicates are deduplicated server-side, with one response entry and one credit charge per unique symbol.
+    /// * `date` - Date in YYYY-MM-DD format. Data available from 1990 onwards.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn commodity_historical_rates_v2(
+        &self,
+        request: &CommodityHistoricalRatesV2QueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<CommodityHistoricalRatesV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v2.0/commodity/rates/historical",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .string_array("symbols", request.symbols.clone())
+                    .date("date", request.date.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Returns price fluctuation metrics (start, end, change, percent change) for the requested commodity symbols over a date range. For monthly-updated commodities the range snaps to month boundaries. Unresolved symbols degrade to a 206 partial response instead of failing the whole request.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Response format. Currently only `json` is supported.
+    /// * `symbols` - Comma-separated list of commodity symbols. Case-insensitive; duplicates are deduplicated server-side, with one response entry and one credit charge per unique symbol.
+    /// * `start_date` - Start date (YYYY-MM-DD)
+    /// * `end_date` - End date (YYYY-MM-DD)
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn commodity_fluctuation_v2(
+        &self,
+        request: &CommodityFluctuationV2QueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<CommodityFluctuationV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v2.0/commodity/fluctuation",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .string_array("symbols", request.symbols.clone())
+                    .date("startDate", request.start_date.clone())
+                    .date("endDate", request.end_date.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Returns day-by-day OHLC data for the requested commodity symbols within a date range, indexed by date. Non-trading days are excluded. Unresolved symbols degrade to a 206 partial response instead of failing the whole request.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Response format. Currently only `json` is supported.
+    /// * `symbols` - Comma-separated list of commodity symbols. Case-insensitive; duplicates are deduplicated server-side, with one response entry and one credit charge per unique symbol.
+    /// * `start_date` - Start date (YYYY-MM-DD)
+    /// * `end_date` - End date (YYYY-MM-DD). Maximum range is 365 days.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn commodity_time_series_v2(
+        &self,
+        request: &CommodityTimeSeriesV2QueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<CommodityTimeSeriesV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v2.0/commodity/time-series",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .string_array("symbols", request.symbols.clone())
+                    .date("startDate", request.start_date.clone())
+                    .date("endDate", request.end_date.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Returns the list of supported commodity symbols with metadata. Deprecated symbols stay listed with status "inactive" and a deprecationDate.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Response format. Currently only `json` is supported.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    pub async fn commodity_symbols_v2(
+        &self,
+        request: &CommoditySymbolsV2QueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<CommoditySymbolsV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v2.0/commodity/symbols",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
                     .build(),
                 options,
             )
@@ -2305,7 +2776,7 @@ impl ApiFreaks {
                     .serialize("format", request.format.clone())
                     .string("from", request.from.clone())
                     .string("to", request.to.clone())
-                    .string("amount", request.amount.clone())
+                    .float("amount", request.amount.clone())
                     .serialize("updates", request.updates.clone())
                     .build(),
                 options,
@@ -2343,7 +2814,7 @@ impl ApiFreaks {
                     .serialize("format", request.format.clone())
                     .string("from", request.from.clone())
                     .string("to", request.to.clone())
-                    .string("amount", request.amount.clone())
+                    .float("amount", request.amount.clone())
                     .date("date", request.date.clone())
                     .build(),
                 options,
@@ -2458,7 +2929,7 @@ impl ApiFreaks {
                     .serialize("updates", request.updates.clone())
                     .string("from", request.from.clone())
                     .string("ip", request.ip.clone())
-                    .string("amount", request.amount.clone())
+                    .float("amount", request.amount.clone())
                     .build(),
                 options,
             )
@@ -3936,10 +4407,6 @@ impl ApiFreaks {
         request: &UserAgentLookupQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<UserAgentLookupResponse, ApiError> {
-        let mut options = options.unwrap_or_default();
-        options
-            .additional_headers
-            .insert("User-Agent".to_string(), request.user_agent.clone());
         self.http_client
             .execute_request(
                 Method::GET,
@@ -3949,7 +4416,7 @@ impl ApiFreaks {
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
                     .build(),
-                Some(options),
+                options,
             )
             .await
     }
@@ -3997,11 +4464,6 @@ impl ApiFreaks {
     /// # Arguments
     ///
     /// * `api_key` - Your API key
-    /// * `url` - URL of the image or PDF (required if `file` not provided)
-    /// * `model` - OCR model to use.
-    /// * `page_range` - Specify page range for multi-page PDFs (e.g., '1,3,5-10' or 'allpages'). **Note:** This parameter can only be used with .pdf file types.
-    /// * `zone` - Define OCR zones using coordinates (top:left:height:width). Multiple zones can be defined using commas. Only available for model 'ocr-v1'. **Note:** This parameter cannot be used with .pdf and .zip file types as it can only be applied to single image queries.
-    /// * `new_line` - Set to 1 to split output text into individual lines (default: 0)
     /// * `options` - Additional request options such as headers, timeout, etc.
     ///
     /// # Returns
@@ -4019,11 +4481,6 @@ impl ApiFreaks {
                 Some(serde_json::to_value(request).map_err(ApiError::Serialization)?),
                 QueryBuilder::new()
                     .string("apiKey", request.api_key.clone())
-                    .string("url", request.url.clone())
-                    .serialize("model", Some(request.model.clone()))
-                    .string("page_range", request.page_range.clone())
-                    .string("zone", request.zone.clone())
-                    .int("new_line", request.new_line.clone())
                     .build(),
                 options,
             )
@@ -4184,226 +4641,6 @@ impl ApiFreaks {
                     .date("date", request.date.clone())
                     .float("elevation", request.elevation.clone())
                     .string("time_zone", request.time_zone.clone())
-                    .build(),
-                options,
-            )
-            .await
-    }
-
-    /// `v2.0` — Get detailed geolocation data for an IP address including country, city, timezone, currency, and optional security and user-agent information.
-    ///
-    /// This is the `/v2.0/geolocation/lookup` version of [`Self::geolocation_lookup`]. The
-    /// legacy `/v1.0` endpoint remains available via [`Self::geolocation_lookup`].
-    ///
-    /// # Arguments
-    ///
-    /// * `request` - Query parameters for the lookup.
-    /// * `options` - Additional request options such as headers, timeout, etc.
-    ///
-    /// # Returns
-    ///
-    /// JSON response from the API
-    pub async fn geolocation_lookup_v2(
-        &self,
-        request: &GeolocationLookupQueryRequest,
-        options: Option<RequestOptions>,
-    ) -> Result<GeolocationLookupV2Response, ApiError> {
-        self.http_client
-            .execute_request(
-                Method::GET,
-                "v2.0/geolocation/lookup",
-                None,
-                QueryBuilder::new()
-                    .string("apiKey", request.api_key.clone())
-                    .serialize("format", request.format.clone())
-                    .string("ip", request.ip.clone())
-                    .serialize("lang", request.lang.clone())
-                    .string("fields", request.fields.clone())
-                    .string("excludes", request.excludes.clone())
-                    .string("include", request.include.clone())
-                    .build(),
-                options,
-            )
-            .await
-    }
-
-    /// `v2.0` — Retrieve detailed geolocation data for multiple IP addresses in a single request.
-    /// Supports up to `50,000` IP-addresses/host-names per request.
-    ///
-    /// This is the `/v2.0/geolocation/lookup` version of [`Self::bulk_geolocation_lookup`]. The
-    /// legacy `/v1.0` endpoint remains available via [`Self::bulk_geolocation_lookup`].
-    ///
-    /// # Arguments
-    ///
-    /// * `request` - The bulk lookup request body and query parameters.
-    /// * `options` - Additional request options such as headers, timeout, etc.
-    ///
-    /// # Returns
-    ///
-    /// JSON response from the API
-    pub async fn bulk_geolocation_lookup_v2(
-        &self,
-        request: &BulkGeolocationLookupRequest,
-        options: Option<RequestOptions>,
-    ) -> Result<Vec<BulkGeolocationLookupV2ResponseItem>, ApiError> {
-        self.http_client
-            .execute_request(
-                Method::POST,
-                "v2.0/geolocation/lookup",
-                Some(serde_json::to_value(request).map_err(ApiError::Serialization)?),
-                QueryBuilder::new()
-                    .string("apiKey", request.api_key.clone())
-                    .serialize("format", request.format.clone())
-                    .string("lang", request.lang.clone())
-                    .string("fields", request.fields.clone())
-                    .string("excludes", request.excludes.clone())
-                    .string("include", request.include.clone())
-                    .build(),
-                options,
-            )
-            .await
-    }
-
-    /// `v2.0` — Get the timezone information for a location specified by IP, coordinates, address, or airport/UN-LOCODE codes.
-    ///
-    /// This is the `/v2.0/geolocation/timezone` version of [`Self::timezone_lookup`]. The
-    /// legacy `/v1.0` endpoint remains available via [`Self::timezone_lookup`].
-    ///
-    /// # Arguments
-    ///
-    /// * `request` - Query parameters for the timezone lookup.
-    /// * `options` - Additional request options such as headers, timeout, etc.
-    ///
-    /// # Returns
-    ///
-    /// JSON response from the API
-    pub async fn timezone_lookup_v2(
-        &self,
-        request: &TimezoneLookupQueryRequest,
-        options: Option<RequestOptions>,
-    ) -> Result<TimezoneLookupV2Response, ApiError> {
-        self.http_client
-            .execute_request(
-                Method::GET,
-                "v2.0/geolocation/timezone",
-                None,
-                QueryBuilder::new()
-                    .string("apiKey", request.api_key.clone())
-                    .serialize("format", request.format.clone())
-                    .string("ip", request.ip.clone())
-                    .string("tz", request.tz.clone())
-                    .string("location", request.location.clone())
-                    .float("lat", request.lat.clone())
-                    .float("long", request.long.clone())
-                    .serialize("lang", request.lang.clone())
-                    .string("iata_code", request.iata_code.clone())
-                    .string("icao_code", request.icao_code.clone())
-                    .string("lo_code", request.lo_code.clone())
-                    .build(),
-                options,
-            )
-            .await
-    }
-
-    /// `v2.0` — Get astronomy data (sun and moon positions, rise/set times, twilight, etc.) for a location.
-    ///
-    /// This is the `/v2.0/geolocation/astronomy` version of [`Self::astronomy_lookup`]. The
-    /// legacy `/v1.0` endpoint remains available via [`Self::astronomy_lookup`].
-    ///
-    /// # Arguments
-    ///
-    /// * `request` - Query parameters for the astronomy lookup.
-    /// * `options` - Additional request options such as headers, timeout, etc.
-    ///
-    /// # Returns
-    ///
-    /// JSON response from the API
-    pub async fn astronomy_lookup_v2(
-        &self,
-        request: &AstronomyLookupQueryRequest,
-        options: Option<RequestOptions>,
-    ) -> Result<AstronomyLookupV2Response, ApiError> {
-        self.http_client
-            .execute_request(
-                Method::GET,
-                "v2.0/geolocation/astronomy",
-                None,
-                QueryBuilder::new()
-                    .string("apiKey", request.api_key.clone())
-                    .serialize("format", request.format.clone())
-                    .string("location", request.location.clone())
-                    .float("lat", request.lat.clone())
-                    .float("long", request.long.clone())
-                    .string("ip", request.ip.clone())
-                    .string("lang", request.lang.clone())
-                    .date("date", request.date.clone())
-                    .float("elevation", request.elevation.clone())
-                    .string("time_zone", request.time_zone.clone())
-                    .build(),
-                options,
-            )
-            .await
-    }
-
-    /// `v2.0` — Get WHOIS registration details for a domain via live lookup.
-    ///
-    /// This is the `/v2.0/domain/whois/live` version of [`Self::domain_whois_lookup`]. The
-    /// legacy `/v1.0` endpoint remains available via [`Self::domain_whois_lookup`].
-    ///
-    /// # Arguments
-    ///
-    /// * `request` - Query parameters for the WHOIS lookup.
-    /// * `options` - Additional request options such as headers, timeout, etc.
-    ///
-    /// # Returns
-    ///
-    /// JSON response from the API
-    pub async fn domain_whois_lookup_v2(
-        &self,
-        request: &DomainWhoisLookupQueryRequest,
-        options: Option<RequestOptions>,
-    ) -> Result<DomainWhoisLookupV2Response, ApiError> {
-        self.http_client
-            .execute_request(
-                Method::GET,
-                "v2.0/domain/whois/live",
-                None,
-                QueryBuilder::new()
-                    .string("apiKey", request.api_key.clone())
-                    .serialize("format", request.format.clone())
-                    .string("domainName", request.domain_name.clone())
-                    .build(),
-                options,
-            )
-            .await
-    }
-
-    /// `v2.0` — Retrieve WHOIS information for `100 Domains per Request`.
-    ///
-    /// This is the `/v2.0/domain/whois/live` version of [`Self::bulk_domain_whois_lookup`]. The
-    /// legacy `/v1.0` endpoint remains available via [`Self::bulk_domain_whois_lookup`].
-    ///
-    /// # Arguments
-    ///
-    /// * `request` - The bulk WHOIS request body and query parameters.
-    /// * `options` - Additional request options such as headers, timeout, etc.
-    ///
-    /// # Returns
-    ///
-    /// JSON response from the API
-    pub async fn bulk_domain_whois_lookup_v2(
-        &self,
-        request: &BulkDomainWhoisLookupRequest,
-        options: Option<RequestOptions>,
-    ) -> Result<BulkDomainWhoisLookupV2Response, ApiError> {
-        self.http_client
-            .execute_request(
-                Method::POST,
-                "v2.0/domain/whois/live",
-                Some(serde_json::to_value(request).map_err(ApiError::Serialization)?),
-                QueryBuilder::new()
-                    .string("apiKey", request.api_key.clone())
-                    .serialize("format", request.format.clone())
                     .build(),
                 options,
             )

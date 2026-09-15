@@ -19,7 +19,8 @@ pub struct CurrencyConvertHistoricalQueryRequest {
     /// The Amount to be converted
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default)]
-    pub amount: Option<String>,
+    #[serde(with = "crate::core::number_serializers::option")]
+    pub amount: Option<f64>,
     /// specific date (format YYYY-MM-DD) of which exchange rates is used.
     #[serde(default)]
     pub date: NaiveDate,
@@ -38,7 +39,7 @@ pub struct CurrencyConvertHistoricalQueryRequestBuilder {
     format: Option<CurrencyConvertHistoricalRequestFormat>,
     from: Option<String>,
     to: Option<String>,
-    amount: Option<String>,
+    amount: Option<f64>,
     date: Option<NaiveDate>,
 }
 
@@ -63,8 +64,8 @@ impl CurrencyConvertHistoricalQueryRequestBuilder {
         self
     }
 
-    pub fn amount(mut self, value: impl Into<String>) -> Self {
-        self.amount = Some(value.into());
+    pub fn amount(mut self, value: f64) -> Self {
+        self.amount = Some(value);
         self
     }
 

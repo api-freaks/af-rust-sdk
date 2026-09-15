@@ -2,8 +2,8 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub struct PdfUploadResourcesRequest {
-    #[serde(default)]
-    pub file: Vec<Vec<u8>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub file: Option<Vec<Vec<u8>>>,
     #[serde(rename = "apiKey")]
     #[serde(skip_serializing)]
     #[serde(default)]
@@ -15,14 +15,16 @@ impl PdfUploadResourcesRequest {
     pub fn to_multipart(self) -> reqwest::multipart::Form {
         let mut form = reqwest::multipart::Form::new();
 
-        for file_data in &self.file {
-            form = form.part(
-                "file",
-                reqwest::multipart::Part::bytes(file_data.clone())
-                    .file_name("file")
-                    .mime_str("application/octet-stream")
-                    .unwrap(),
-            );
+        if let Some(ref files) = self.file {
+            for file_data in files {
+                form = form.part(
+                    "file",
+                    reqwest::multipart::Part::bytes(file_data.clone())
+                        .file_name("file")
+                        .mime_str("application/octet-stream")
+                        .unwrap(),
+                );
+            }
         }
 
         form
@@ -61,11 +63,10 @@ impl PdfUploadResourcesRequestBuilder {
 
     /// Consumes the builder and constructs a [`PdfUploadResourcesRequest`].
     /// This method will fail if any of the following fields are not set:
-    /// - [`file`](PdfUploadResourcesRequestBuilder::file)
     /// - [`api_key`](PdfUploadResourcesRequestBuilder::api_key)
     pub fn build(self) -> Result<PdfUploadResourcesRequest, BuildError> {
         Ok(PdfUploadResourcesRequest {
-            file: self.file.ok_or_else(|| BuildError::missing_field("file"))?,
+            file: self.file,
             api_key: self
                 .api_key
                 .ok_or_else(|| BuildError::missing_field("api_key"))?,

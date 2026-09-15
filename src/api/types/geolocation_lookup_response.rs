@@ -19,7 +19,7 @@ pub struct GeolocationLookupResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub security: Option<GeolocationLookupResponseSecurity>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub abuse: Option<GeolocationLookupResponseAbuseItem>,
+    pub abuse: Option<Vec<GeolocationLookupResponseAbuseItem>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub time_zone: Option<GeolocationLookupResponseTimeZone>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -42,7 +42,7 @@ pub struct GeolocationLookupResponseBuilder {
     network: Option<GeolocationLookupResponseNetwork>,
     currency: Option<GeolocationLookupResponseCurrency>,
     security: Option<GeolocationLookupResponseSecurity>,
-    abuse: Option<GeolocationLookupResponseAbuseItem>,
+    abuse: Option<Vec<GeolocationLookupResponseAbuseItem>>,
     time_zone: Option<GeolocationLookupResponseTimeZone>,
     user_agent: Option<GeolocationLookupResponseUserAgent>,
 }
@@ -83,7 +83,7 @@ impl GeolocationLookupResponseBuilder {
         self
     }
 
-    pub fn abuse(mut self, value: GeolocationLookupResponseAbuseItem) -> Self {
+    pub fn abuse(mut self, value: Vec<GeolocationLookupResponseAbuseItem>) -> Self {
         self.abuse = Some(value);
         self
     }

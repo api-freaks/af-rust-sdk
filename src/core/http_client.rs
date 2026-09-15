@@ -457,20 +457,6 @@ impl HttpClient {
     ) -> Result<(), ApiError> {
         let headers = request.headers_mut();
 
-        // Apply API key (request options override config)
-        let api_key = options
-            .as_ref()
-            .and_then(|opts| opts.api_key.as_ref())
-            .or(self.config.api_key.as_ref());
-
-        if let Some(key) = api_key {
-            let header_value = key.to_string();
-            headers.insert(
-                "api_key",
-                header_value.parse().map_err(|_| ApiError::InvalidHeader)?,
-            );
-        }
-
         // Apply bearer token - priority: request options > OAuth > config
         let token = if let Some(opts) = options.as_ref() {
             if opts.token.is_some() {

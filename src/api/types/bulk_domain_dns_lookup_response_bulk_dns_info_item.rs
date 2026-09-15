@@ -12,16 +12,12 @@ pub struct BulkDomainDnsLookupResponseBulkDnsInfoItem {
     pub query_time: DateTime<FixedOffset>,
     /// Queried domain.
     #[serde(rename = "domainName")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub domain_name: Option<String>,
+    #[serde(default)]
+    pub domain_name: String,
     /// Indicates whether the domain is registered.
     #[serde(rename = "domainRegistered")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub domain_registered: Option<bool>,
-    /// Queried IP address (for reverse/PTR lookups).
-    #[serde(rename = "ipAddress")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<String>,
+    #[serde(default)]
+    pub domain_registered: bool,
     #[serde(rename = "dnsTypes")]
     #[serde(default)]
     pub dns_types: BulkDomainDnsLookupResponseBulkDnsInfoItemDnsTypes,
@@ -44,7 +40,6 @@ pub struct BulkDomainDnsLookupResponseBulkDnsInfoItemBuilder {
     query_time: Option<DateTime<FixedOffset>>,
     domain_name: Option<String>,
     domain_registered: Option<bool>,
-    ip_address: Option<String>,
     dns_types: Option<BulkDomainDnsLookupResponseBulkDnsInfoItemDnsTypes>,
     dns_records: Option<Vec<BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItem>>,
 }
@@ -70,11 +65,6 @@ impl BulkDomainDnsLookupResponseBulkDnsInfoItemBuilder {
         self
     }
 
-    pub fn ip_address(mut self, value: impl Into<String>) -> Self {
-        self.ip_address = Some(value.into());
-        self
-    }
-
     pub fn dns_types(mut self, value: BulkDomainDnsLookupResponseBulkDnsInfoItemDnsTypes) -> Self {
         self.dns_types = Some(value);
         self
@@ -92,6 +82,8 @@ impl BulkDomainDnsLookupResponseBulkDnsInfoItemBuilder {
     /// This method will fail if any of the following fields are not set:
     /// - [`status`](BulkDomainDnsLookupResponseBulkDnsInfoItemBuilder::status)
     /// - [`query_time`](BulkDomainDnsLookupResponseBulkDnsInfoItemBuilder::query_time)
+    /// - [`domain_name`](BulkDomainDnsLookupResponseBulkDnsInfoItemBuilder::domain_name)
+    /// - [`domain_registered`](BulkDomainDnsLookupResponseBulkDnsInfoItemBuilder::domain_registered)
     /// - [`dns_types`](BulkDomainDnsLookupResponseBulkDnsInfoItemBuilder::dns_types)
     /// - [`dns_records`](BulkDomainDnsLookupResponseBulkDnsInfoItemBuilder::dns_records)
     pub fn build(self) -> Result<BulkDomainDnsLookupResponseBulkDnsInfoItem, BuildError> {
@@ -102,9 +94,12 @@ impl BulkDomainDnsLookupResponseBulkDnsInfoItemBuilder {
             query_time: self
                 .query_time
                 .ok_or_else(|| BuildError::missing_field("query_time"))?,
-            domain_name: self.domain_name,
-            domain_registered: self.domain_registered,
-            ip_address: self.ip_address,
+            domain_name: self
+                .domain_name
+                .ok_or_else(|| BuildError::missing_field("domain_name"))?,
+            domain_registered: self
+                .domain_registered
+                .ok_or_else(|| BuildError::missing_field("domain_registered"))?,
             dns_types: self
                 .dns_types
                 .ok_or_else(|| BuildError::missing_field("dns_types"))?,

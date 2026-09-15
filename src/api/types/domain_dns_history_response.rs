@@ -3,17 +3,17 @@ pub use crate::prelude::*;
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct DomainDnsHistoryResponse {
     #[serde(rename = "totalRecords")]
-    #[serde(default)]
-    pub total_records: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_records: Option<i64>,
     #[serde(rename = "totalPages")]
-    #[serde(default)]
-    pub total_pages: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_pages: Option<i64>,
     #[serde(rename = "currentPage")]
-    #[serde(default)]
-    pub current_page: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub current_page: Option<i64>,
     #[serde(rename = "historicalDnsRecords")]
-    #[serde(default)]
-    pub historical_dns_records: Vec<DomainDnsHistoryResponseHistoricalDnsRecordsItem>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub historical_dns_records: Option<Vec<DomainDnsHistoryResponseHistoricalDnsRecordsItem>>,
 }
 
 impl DomainDnsHistoryResponse {
@@ -56,25 +56,12 @@ impl DomainDnsHistoryResponseBuilder {
     }
 
     /// Consumes the builder and constructs a [`DomainDnsHistoryResponse`].
-    /// This method will fail if any of the following fields are not set:
-    /// - [`total_records`](DomainDnsHistoryResponseBuilder::total_records)
-    /// - [`total_pages`](DomainDnsHistoryResponseBuilder::total_pages)
-    /// - [`current_page`](DomainDnsHistoryResponseBuilder::current_page)
-    /// - [`historical_dns_records`](DomainDnsHistoryResponseBuilder::historical_dns_records)
     pub fn build(self) -> Result<DomainDnsHistoryResponse, BuildError> {
         Ok(DomainDnsHistoryResponse {
-            total_records: self
-                .total_records
-                .ok_or_else(|| BuildError::missing_field("total_records"))?,
-            total_pages: self
-                .total_pages
-                .ok_or_else(|| BuildError::missing_field("total_pages"))?,
-            current_page: self
-                .current_page
-                .ok_or_else(|| BuildError::missing_field("current_page"))?,
-            historical_dns_records: self
-                .historical_dns_records
-                .ok_or_else(|| BuildError::missing_field("historical_dns_records"))?,
+            total_records: self.total_records,
+            total_pages: self.total_pages,
+            current_page: self.current_page,
+            historical_dns_records: self.historical_dns_records,
         })
     }
 }
