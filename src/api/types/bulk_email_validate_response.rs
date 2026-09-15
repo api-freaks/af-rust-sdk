@@ -3,10 +3,9 @@ pub use crate::prelude::*;
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct BulkEmailValidateResponse {
     /// Array of SingleEmailValidationResponse objects for bulk validation
-    #[serde(rename = "emailValidationResponses")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email_validation_responses:
-        Option<Vec<BulkEmailValidateResponseEmailValidationResponsesItem>>,
+    #[serde(rename = "emailResponse")]
+    #[serde(default)]
+    pub email_response: Vec<BulkEmailValidateResponseEmailResponseItem>,
 }
 
 impl BulkEmailValidateResponse {
@@ -18,22 +17,26 @@ impl BulkEmailValidateResponse {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct BulkEmailValidateResponseBuilder {
-    email_validation_responses: Option<Vec<BulkEmailValidateResponseEmailValidationResponsesItem>>,
+    email_response: Option<Vec<BulkEmailValidateResponseEmailResponseItem>>,
 }
 
 impl BulkEmailValidateResponseBuilder {
-    pub fn email_validation_responses(
+    pub fn email_response(
         mut self,
-        value: Vec<BulkEmailValidateResponseEmailValidationResponsesItem>,
+        value: Vec<BulkEmailValidateResponseEmailResponseItem>,
     ) -> Self {
-        self.email_validation_responses = Some(value);
+        self.email_response = Some(value);
         self
     }
 
     /// Consumes the builder and constructs a [`BulkEmailValidateResponse`].
+    /// This method will fail if any of the following fields are not set:
+    /// - [`email_response`](BulkEmailValidateResponseBuilder::email_response)
     pub fn build(self) -> Result<BulkEmailValidateResponse, BuildError> {
         Ok(BulkEmailValidateResponse {
-            email_validation_responses: self.email_validation_responses,
+            email_response: self
+                .email_response
+                .ok_or_else(|| BuildError::missing_field("email_response"))?,
         })
     }
 }

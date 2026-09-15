@@ -19,13 +19,13 @@ pub struct DomainWhoisHistoryResponseWhoisDomainsHistoricalItemAdministrativeCon
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country_code: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub email_address: Option<String>,
+    pub emailaddress: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fax: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mailing_address: Option<String>,
+    pub mailingaddress: Option<String>,
 }
 
 impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemAdministrativeContact {
@@ -46,10 +46,10 @@ pub struct DomainWhoisHistoryResponseWhoisDomainsHistoricalItemAdministrativeCon
     zip_code: Option<String>,
     country_name: Option<String>,
     country_code: Option<String>,
-    email_address: Option<String>,
+    emailaddress: Option<String>,
     phone: Option<String>,
     fax: Option<String>,
-    mailing_address: Option<String>,
+    mailingaddress: Option<String>,
 }
 
 impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemAdministrativeContactBuilder {
@@ -93,8 +93,8 @@ impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemAdministrativeContactBu
         self
     }
 
-    pub fn email_address(mut self, value: impl Into<String>) -> Self {
-        self.email_address = Some(value.into());
+    pub fn emailaddress(mut self, value: impl Into<String>) -> Self {
+        self.emailaddress = Some(value.into());
         self
     }
 
@@ -108,8 +108,8 @@ impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemAdministrativeContactBu
         self
     }
 
-    pub fn mailing_address(mut self, value: impl Into<String>) -> Self {
-        self.mailing_address = Some(value.into());
+    pub fn mailingaddress(mut self, value: impl Into<String>) -> Self {
+        self.mailingaddress = Some(value.into());
         self
     }
 
@@ -128,10 +128,10 @@ impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemAdministrativeContactBu
                 zip_code: self.zip_code,
                 country_name: self.country_name,
                 country_code: self.country_code,
-                email_address: self.email_address,
+                emailaddress: self.emailaddress,
                 phone: self.phone,
                 fax: self.fax,
-                mailing_address: self.mailing_address,
+                mailingaddress: self.mailingaddress,
             },
         )
     }

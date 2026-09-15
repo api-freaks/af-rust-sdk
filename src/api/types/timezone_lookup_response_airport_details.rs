@@ -2,36 +2,31 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct TimezoneLookupResponseAirportDetails {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub r#type: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers::option")]
-    pub longitude: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    pub r#type: String,
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers::option")]
-    pub latitude: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: String,
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers::option")]
-    pub elevation_ft: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub continent_code: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country_code: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state_code: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub iata_code: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub icao_code: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub faa_code: Option<String>,
+    pub longitude: String,
+    #[serde(default)]
+    pub latitude: String,
+    #[serde(default)]
+    #[serde(with = "crate::core::number_serializers")]
+    pub elevation_ft: f64,
+    #[serde(default)]
+    pub continent_code: String,
+    #[serde(default)]
+    pub country_code: String,
+    #[serde(default)]
+    pub state_code: String,
+    #[serde(default)]
+    pub city: String,
+    #[serde(default)]
+    pub iata_code: String,
+    #[serde(default)]
+    pub icao_code: String,
+    #[serde(default)]
+    pub faa_code: String,
 }
 
 impl TimezoneLookupResponseAirportDetails {
@@ -45,8 +40,8 @@ impl TimezoneLookupResponseAirportDetails {
 pub struct TimezoneLookupResponseAirportDetailsBuilder {
     r#type: Option<String>,
     name: Option<String>,
-    longitude: Option<f64>,
-    latitude: Option<f64>,
+    longitude: Option<String>,
+    latitude: Option<String>,
     elevation_ft: Option<f64>,
     continent_code: Option<String>,
     country_code: Option<String>,
@@ -68,13 +63,13 @@ impl TimezoneLookupResponseAirportDetailsBuilder {
         self
     }
 
-    pub fn longitude(mut self, value: f64) -> Self {
-        self.longitude = Some(value);
+    pub fn longitude(mut self, value: impl Into<String>) -> Self {
+        self.longitude = Some(value.into());
         self
     }
 
-    pub fn latitude(mut self, value: f64) -> Self {
-        self.latitude = Some(value);
+    pub fn latitude(mut self, value: impl Into<String>) -> Self {
+        self.latitude = Some(value.into());
         self
     }
 
@@ -119,20 +114,53 @@ impl TimezoneLookupResponseAirportDetailsBuilder {
     }
 
     /// Consumes the builder and constructs a [`TimezoneLookupResponseAirportDetails`].
+    /// This method will fail if any of the following fields are not set:
+    /// - [`r#type`](TimezoneLookupResponseAirportDetailsBuilder::r#type)
+    /// - [`name`](TimezoneLookupResponseAirportDetailsBuilder::name)
+    /// - [`longitude`](TimezoneLookupResponseAirportDetailsBuilder::longitude)
+    /// - [`latitude`](TimezoneLookupResponseAirportDetailsBuilder::latitude)
+    /// - [`elevation_ft`](TimezoneLookupResponseAirportDetailsBuilder::elevation_ft)
+    /// - [`continent_code`](TimezoneLookupResponseAirportDetailsBuilder::continent_code)
+    /// - [`country_code`](TimezoneLookupResponseAirportDetailsBuilder::country_code)
+    /// - [`state_code`](TimezoneLookupResponseAirportDetailsBuilder::state_code)
+    /// - [`city`](TimezoneLookupResponseAirportDetailsBuilder::city)
+    /// - [`iata_code`](TimezoneLookupResponseAirportDetailsBuilder::iata_code)
+    /// - [`icao_code`](TimezoneLookupResponseAirportDetailsBuilder::icao_code)
+    /// - [`faa_code`](TimezoneLookupResponseAirportDetailsBuilder::faa_code)
     pub fn build(self) -> Result<TimezoneLookupResponseAirportDetails, BuildError> {
         Ok(TimezoneLookupResponseAirportDetails {
-            r#type: self.r#type,
-            name: self.name,
-            longitude: self.longitude,
-            latitude: self.latitude,
-            elevation_ft: self.elevation_ft,
-            continent_code: self.continent_code,
-            country_code: self.country_code,
-            state_code: self.state_code,
-            city: self.city,
-            iata_code: self.iata_code,
-            icao_code: self.icao_code,
-            faa_code: self.faa_code,
+            r#type: self
+                .r#type
+                .ok_or_else(|| BuildError::missing_field("r#type"))?,
+            name: self.name.ok_or_else(|| BuildError::missing_field("name"))?,
+            longitude: self
+                .longitude
+                .ok_or_else(|| BuildError::missing_field("longitude"))?,
+            latitude: self
+                .latitude
+                .ok_or_else(|| BuildError::missing_field("latitude"))?,
+            elevation_ft: self
+                .elevation_ft
+                .ok_or_else(|| BuildError::missing_field("elevation_ft"))?,
+            continent_code: self
+                .continent_code
+                .ok_or_else(|| BuildError::missing_field("continent_code"))?,
+            country_code: self
+                .country_code
+                .ok_or_else(|| BuildError::missing_field("country_code"))?,
+            state_code: self
+                .state_code
+                .ok_or_else(|| BuildError::missing_field("state_code"))?,
+            city: self.city.ok_or_else(|| BuildError::missing_field("city"))?,
+            iata_code: self
+                .iata_code
+                .ok_or_else(|| BuildError::missing_field("iata_code"))?,
+            icao_code: self
+                .icao_code
+                .ok_or_else(|| BuildError::missing_field("icao_code"))?,
+            faa_code: self
+                .faa_code
+                .ok_or_else(|| BuildError::missing_field("faa_code"))?,
         })
     }
 }

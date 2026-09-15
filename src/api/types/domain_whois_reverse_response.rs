@@ -2,13 +2,13 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct DomainWhoisReverseResponse {
-    #[serde(rename = "total_Result")]
+    #[serde(rename = "totalResult")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_result: Option<i64>,
-    #[serde(rename = "total_Pages")]
+    #[serde(rename = "totalPages")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_pages: Option<i64>,
-    #[serde(rename = "current_Page")]
+    #[serde(rename = "currentPage")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub current_page: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]

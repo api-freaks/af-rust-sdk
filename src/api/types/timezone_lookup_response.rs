@@ -6,11 +6,10 @@ pub struct TimezoneLookupResponse {
     pub ip: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub location: Option<TimezoneLookupResponseLocation>,
+    #[serde(default)]
+    pub time_zone: TimezoneLookupResponseTimeZone,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub time_zone: Option<TimezoneLookupResponseTimeZone>,
-    #[serde(rename = "airport_detail")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub airport_detail: Option<TimezoneLookupResponseAirportDetails>,
+    pub airport_details: Option<TimezoneLookupResponseAirportDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lo_code_details: Option<TimezoneLookupResponseLoCodeDetails>,
 }
@@ -27,7 +26,7 @@ pub struct TimezoneLookupResponseBuilder {
     ip: Option<String>,
     location: Option<TimezoneLookupResponseLocation>,
     time_zone: Option<TimezoneLookupResponseTimeZone>,
-    airport_detail: Option<TimezoneLookupResponseAirportDetails>,
+    airport_details: Option<TimezoneLookupResponseAirportDetails>,
     lo_code_details: Option<TimezoneLookupResponseLoCodeDetails>,
 }
 
@@ -47,8 +46,8 @@ impl TimezoneLookupResponseBuilder {
         self
     }
 
-    pub fn airport_detail(mut self, value: TimezoneLookupResponseAirportDetails) -> Self {
-        self.airport_detail = Some(value);
+    pub fn airport_details(mut self, value: TimezoneLookupResponseAirportDetails) -> Self {
+        self.airport_details = Some(value);
         self
     }
 
@@ -58,12 +57,16 @@ impl TimezoneLookupResponseBuilder {
     }
 
     /// Consumes the builder and constructs a [`TimezoneLookupResponse`].
+    /// This method will fail if any of the following fields are not set:
+    /// - [`time_zone`](TimezoneLookupResponseBuilder::time_zone)
     pub fn build(self) -> Result<TimezoneLookupResponse, BuildError> {
         Ok(TimezoneLookupResponse {
             ip: self.ip,
             location: self.location,
-            time_zone: self.time_zone,
-            airport_detail: self.airport_detail,
+            time_zone: self
+                .time_zone
+                .ok_or_else(|| BuildError::missing_field("time_zone"))?,
+            airport_details: self.airport_details,
             lo_code_details: self.lo_code_details,
         })
     }

@@ -19,9 +19,6 @@ pub struct DomainAvailabilitySuggestionsQueryRequest {
     /// Number of suggestions to retrieve.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
-    /// Whether to include domain name suggestions in the response.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sug: Option<bool>,
 }
 
 impl DomainAvailabilitySuggestionsQueryRequest {
@@ -38,7 +35,6 @@ pub struct DomainAvailabilitySuggestionsQueryRequestBuilder {
     domain: Option<String>,
     source: Option<DomainAvailabilitySuggestionsRequestSource>,
     count: Option<i64>,
-    sug: Option<bool>,
 }
 
 impl DomainAvailabilitySuggestionsQueryRequestBuilder {
@@ -67,11 +63,6 @@ impl DomainAvailabilitySuggestionsQueryRequestBuilder {
         self
     }
 
-    pub fn sug(mut self, value: bool) -> Self {
-        self.sug = Some(value);
-        self
-    }
-
     /// Consumes the builder and constructs a [`DomainAvailabilitySuggestionsQueryRequest`].
     /// This method will fail if any of the following fields are not set:
     /// - [`api_key`](DomainAvailabilitySuggestionsQueryRequestBuilder::api_key)
@@ -87,7 +78,6 @@ impl DomainAvailabilitySuggestionsQueryRequestBuilder {
                 .ok_or_else(|| BuildError::missing_field("domain"))?,
             source: self.source,
             count: self.count,
-            sug: self.sug,
         })
     }
 }

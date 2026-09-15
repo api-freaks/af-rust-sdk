@@ -8,10 +8,9 @@ pub struct GetAdminUnitDetailsResponse {
     pub admin_code: String,
     #[serde(default)]
     pub admin_level: String,
+    #[serde(rename = "iso_alpha_2")]
     #[serde(default)]
-    pub admin_iso3166_2: String,
-    #[serde(default)]
-    pub country_iso3166_2: String,
+    pub iso_alpha2: String,
     #[serde(default)]
     pub country_name: String,
 }
@@ -28,8 +27,7 @@ pub struct GetAdminUnitDetailsResponseBuilder {
     name: Option<String>,
     admin_code: Option<String>,
     admin_level: Option<String>,
-    admin_iso3166_2: Option<String>,
-    country_iso3166_2: Option<String>,
+    iso_alpha2: Option<String>,
     country_name: Option<String>,
 }
 
@@ -49,13 +47,8 @@ impl GetAdminUnitDetailsResponseBuilder {
         self
     }
 
-    pub fn admin_iso3166_2(mut self, value: impl Into<String>) -> Self {
-        self.admin_iso3166_2 = Some(value.into());
-        self
-    }
-
-    pub fn country_iso3166_2(mut self, value: impl Into<String>) -> Self {
-        self.country_iso3166_2 = Some(value.into());
+    pub fn iso_alpha2(mut self, value: impl Into<String>) -> Self {
+        self.iso_alpha2 = Some(value.into());
         self
     }
 
@@ -69,8 +62,7 @@ impl GetAdminUnitDetailsResponseBuilder {
     /// - [`name`](GetAdminUnitDetailsResponseBuilder::name)
     /// - [`admin_code`](GetAdminUnitDetailsResponseBuilder::admin_code)
     /// - [`admin_level`](GetAdminUnitDetailsResponseBuilder::admin_level)
-    /// - [`admin_iso3166_2`](GetAdminUnitDetailsResponseBuilder::admin_iso3166_2)
-    /// - [`country_iso3166_2`](GetAdminUnitDetailsResponseBuilder::country_iso3166_2)
+    /// - [`iso_alpha2`](GetAdminUnitDetailsResponseBuilder::iso_alpha2)
     /// - [`country_name`](GetAdminUnitDetailsResponseBuilder::country_name)
     pub fn build(self) -> Result<GetAdminUnitDetailsResponse, BuildError> {
         Ok(GetAdminUnitDetailsResponse {
@@ -81,12 +73,9 @@ impl GetAdminUnitDetailsResponseBuilder {
             admin_level: self
                 .admin_level
                 .ok_or_else(|| BuildError::missing_field("admin_level"))?,
-            admin_iso3166_2: self
-                .admin_iso3166_2
-                .ok_or_else(|| BuildError::missing_field("admin_iso3166_2"))?,
-            country_iso3166_2: self
-                .country_iso3166_2
-                .ok_or_else(|| BuildError::missing_field("country_iso3166_2"))?,
+            iso_alpha2: self
+                .iso_alpha2
+                .ok_or_else(|| BuildError::missing_field("iso_alpha2"))?,
             country_name: self
                 .country_name
                 .ok_or_else(|| BuildError::missing_field("country_name"))?,

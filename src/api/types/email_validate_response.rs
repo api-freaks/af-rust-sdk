@@ -21,9 +21,8 @@ pub struct EmailValidateResponse {
     pub account: EmailValidateResponseAccount,
     #[serde(default)]
     pub dns: EmailValidateResponseDns,
-    #[serde(rename = "ipAddress")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<String>,
+    pub ip: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<EmailValidateResponseAddress>,
 }
@@ -46,7 +45,7 @@ pub struct EmailValidateResponseBuilder {
     domain: Option<EmailValidateResponseDomain>,
     account: Option<EmailValidateResponseAccount>,
     dns: Option<EmailValidateResponseDns>,
-    ip_address: Option<String>,
+    ip: Option<String>,
     address: Option<EmailValidateResponseAddress>,
 }
 
@@ -96,8 +95,8 @@ impl EmailValidateResponseBuilder {
         self
     }
 
-    pub fn ip_address(mut self, value: impl Into<String>) -> Self {
-        self.ip_address = Some(value.into());
+    pub fn ip(mut self, value: impl Into<String>) -> Self {
+        self.ip = Some(value.into());
         self
     }
 
@@ -138,7 +137,7 @@ impl EmailValidateResponseBuilder {
                 .account
                 .ok_or_else(|| BuildError::missing_field("account"))?,
             dns: self.dns.ok_or_else(|| BuildError::missing_field("dns"))?,
-            ip_address: self.ip_address,
+            ip: self.ip,
             address: self.address,
         })
     }

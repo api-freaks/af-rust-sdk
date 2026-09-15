@@ -5,7 +5,7 @@
 //! ## Getting Started
 //!
 //! ```rust
-//! use apifreaks::prelude::*;
+//! use apifreaks_api::prelude::*;
 //!
 //! #[tokio::main]
 //! async fn main() {

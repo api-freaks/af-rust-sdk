@@ -16,9 +16,8 @@ pub struct DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyname {
     pub name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
-    #[serde(rename = "company_name")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_name: Option<String>,
+    pub companyname: Option<String>,
 }
 
 impl DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyname {
@@ -38,7 +37,7 @@ pub struct DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanynameBuilde
     expiry_date: Option<NaiveDate>,
     name: Option<String>,
     email: Option<String>,
-    company_name: Option<String>,
+    companyname: Option<String>,
 }
 
 impl DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanynameBuilder {
@@ -77,8 +76,8 @@ impl DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanynameBuilder {
         self
     }
 
-    pub fn company_name(mut self, value: impl Into<String>) -> Self {
-        self.company_name = Some(value.into());
+    pub fn companyname(mut self, value: impl Into<String>) -> Self {
+        self.companyname = Some(value.into());
         self
     }
 
@@ -100,7 +99,7 @@ impl DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanynameBuilder {
                 expiry_date: self.expiry_date,
                 name: self.name,
                 email: self.email,
-                company_name: self.company_name,
+                companyname: self.companyname,
             },
         )
     }
