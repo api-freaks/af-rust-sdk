@@ -3,11 +3,9 @@ pub use crate::prelude::*;
 /// Daily flood forecast data for the date.
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct FloodForecastResponseForecastValueDaily {
-    /// ISO 8601 formatted timestamp
+    /// Local timestamp of this reading (format YYYY-MM-DDTHH:mm, not ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset::option")]
-    pub timestamp: Option<DateTime<FixedOffset>>,
+    pub timestamp: Option<String>,
     /// The observed river discharge value (m³/s)
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default)]
@@ -54,7 +52,7 @@ impl FloodForecastResponseForecastValueDaily {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct FloodForecastResponseForecastValueDailyBuilder {
-    timestamp: Option<DateTime<FixedOffset>>,
+    timestamp: Option<String>,
     river_discharge: Option<f64>,
     river_discharge_mean: Option<f64>,
     river_discharge_median: Option<f64>,
@@ -65,8 +63,8 @@ pub struct FloodForecastResponseForecastValueDailyBuilder {
 }
 
 impl FloodForecastResponseForecastValueDailyBuilder {
-    pub fn timestamp(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.timestamp = Some(value);
+    pub fn timestamp(mut self, value: impl Into<String>) -> Self {
+        self.timestamp = Some(value.into());
         self
     }
 

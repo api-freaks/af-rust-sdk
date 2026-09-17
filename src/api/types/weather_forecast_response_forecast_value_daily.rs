@@ -3,11 +3,9 @@ pub use crate::prelude::*;
 /// Daily forecast data
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct WeatherForecastResponseForecastValueDaily {
-    /// ISO 8601 formatted timestamp
+    /// Local timestamp of this reading (format YYYY-MM-DDTHH:mm, not ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset::option")]
-    pub timestamp: Option<DateTime<FixedOffset>>,
+    pub timestamp: Option<String>,
     /// Weather condition code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub weather_code: Option<i64>,
@@ -187,7 +185,7 @@ impl WeatherForecastResponseForecastValueDaily {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct WeatherForecastResponseForecastValueDailyBuilder {
-    timestamp: Option<DateTime<FixedOffset>>,
+    timestamp: Option<String>,
     weather_code: Option<i64>,
     temperature2m_max: Option<f64>,
     temperature2m_min: Option<f64>,
@@ -224,8 +222,8 @@ pub struct WeatherForecastResponseForecastValueDailyBuilder {
 }
 
 impl WeatherForecastResponseForecastValueDailyBuilder {
-    pub fn timestamp(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.timestamp = Some(value);
+    pub fn timestamp(mut self, value: impl Into<String>) -> Self {
+        self.timestamp = Some(value.into());
         self
     }
 

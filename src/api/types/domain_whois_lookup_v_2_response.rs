@@ -13,8 +13,8 @@ pub struct DomainWhoisLookupV2Response {
     #[serde(default)]
     pub query_time: String,
     /// WHOIS or RDAP server that provided this record.
-    #[serde(default)]
-    pub whois_server: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub whois_server: Option<String>,
     /// Domain registration status; 'restricted' means the registry withholds registration details.
     pub domain_registered: DomainWhoisLookupV2ResponseDomainRegistered,
     /// Indicates if DNSSEC or secure DNS is enabled for the domain.
@@ -225,7 +225,6 @@ impl DomainWhoisLookupV2ResponseBuilder {
     /// - [`status`](DomainWhoisLookupV2ResponseBuilder::status)
     /// - [`domain_name`](DomainWhoisLookupV2ResponseBuilder::domain_name)
     /// - [`query_time`](DomainWhoisLookupV2ResponseBuilder::query_time)
-    /// - [`whois_server`](DomainWhoisLookupV2ResponseBuilder::whois_server)
     /// - [`domain_registered`](DomainWhoisLookupV2ResponseBuilder::domain_registered)
     pub fn build(self) -> Result<DomainWhoisLookupV2Response, BuildError> {
         Ok(DomainWhoisLookupV2Response {
@@ -238,9 +237,7 @@ impl DomainWhoisLookupV2ResponseBuilder {
             query_time: self
                 .query_time
                 .ok_or_else(|| BuildError::missing_field("query_time"))?,
-            whois_server: self
-                .whois_server
-                .ok_or_else(|| BuildError::missing_field("whois_server"))?,
+            whois_server: self.whois_server,
             domain_registered: self
                 .domain_registered
                 .ok_or_else(|| BuildError::missing_field("domain_registered"))?,

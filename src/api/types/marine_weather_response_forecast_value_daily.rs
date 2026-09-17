@@ -3,11 +3,9 @@ pub use crate::prelude::*;
 /// Daily marine forecast data
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct MarineWeatherResponseForecastValueDaily {
-    /// ISO 8601 formatted timestamp
+    /// Local timestamp of this reading (format YYYY-MM-DDTHH:mm, not ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset::option")]
-    pub timestamp: Option<DateTime<FixedOffset>>,
+    pub timestamp: Option<String>,
     /// Maximum significant wave height (m)
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default)]
@@ -68,7 +66,7 @@ impl MarineWeatherResponseForecastValueDaily {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct MarineWeatherResponseForecastValueDailyBuilder {
-    timestamp: Option<DateTime<FixedOffset>>,
+    timestamp: Option<String>,
     wave_height_max: Option<f64>,
     wave_direction_dominant: Option<i64>,
     wave_period_max: Option<f64>,
@@ -83,8 +81,8 @@ pub struct MarineWeatherResponseForecastValueDailyBuilder {
 }
 
 impl MarineWeatherResponseForecastValueDailyBuilder {
-    pub fn timestamp(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.timestamp = Some(value);
+    pub fn timestamp(mut self, value: impl Into<String>) -> Self {
+        self.timestamp = Some(value.into());
         self
     }
 

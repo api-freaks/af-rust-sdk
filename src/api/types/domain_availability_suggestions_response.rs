@@ -1,38 +1,81 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
-pub struct DomainAvailabilitySuggestionsResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub domain_available_response:
-        Option<Vec<DomainAvailabilitySuggestionsResponseDomainAvailableResponseItem>>,
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
+#[serde(untagged)]
+pub enum DomainAvailabilitySuggestionsResponse {
+    DomainAvailabilitySuggestionsResponseDomain(DomainAvailabilitySuggestionsResponseDomain),
+
+    DomainAvailabilitySuggestionsResponseDomainAvailableResponse(
+        DomainAvailabilitySuggestionsResponseDomainAvailableResponse,
+    ),
 }
 
 impl DomainAvailabilitySuggestionsResponse {
-    pub fn builder() -> DomainAvailabilitySuggestionsResponseBuilder {
-        <DomainAvailabilitySuggestionsResponseBuilder as Default>::default()
+    pub fn is_domain_availability_suggestions_response_domain(&self) -> bool {
+        matches!(self, Self::DomainAvailabilitySuggestionsResponseDomain(_))
+    }
+
+    pub fn is_domain_availability_suggestions_response_domain_available_response(&self) -> bool {
+        matches!(
+            self,
+            Self::DomainAvailabilitySuggestionsResponseDomainAvailableResponse(_)
+        )
+    }
+
+    pub fn as_domain_availability_suggestions_response_domain(
+        &self,
+    ) -> Option<&DomainAvailabilitySuggestionsResponseDomain> {
+        match self {
+            Self::DomainAvailabilitySuggestionsResponseDomain(value) => Some(value),
+            _ => None,
+        }
+    }
+
+    pub fn into_domain_availability_suggestions_response_domain(
+        self,
+    ) -> Option<DomainAvailabilitySuggestionsResponseDomain> {
+        match self {
+            Self::DomainAvailabilitySuggestionsResponseDomain(value) => Some(value),
+            _ => None,
+        }
+    }
+
+    pub fn as_domain_availability_suggestions_response_domain_available_response(
+        &self,
+    ) -> Option<&DomainAvailabilitySuggestionsResponseDomainAvailableResponse> {
+        match self {
+            Self::DomainAvailabilitySuggestionsResponseDomainAvailableResponse(value) => {
+                Some(value)
+            }
+            _ => None,
+        }
+    }
+
+    pub fn into_domain_availability_suggestions_response_domain_available_response(
+        self,
+    ) -> Option<DomainAvailabilitySuggestionsResponseDomainAvailableResponse> {
+        match self {
+            Self::DomainAvailabilitySuggestionsResponseDomainAvailableResponse(value) => {
+                Some(value)
+            }
+            _ => None,
+        }
     }
 }
 
-#[derive(Clone, PartialEq, Default, Debug)]
-#[non_exhaustive]
-pub struct DomainAvailabilitySuggestionsResponseBuilder {
-    domain_available_response:
-        Option<Vec<DomainAvailabilitySuggestionsResponseDomainAvailableResponseItem>>,
-}
-
-impl DomainAvailabilitySuggestionsResponseBuilder {
-    pub fn domain_available_response(
-        mut self,
-        value: Vec<DomainAvailabilitySuggestionsResponseDomainAvailableResponseItem>,
-    ) -> Self {
-        self.domain_available_response = Some(value);
-        self
-    }
-
-    /// Consumes the builder and constructs a [`DomainAvailabilitySuggestionsResponse`].
-    pub fn build(self) -> Result<DomainAvailabilitySuggestionsResponse, BuildError> {
-        Ok(DomainAvailabilitySuggestionsResponse {
-            domain_available_response: self.domain_available_response,
-        })
+impl fmt::Display for DomainAvailabilitySuggestionsResponse {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::DomainAvailabilitySuggestionsResponseDomain(value) => write!(
+                f,
+                "{}",
+                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
+            ),
+            Self::DomainAvailabilitySuggestionsResponseDomainAvailableResponse(value) => write!(
+                f,
+                "{}",
+                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
+            ),
+        }
     }
 }

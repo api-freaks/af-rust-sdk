@@ -4,10 +4,9 @@ pub use crate::prelude::*;
 pub struct BulkDomainWhoisLookupResponseBulkWhoisResponseItemRegistryData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub domain_name: Option<String>,
+    /// Timestamp when the WHOIS query was executed (format YYYY-MM-DD HH:mm:ss, not ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset::option")]
-    pub query_time: Option<DateTime<FixedOffset>>,
+    pub query_time: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub whois_server: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -41,7 +40,7 @@ impl BulkDomainWhoisLookupResponseBulkWhoisResponseItemRegistryData {
 #[non_exhaustive]
 pub struct BulkDomainWhoisLookupResponseBulkWhoisResponseItemRegistryDataBuilder {
     domain_name: Option<String>,
-    query_time: Option<DateTime<FixedOffset>>,
+    query_time: Option<String>,
     whois_server: Option<String>,
     domain_registered:
         Option<BulkDomainWhoisLookupResponseBulkWhoisResponseItemRegistryDataDomainRegistered>,
@@ -61,8 +60,8 @@ impl BulkDomainWhoisLookupResponseBulkWhoisResponseItemRegistryDataBuilder {
         self
     }
 
-    pub fn query_time(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.query_time = Some(value);
+    pub fn query_time(mut self, value: impl Into<String>) -> Self {
+        self.query_time = Some(value.into());
         self
     }
 

@@ -1,0 +1,12 @@
+{
+  "cliVersion": "5.45.0",
+  "generatorName": "fernapi/fern-rust-sdk",
+  "generatorVersion": "0.40.0",
+  "generatorConfig": {
+    "clientClassName": "ApiFreaks",
+    "environmentEnumName": "ApiFreaksEnvironment"
+  },
+  "originGitCommit": "94b8826f158bc088e72aa08f202e45638c3f22da",
+  "originGitCommitIsDirty": true,
+  "invokedBy": "manual"
+}

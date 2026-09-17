@@ -2,11 +2,9 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct MarineWeatherResponseForecastValueMinutelyItem {
-    /// ISO 8601 formatted timestamp
+    /// Local timestamp of this reading (format YYYY-MM-DDTHH:mm, not ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset::option")]
-    pub timestamp: Option<DateTime<FixedOffset>>,
+    pub timestamp: Option<String>,
     /// Speed of ocean current (km/h)
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default)]
@@ -31,15 +29,15 @@ impl MarineWeatherResponseForecastValueMinutelyItem {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct MarineWeatherResponseForecastValueMinutelyItemBuilder {
-    timestamp: Option<DateTime<FixedOffset>>,
+    timestamp: Option<String>,
     ocean_current_velocity: Option<f64>,
     ocean_current_direction: Option<i64>,
     sea_level_height_msl: Option<f64>,
 }
 
 impl MarineWeatherResponseForecastValueMinutelyItemBuilder {
-    pub fn timestamp(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.timestamp = Some(value);
+    pub fn timestamp(mut self, value: impl Into<String>) -> Self {
+        self.timestamp = Some(value.into());
         self
     }
 

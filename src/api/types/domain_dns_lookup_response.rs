@@ -5,11 +5,10 @@ pub struct DomainDnsLookupResponse {
     /// Indicates whether the query was processed successfully.
     #[serde(default)]
     pub status: bool,
-    /// Time at which the query was made (Format:YYYY-MM-DD HH:mm:ss).
+    /// Timestamp when the query was executed (format YYYY-MM-DD HH:mm:ss, not ISO 8601).
     #[serde(rename = "queryTime")]
     #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset")]
-    pub query_time: DateTime<FixedOffset>,
+    pub query_time: String,
     /// Queried domain.
     #[serde(rename = "domainName")]
     #[serde(default)]
@@ -37,7 +36,7 @@ impl DomainDnsLookupResponse {
 #[non_exhaustive]
 pub struct DomainDnsLookupResponseBuilder {
     status: Option<bool>,
-    query_time: Option<DateTime<FixedOffset>>,
+    query_time: Option<String>,
     domain_name: Option<String>,
     domain_registered: Option<bool>,
     dns_types: Option<DomainDnsLookupResponseDnsTypes>,
@@ -50,8 +49,8 @@ impl DomainDnsLookupResponseBuilder {
         self
     }
 
-    pub fn query_time(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.query_time = Some(value);
+    pub fn query_time(mut self, value: impl Into<String>) -> Self {
+        self.query_time = Some(value.into());
         self
     }
 

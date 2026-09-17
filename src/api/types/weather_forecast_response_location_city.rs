@@ -1,6 +1,6 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct WeatherForecastResponseLocationCity {
     /// Original location query string as submitted, including full address or place name.
     #[serde(default)]
@@ -19,17 +19,13 @@ pub struct WeatherForecastResponseLocationCity {
     pub locality: Option<String>,
     /// Geocoded latitude coordinate in decimal degrees, ranging from -90 to +90.
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers")]
-    pub latitude: f64,
+    pub latitude: String,
     /// Geocoded longitude coordinate in decimal degrees, ranging from -180 to +180.
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers")]
-    pub longitude: f64,
+    pub longitude: String,
     /// Elevation above mean sea level in meters at the geocoded coordinates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::number_serializers::option")]
-    pub elevation: Option<f64>,
+    pub elevation: Option<String>,
     /// IANA timezone database identifier for the geocoded location (e.g., America/Los_Angeles).
     #[serde(default)]
     pub timezone: String,
@@ -52,9 +48,9 @@ pub struct WeatherForecastResponseLocationCityBuilder {
     state_prov: Option<String>,
     city: Option<String>,
     locality: Option<String>,
-    latitude: Option<f64>,
-    longitude: Option<f64>,
-    elevation: Option<f64>,
+    latitude: Option<String>,
+    longitude: Option<String>,
+    elevation: Option<String>,
     timezone: Option<String>,
     timezone_abbreviation: Option<String>,
 }
@@ -85,18 +81,18 @@ impl WeatherForecastResponseLocationCityBuilder {
         self
     }
 
-    pub fn latitude(mut self, value: f64) -> Self {
-        self.latitude = Some(value);
+    pub fn latitude(mut self, value: impl Into<String>) -> Self {
+        self.latitude = Some(value.into());
         self
     }
 
-    pub fn longitude(mut self, value: f64) -> Self {
-        self.longitude = Some(value);
+    pub fn longitude(mut self, value: impl Into<String>) -> Self {
+        self.longitude = Some(value.into());
         self
     }
 
-    pub fn elevation(mut self, value: f64) -> Self {
-        self.elevation = Some(value);
+    pub fn elevation(mut self, value: impl Into<String>) -> Self {
+        self.elevation = Some(value.into());
         self
     }
 

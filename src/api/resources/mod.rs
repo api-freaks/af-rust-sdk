@@ -927,7 +927,8 @@ impl ApiFreaks {
     /// * `format` - Format of the response.
     /// * `domain` - Domain name for availability and suggestions.
     /// * `source` - Specify the data source for domain availability checks. Use "dns" for DNS-based lookups or "whois" for WHOIS-based lookups. By default, "dns" is used.
-    /// * `count` - Number of suggestions to retrieve.
+    /// * `count` - Number of suggestions to retrieve. The API returns a minimum of 5 suggestions regardless of a lower value.
+    /// * `sug` - Controls the response shape. When `false`, returns a single availability object for the queried domain only. When omitted or `true`, returns an array of suggested domains instead.
     /// * `options` - Additional request options such as headers, timeout, etc.
     ///
     /// # Returns
@@ -949,6 +950,7 @@ impl ApiFreaks {
                     .string("domain", request.domain.clone())
                     .serialize("source", request.source.clone())
                     .int("count", request.count.clone())
+                    .bool("sug", request.sug.clone())
                     .build(),
                 options,
             )
@@ -4407,6 +4409,10 @@ impl ApiFreaks {
         request: &UserAgentLookupQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<UserAgentLookupResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        options
+            .additional_headers
+            .insert("User-Agent".to_string(), request.user_agent.clone());
         self.http_client
             .execute_request(
                 Method::GET,
@@ -4416,12 +4422,12 @@ impl ApiFreaks {
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
 
-    /// Parse up to `50,000 User-Agent strings` at once in a single request.
+    /// Parse up to `100 User-Agent strings` at once in a single request; exceeding that returns a 413, not a 400.
     ///
     /// # Arguments
     ///

@@ -1,15 +1,13 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct FloodForecastResponseLocationZero {
     /// Geographic latitude coordinate in decimal degrees, ranging from -90 (South Pole) to +90 (North Pole).
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers")]
-    pub latitude: f64,
+    pub latitude: String,
     /// Geographic longitude coordinate in decimal degrees, ranging from -180 (West) to +180 (East).
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers")]
-    pub longitude: f64,
+    pub longitude: String,
     /// Full name of the country corresponding to the provided coordinates.
     #[serde(default)]
     pub country_name: String,
@@ -24,9 +22,7 @@ pub struct FloodForecastResponseLocationZero {
     pub locality: Option<String>,
     /// Height above mean sea level in meters for the specified coordinates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::number_serializers::option")]
-    pub elevation: Option<f64>,
+    pub elevation: Option<String>,
     /// IANA timezone database identifier for the location (e.g., America/New_York, Europe/London).
     #[serde(default)]
     pub timezone: String,
@@ -44,25 +40,25 @@ impl FloodForecastResponseLocationZero {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct FloodForecastResponseLocationZeroBuilder {
-    latitude: Option<f64>,
-    longitude: Option<f64>,
+    latitude: Option<String>,
+    longitude: Option<String>,
     country_name: Option<String>,
     state_prov: Option<String>,
     city: Option<String>,
     locality: Option<String>,
-    elevation: Option<f64>,
+    elevation: Option<String>,
     timezone: Option<String>,
     timezone_abbreviation: Option<String>,
 }
 
 impl FloodForecastResponseLocationZeroBuilder {
-    pub fn latitude(mut self, value: f64) -> Self {
-        self.latitude = Some(value);
+    pub fn latitude(mut self, value: impl Into<String>) -> Self {
+        self.latitude = Some(value.into());
         self
     }
 
-    pub fn longitude(mut self, value: f64) -> Self {
-        self.longitude = Some(value);
+    pub fn longitude(mut self, value: impl Into<String>) -> Self {
+        self.longitude = Some(value.into());
         self
     }
 
@@ -86,8 +82,8 @@ impl FloodForecastResponseLocationZeroBuilder {
         self
     }
 
-    pub fn elevation(mut self, value: f64) -> Self {
-        self.elevation = Some(value);
+    pub fn elevation(mut self, value: impl Into<String>) -> Self {
+        self.elevation = Some(value.into());
         self
     }
 

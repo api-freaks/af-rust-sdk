@@ -1,6 +1,6 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct MarineWeatherResponseLocationContinentCode {
     /// Two-letter continent code (e.g., NA for North America, EU for Europe, AS for Asia).
     #[serde(default)]
@@ -40,20 +40,16 @@ pub struct MarineWeatherResponseLocationContinentCode {
     pub zipcode: Option<String>,
     /// Geographic latitude in decimal degrees for the IP geolocation, ranging from -90 to +90.
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers")]
-    pub latitude: f64,
+    pub latitude: String,
     /// Geographic longitude in decimal degrees for the IP geolocation, ranging from -180 to +180.
     #[serde(default)]
-    #[serde(with = "crate::core::number_serializers")]
-    pub longitude: f64,
+    pub longitude: String,
     /// Specific locality, neighborhood, or small area designation within the city.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub locality: Option<String>,
     /// Elevation above mean sea level in meters for the IP geolocation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::number_serializers::option")]
-    pub elevation: Option<f64>,
+    pub elevation: Option<String>,
     /// IANA timezone database identifier for the IP location (e.g., America/Chicago, Asia/Tokyo).
     #[serde(default)]
     pub timezone: String,
@@ -83,10 +79,10 @@ pub struct MarineWeatherResponseLocationContinentCodeBuilder {
     district: Option<String>,
     city: Option<String>,
     zipcode: Option<String>,
-    latitude: Option<f64>,
-    longitude: Option<f64>,
+    latitude: Option<String>,
+    longitude: Option<String>,
     locality: Option<String>,
-    elevation: Option<f64>,
+    elevation: Option<String>,
     timezone: Option<String>,
     timezone_abbreviation: Option<String>,
 }
@@ -152,13 +148,13 @@ impl MarineWeatherResponseLocationContinentCodeBuilder {
         self
     }
 
-    pub fn latitude(mut self, value: f64) -> Self {
-        self.latitude = Some(value);
+    pub fn latitude(mut self, value: impl Into<String>) -> Self {
+        self.latitude = Some(value.into());
         self
     }
 
-    pub fn longitude(mut self, value: f64) -> Self {
-        self.longitude = Some(value);
+    pub fn longitude(mut self, value: impl Into<String>) -> Self {
+        self.longitude = Some(value.into());
         self
     }
 
@@ -167,8 +163,8 @@ impl MarineWeatherResponseLocationContinentCodeBuilder {
         self
     }
 
-    pub fn elevation(mut self, value: f64) -> Self {
-        self.elevation = Some(value);
+    pub fn elevation(mut self, value: impl Into<String>) -> Self {
+        self.elevation = Some(value.into());
         self
     }
 
