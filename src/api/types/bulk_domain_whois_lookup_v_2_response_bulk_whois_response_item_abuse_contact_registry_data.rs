@@ -6,11 +6,9 @@ pub struct BulkDomainWhoisLookupV2ResponseBulkWhoisResponseItemAbuseContactRegis
     /// Domain name as recorded by the registry.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub domain_name: Option<String>,
-    /// Timestamp when the registry-level record was queried.
+    /// Timestamp when the registry-level record was queried (format YYYY-MM-DD HH:mm:ss, not ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset::option")]
-    pub query_time: Option<DateTime<FixedOffset>>,
+    pub query_time: Option<String>,
     /// Registry WHOIS server that returned this data.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub whois_server: Option<String>,
@@ -51,7 +49,7 @@ impl BulkDomainWhoisLookupV2ResponseBulkWhoisResponseItemAbuseContactRegistryDat
 #[non_exhaustive]
 pub struct BulkDomainWhoisLookupV2ResponseBulkWhoisResponseItemAbuseContactRegistryDataBuilder {
     domain_name: Option<String>,
-    query_time: Option<DateTime<FixedOffset>>,
+    query_time: Option<String>,
     whois_server: Option<String>,
     domain_registered: Option<BulkDomainWhoisLookupV2ResponseBulkWhoisResponseItemAbuseContactRegistryDataDomainRegistered>,
     create_date: Option<NaiveDate>,
@@ -69,8 +67,8 @@ impl BulkDomainWhoisLookupV2ResponseBulkWhoisResponseItemAbuseContactRegistryDat
         self
     }
 
-    pub fn query_time(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.query_time = Some(value);
+    pub fn query_time(mut self, value: impl Into<String>) -> Self {
+        self.query_time = Some(value.into());
         self
     }
 

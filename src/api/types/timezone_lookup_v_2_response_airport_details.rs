@@ -1,7 +1,7 @@
 pub use crate::prelude::*;
 
 /// Airport information, present when queried by IATA or ICAO code.
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct TimezoneLookupV2ResponseAirportDetails {
     /// Classification of the airport based on size and traffic.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11,14 +11,10 @@ pub struct TimezoneLookupV2ResponseAirportDetails {
     pub name: Option<String>,
     /// The latitude coordinate of the airport.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::number_serializers::option")]
-    pub latitude: Option<f64>,
+    pub latitude: Option<String>,
     /// The longitude coordinate of the airport.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::number_serializers::option")]
-    pub longitude: Option<f64>,
+    pub longitude: Option<String>,
     /// The elevation of the airport above sea level, measured in feet.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub elevation_ft: Option<i64>,
@@ -56,8 +52,8 @@ impl TimezoneLookupV2ResponseAirportDetails {
 pub struct TimezoneLookupV2ResponseAirportDetailsBuilder {
     r#type: Option<String>,
     name: Option<String>,
-    latitude: Option<f64>,
-    longitude: Option<f64>,
+    latitude: Option<String>,
+    longitude: Option<String>,
     elevation_ft: Option<i64>,
     continent_code: Option<String>,
     country_code: Option<String>,
@@ -79,13 +75,13 @@ impl TimezoneLookupV2ResponseAirportDetailsBuilder {
         self
     }
 
-    pub fn latitude(mut self, value: f64) -> Self {
-        self.latitude = Some(value);
+    pub fn latitude(mut self, value: impl Into<String>) -> Self {
+        self.latitude = Some(value.into());
         self
     }
 
-    pub fn longitude(mut self, value: f64) -> Self {
-        self.longitude = Some(value);
+    pub fn longitude(mut self, value: impl Into<String>) -> Self {
+        self.longitude = Some(value.into());
         self
     }
 

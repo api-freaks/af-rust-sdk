@@ -23,13 +23,9 @@ pub struct BulkScreenshotCaptureResponseResultsItemUrl {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fail_on_error: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::number_serializers::option")]
-    pub longitude: Option<f64>,
+    pub longitude: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::number_serializers::option")]
-    pub latitude: Option<f64>,
+    pub latitude: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proxy: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -188,8 +184,8 @@ pub struct BulkScreenshotCaptureResponseResultsItemUrlBuilder {
     omit_background: Option<bool>,
     destroy_screenshot: Option<bool>,
     fail_on_error: Option<bool>,
-    longitude: Option<f64>,
-    latitude: Option<f64>,
+    longitude: Option<String>,
+    latitude: Option<String>,
     proxy: Option<String>,
     no_cookie_banners: Option<bool>,
     block_ads: Option<bool>,
@@ -301,13 +297,13 @@ impl BulkScreenshotCaptureResponseResultsItemUrlBuilder {
         self
     }
 
-    pub fn longitude(mut self, value: f64) -> Self {
-        self.longitude = Some(value);
+    pub fn longitude(mut self, value: impl Into<String>) -> Self {
+        self.longitude = Some(value.into());
         self
     }
 
-    pub fn latitude(mut self, value: f64) -> Self {
-        self.latitude = Some(value);
+    pub fn latitude(mut self, value: impl Into<String>) -> Self {
+        self.latitude = Some(value.into());
         self
     }
 

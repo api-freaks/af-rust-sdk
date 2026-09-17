@@ -5,10 +5,10 @@ pub struct DomainSslChainLookupResponse {
     #[serde(rename = "domainName")]
     #[serde(default)]
     pub domain_name: String,
+    /// Timestamp when the query was executed (format YYYY-MM-DD HH:mm:ss, not ISO 8601).
     #[serde(rename = "queryTime")]
     #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset")]
-    pub query_time: DateTime<FixedOffset>,
+    pub query_time: String,
     #[serde(rename = "sslCertificates")]
     #[serde(default)]
     pub ssl_certificates: Vec<DomainSslChainLookupResponseSslCertificatesItem>,
@@ -27,7 +27,7 @@ impl DomainSslChainLookupResponse {
 #[non_exhaustive]
 pub struct DomainSslChainLookupResponseBuilder {
     domain_name: Option<String>,
-    query_time: Option<DateTime<FixedOffset>>,
+    query_time: Option<String>,
     ssl_certificates: Option<Vec<DomainSslChainLookupResponseSslCertificatesItem>>,
     ssl_raw: Option<String>,
 }
@@ -38,8 +38,8 @@ impl DomainSslChainLookupResponseBuilder {
         self
     }
 
-    pub fn query_time(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.query_time = Some(value);
+    pub fn query_time(mut self, value: impl Into<String>) -> Self {
+        self.query_time = Some(value.into());
         self
     }
 

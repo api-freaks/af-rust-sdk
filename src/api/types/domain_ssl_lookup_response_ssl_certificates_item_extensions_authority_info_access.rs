@@ -2,10 +2,10 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct DomainSslLookupResponseSslCertificatesItemExtensionsAuthorityInfoAccess {
-    #[serde(default)]
-    pub issuers: Vec<String>,
-    #[serde(default)]
-    pub ocsp: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuers: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ocsp: Option<Vec<String>>,
 }
 
 impl DomainSslLookupResponseSslCertificatesItemExtensionsAuthorityInfoAccess {
@@ -34,19 +34,14 @@ impl DomainSslLookupResponseSslCertificatesItemExtensionsAuthorityInfoAccessBuil
     }
 
     /// Consumes the builder and constructs a [`DomainSslLookupResponseSslCertificatesItemExtensionsAuthorityInfoAccess`].
-    /// This method will fail if any of the following fields are not set:
-    /// - [`issuers`](DomainSslLookupResponseSslCertificatesItemExtensionsAuthorityInfoAccessBuilder::issuers)
-    /// - [`ocsp`](DomainSslLookupResponseSslCertificatesItemExtensionsAuthorityInfoAccessBuilder::ocsp)
     pub fn build(
         self,
     ) -> Result<DomainSslLookupResponseSslCertificatesItemExtensionsAuthorityInfoAccess, BuildError>
     {
         Ok(
             DomainSslLookupResponseSslCertificatesItemExtensionsAuthorityInfoAccess {
-                issuers: self
-                    .issuers
-                    .ok_or_else(|| BuildError::missing_field("issuers"))?,
-                ocsp: self.ocsp.ok_or_else(|| BuildError::missing_field("ocsp"))?,
+                issuers: self.issuers,
+                ocsp: self.ocsp,
             },
         )
     }

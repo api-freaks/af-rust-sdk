@@ -12,23 +12,23 @@ pub struct DomainSslLookupResponseSslCertificatesItemExtensions {
     #[serde(default)]
     pub key_usages: Vec<String>,
     #[serde(rename = "extendedKeyUsages")]
-    #[serde(default)]
-    pub extended_key_usages: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extended_key_usages: Option<Vec<String>>,
     #[serde(rename = "crlDistributionPoints")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub crl_distribution_points: Option<Vec<String>>,
     #[serde(rename = "authorityInfoAccess")]
-    #[serde(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub authority_info_access:
-        DomainSslLookupResponseSslCertificatesItemExtensionsAuthorityInfoAccess,
+        Option<DomainSslLookupResponseSslCertificatesItemExtensionsAuthorityInfoAccess>,
     #[serde(rename = "subjectAlternativeNames")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subject_alternative_names:
         Option<DomainSslLookupResponseSslCertificatesItemExtensionsSubjectAlternativeNames>,
     #[serde(rename = "certificatePolicies")]
-    #[serde(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub certificate_policies:
-        DomainSslLookupResponseSslCertificatesItemExtensionsCertificatePolicies,
+        Option<Vec<DomainSslLookupResponseSslCertificatesItemExtensionsCertificatePoliciesItem>>,
 }
 
 impl DomainSslLookupResponseSslCertificatesItemExtensions {
@@ -50,7 +50,7 @@ pub struct DomainSslLookupResponseSslCertificatesItemExtensionsBuilder {
     subject_alternative_names:
         Option<DomainSslLookupResponseSslCertificatesItemExtensionsSubjectAlternativeNames>,
     certificate_policies:
-        Option<DomainSslLookupResponseSslCertificatesItemExtensionsCertificatePolicies>,
+        Option<Vec<DomainSslLookupResponseSslCertificatesItemExtensionsCertificatePoliciesItem>>,
 }
 
 impl DomainSslLookupResponseSslCertificatesItemExtensionsBuilder {
@@ -97,7 +97,7 @@ impl DomainSslLookupResponseSslCertificatesItemExtensionsBuilder {
 
     pub fn certificate_policies(
         mut self,
-        value: DomainSslLookupResponseSslCertificatesItemExtensionsCertificatePolicies,
+        value: Vec<DomainSslLookupResponseSslCertificatesItemExtensionsCertificatePoliciesItem>,
     ) -> Self {
         self.certificate_policies = Some(value);
         self
@@ -108,9 +108,6 @@ impl DomainSslLookupResponseSslCertificatesItemExtensionsBuilder {
     /// - [`authority_key_identifier`](DomainSslLookupResponseSslCertificatesItemExtensionsBuilder::authority_key_identifier)
     /// - [`subject_key_identifier`](DomainSslLookupResponseSslCertificatesItemExtensionsBuilder::subject_key_identifier)
     /// - [`key_usages`](DomainSslLookupResponseSslCertificatesItemExtensionsBuilder::key_usages)
-    /// - [`extended_key_usages`](DomainSslLookupResponseSslCertificatesItemExtensionsBuilder::extended_key_usages)
-    /// - [`authority_info_access`](DomainSslLookupResponseSslCertificatesItemExtensionsBuilder::authority_info_access)
-    /// - [`certificate_policies`](DomainSslLookupResponseSslCertificatesItemExtensionsBuilder::certificate_policies)
     pub fn build(self) -> Result<DomainSslLookupResponseSslCertificatesItemExtensions, BuildError> {
         Ok(DomainSslLookupResponseSslCertificatesItemExtensions {
             authority_key_identifier: self
@@ -122,17 +119,11 @@ impl DomainSslLookupResponseSslCertificatesItemExtensionsBuilder {
             key_usages: self
                 .key_usages
                 .ok_or_else(|| BuildError::missing_field("key_usages"))?,
-            extended_key_usages: self
-                .extended_key_usages
-                .ok_or_else(|| BuildError::missing_field("extended_key_usages"))?,
+            extended_key_usages: self.extended_key_usages,
             crl_distribution_points: self.crl_distribution_points,
-            authority_info_access: self
-                .authority_info_access
-                .ok_or_else(|| BuildError::missing_field("authority_info_access"))?,
+            authority_info_access: self.authority_info_access,
             subject_alternative_names: self.subject_alternative_names,
-            certificate_policies: self
-                .certificate_policies
-                .ok_or_else(|| BuildError::missing_field("certificate_policies"))?,
+            certificate_policies: self.certificate_policies,
         })
     }
 }

@@ -1,7 +1,7 @@
 pub use crate::prelude::*;
 
 /// UN/LOCODE location details, present when queried by LO code.
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct TimezoneLookupV2ResponseLoCodeDetails {
     /// A unique identifier for the location, often used in logistics and shipping (e.g., USNYC).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -23,14 +23,10 @@ pub struct TimezoneLookupV2ResponseLoCodeDetails {
     pub location_type: Option<String>,
     /// The latitude coordinate of the location.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::number_serializers::option")]
-    pub latitude: Option<f64>,
+    pub latitude: Option<String>,
     /// The longitude coordinate of the location.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::number_serializers::option")]
-    pub longitude: Option<f64>,
+    pub longitude: Option<String>,
 }
 
 impl TimezoneLookupV2ResponseLoCodeDetails {
@@ -48,8 +44,8 @@ pub struct TimezoneLookupV2ResponseLoCodeDetailsBuilder {
     country_code: Option<String>,
     country_name: Option<String>,
     location_type: Option<String>,
-    latitude: Option<f64>,
-    longitude: Option<f64>,
+    latitude: Option<String>,
+    longitude: Option<String>,
 }
 
 impl TimezoneLookupV2ResponseLoCodeDetailsBuilder {
@@ -83,13 +79,13 @@ impl TimezoneLookupV2ResponseLoCodeDetailsBuilder {
         self
     }
 
-    pub fn latitude(mut self, value: f64) -> Self {
-        self.latitude = Some(value);
+    pub fn latitude(mut self, value: impl Into<String>) -> Self {
+        self.latitude = Some(value.into());
         self
     }
 
-    pub fn longitude(mut self, value: f64) -> Self {
-        self.longitude = Some(value);
+    pub fn longitude(mut self, value: impl Into<String>) -> Self {
+        self.longitude = Some(value.into());
         self
     }
 

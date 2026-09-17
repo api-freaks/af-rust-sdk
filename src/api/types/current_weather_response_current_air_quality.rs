@@ -3,10 +3,9 @@ pub use crate::prelude::*;
 /// Air quality metrics including pollutant concentrations and AQI values.
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct CurrentWeatherResponseCurrentAirQuality {
-    /// ISO 8601 formatted timestamp (iso8601).
+    /// Local timestamp of the observation (format YYYY-MM-DDTHH:mm, not ISO 8601).
     #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset")]
-    pub timestamp: DateTime<FixedOffset>,
+    pub timestamp: String,
     /// Consolidated European Air Quality Index representing the highest value among individual pollutant indices. Ranges: 0-20 (good), 20-40 (fair), 40-60 (moderate), 60-80 (poor), 80-100 (very poor), >100 (extremely poor).
     #[serde(default)]
     pub european_aqi: i64,
@@ -65,7 +64,7 @@ impl CurrentWeatherResponseCurrentAirQuality {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct CurrentWeatherResponseCurrentAirQualityBuilder {
-    timestamp: Option<DateTime<FixedOffset>>,
+    timestamp: Option<String>,
     european_aqi: Option<i64>,
     us_aqi: Option<i64>,
     pm10: Option<f64>,
@@ -81,8 +80,8 @@ pub struct CurrentWeatherResponseCurrentAirQualityBuilder {
 }
 
 impl CurrentWeatherResponseCurrentAirQualityBuilder {
-    pub fn timestamp(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.timestamp = Some(value);
+    pub fn timestamp(mut self, value: impl Into<String>) -> Self {
+        self.timestamp = Some(value.into());
         self
     }
 

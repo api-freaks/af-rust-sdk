@@ -16,9 +16,12 @@ pub struct DomainAvailabilitySuggestionsQueryRequest {
     /// Specify the data source for domain availability checks. Use "dns" for DNS-based lookups or "whois" for WHOIS-based lookups. By default, "dns" is used.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<DomainAvailabilitySuggestionsRequestSource>,
-    /// Number of suggestions to retrieve.
+    /// Number of suggestions to retrieve. The API returns a minimum of 5 suggestions regardless of a lower value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
+    /// Controls the response shape. When `false`, returns a single availability object for the queried domain only. When omitted or `true`, returns an array of suggested domains instead.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sug: Option<bool>,
 }
 
 impl DomainAvailabilitySuggestionsQueryRequest {
@@ -35,6 +38,7 @@ pub struct DomainAvailabilitySuggestionsQueryRequestBuilder {
     domain: Option<String>,
     source: Option<DomainAvailabilitySuggestionsRequestSource>,
     count: Option<i64>,
+    sug: Option<bool>,
 }
 
 impl DomainAvailabilitySuggestionsQueryRequestBuilder {
@@ -63,6 +67,11 @@ impl DomainAvailabilitySuggestionsQueryRequestBuilder {
         self
     }
 
+    pub fn sug(mut self, value: bool) -> Self {
+        self.sug = Some(value);
+        self
+    }
+
     /// Consumes the builder and constructs a [`DomainAvailabilitySuggestionsQueryRequest`].
     /// This method will fail if any of the following fields are not set:
     /// - [`api_key`](DomainAvailabilitySuggestionsQueryRequestBuilder::api_key)
@@ -78,6 +87,7 @@ impl DomainAvailabilitySuggestionsQueryRequestBuilder {
                 .ok_or_else(|| BuildError::missing_field("domain"))?,
             source: self.source,
             count: self.count,
+            sug: self.sug,
         })
     }
 }

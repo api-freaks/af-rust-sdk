@@ -2,14 +2,12 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct TimezoneConvertResponse {
-    /// Original time before conversion
+    /// Original time before conversion (format YYYY-MM-DD HH:mm:ss, not ISO 8601).
     #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset")]
-    pub original_time: DateTime<FixedOffset>,
-    /// Time after conversion
+    pub original_time: String,
+    /// Time after conversion (format YYYY-MM-DD HH:mm:ss, not ISO 8601).
     #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset")]
-    pub converted_time: DateTime<FixedOffset>,
+    pub converted_time: String,
     /// Difference in hours
     #[serde(default)]
     #[serde(with = "crate::core::number_serializers")]
@@ -29,20 +27,20 @@ impl TimezoneConvertResponse {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct TimezoneConvertResponseBuilder {
-    original_time: Option<DateTime<FixedOffset>>,
-    converted_time: Option<DateTime<FixedOffset>>,
+    original_time: Option<String>,
+    converted_time: Option<String>,
     diff_hour: Option<f64>,
     diff_min: Option<f64>,
 }
 
 impl TimezoneConvertResponseBuilder {
-    pub fn original_time(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.original_time = Some(value);
+    pub fn original_time(mut self, value: impl Into<String>) -> Self {
+        self.original_time = Some(value.into());
         self
     }
 
-    pub fn converted_time(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.converted_time = Some(value);
+    pub fn converted_time(mut self, value: impl Into<String>) -> Self {
+        self.converted_time = Some(value.into());
         self
     }
 

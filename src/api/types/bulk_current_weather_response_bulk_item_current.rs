@@ -3,10 +3,9 @@ pub use crate::prelude::*;
 /// Current weather data
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct BulkCurrentWeatherResponseBulkItemCurrent {
-    /// ISO 8601 formatted timestamp of the current weather observation.
+    /// Local timestamp of the current weather observation (format YYYY-MM-DDTHH:mm, not ISO 8601).
     #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset")]
-    pub timestamp: DateTime<FixedOffset>,
+    pub timestamp: String,
     /// Current air temperature (°C) measured at 2 meters above ground.
     #[serde(rename = "temperature_2m")]
     #[serde(default)]
@@ -83,7 +82,7 @@ impl BulkCurrentWeatherResponseBulkItemCurrent {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct BulkCurrentWeatherResponseBulkItemCurrentBuilder {
-    timestamp: Option<DateTime<FixedOffset>>,
+    timestamp: Option<String>,
     temperature2m: Option<f64>,
     relative_humidity2m: Option<f64>,
     apparent_temperature: Option<f64>,
@@ -103,8 +102,8 @@ pub struct BulkCurrentWeatherResponseBulkItemCurrentBuilder {
 }
 
 impl BulkCurrentWeatherResponseBulkItemCurrentBuilder {
-    pub fn timestamp(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.timestamp = Some(value);
+    pub fn timestamp(mut self, value: impl Into<String>) -> Self {
+        self.timestamp = Some(value.into());
         self
     }
 

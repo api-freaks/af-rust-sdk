@@ -2,11 +2,9 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct AirQualityResponseForecastValueHourlyItem {
-    /// ISO 8601 formatted timestamp
+    /// Local timestamp of this reading (format YYYY-MM-DDTHH:mm, not ISO 8601).
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset::option")]
-    pub timestamp: Option<DateTime<FixedOffset>>,
+    pub timestamp: Option<String>,
     /// Concentration of particulate matter ≤10 micrometers (μg/m³)
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default)]
@@ -74,7 +72,7 @@ impl AirQualityResponseForecastValueHourlyItem {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct AirQualityResponseForecastValueHourlyItemBuilder {
-    timestamp: Option<DateTime<FixedOffset>>,
+    timestamp: Option<String>,
     pm10: Option<f64>,
     carbon_monoxide: Option<f64>,
     pm25: Option<f64>,
@@ -89,8 +87,8 @@ pub struct AirQualityResponseForecastValueHourlyItemBuilder {
 }
 
 impl AirQualityResponseForecastValueHourlyItemBuilder {
-    pub fn timestamp(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.timestamp = Some(value);
+    pub fn timestamp(mut self, value: impl Into<String>) -> Self {
+        self.timestamp = Some(value.into());
         self
     }
 

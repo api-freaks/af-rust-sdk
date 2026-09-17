@@ -2,10 +2,10 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct DomainDnsHistoryResponseHistoricalDnsRecordsItem {
+    /// Timestamp when the query was executed (format YYYY-MM-DD HH:mm:ss, not ISO 8601).
     #[serde(rename = "queryTime")]
     #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset")]
-    pub query_time: DateTime<FixedOffset>,
+    pub query_time: String,
     #[serde(rename = "domainName")]
     #[serde(default)]
     pub domain_name: String,
@@ -29,7 +29,7 @@ impl DomainDnsHistoryResponseHistoricalDnsRecordsItem {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct DomainDnsHistoryResponseHistoricalDnsRecordsItemBuilder {
-    query_time: Option<DateTime<FixedOffset>>,
+    query_time: Option<String>,
     domain_name: Option<String>,
     domain_registered: Option<bool>,
     dns_types: Option<DomainDnsHistoryResponseHistoricalDnsRecordsItemDnsTypes>,
@@ -37,8 +37,8 @@ pub struct DomainDnsHistoryResponseHistoricalDnsRecordsItemBuilder {
 }
 
 impl DomainDnsHistoryResponseHistoricalDnsRecordsItemBuilder {
-    pub fn query_time(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.query_time = Some(value);
+    pub fn query_time(mut self, value: impl Into<String>) -> Self {
+        self.query_time = Some(value.into());
         self
     }
 
