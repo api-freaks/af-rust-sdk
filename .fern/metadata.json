@@ -6,7 +6,7 @@
     "clientClassName": "ApiFreaks",
     "environmentEnumName": "ApiFreaksEnvironment"
   },
-  "originGitCommit": "94b8826f158bc088e72aa08f202e45638c3f22da",
+  "originGitCommit": "32dbfddbf9005af23db304ae9876febb6b46603d",
   "originGitCommitIsDirty": true,
   "invokedBy": "manual"
 }

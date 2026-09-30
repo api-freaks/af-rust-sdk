@@ -2,7 +2,7 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct BulkUserAgentLookupRequest {
-    /// Array of User-Agent strings to parse. Maximum 100 strings per request — exceeding that returns a 413.
+    /// Array of User-Agent strings to parse. Maximum 20000 strings per request — exceeding that returns a 413.
     #[serde(rename = "uaStrings")]
     #[serde(default)]
     pub ua_strings: Vec<String>,
