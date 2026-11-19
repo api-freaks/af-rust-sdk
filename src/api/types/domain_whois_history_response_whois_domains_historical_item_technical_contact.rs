@@ -18,14 +18,20 @@ pub struct DomainWhoisHistoryResponseWhoisDomainsHistoricalItemTechnicalContact 
     pub country_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country_code: Option<String>,
+    /// Deprecated: the API returns this field as `email_address`; read `email_address` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub emailaddress: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fax: Option<String>,
+    /// Deprecated: the API returns this field as `mailing_address`; read `mailing_address` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mailingaddress: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email_address: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mailing_address: Option<String>,
 }
 
 impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemTechnicalContact {
@@ -50,6 +56,8 @@ pub struct DomainWhoisHistoryResponseWhoisDomainsHistoricalItemTechnicalContactB
     phone: Option<String>,
     fax: Option<String>,
     mailingaddress: Option<String>,
+    email_address: Option<String>,
+    mailing_address: Option<String>,
 }
 
 impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemTechnicalContactBuilder {
@@ -113,6 +121,16 @@ impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemTechnicalContactBuilder
         self
     }
 
+    pub fn email_address(mut self, value: impl Into<String>) -> Self {
+        self.email_address = Some(value.into());
+        self
+    }
+
+    pub fn mailing_address(mut self, value: impl Into<String>) -> Self {
+        self.mailing_address = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`DomainWhoisHistoryResponseWhoisDomainsHistoricalItemTechnicalContact`].
     pub fn build(
         self,
@@ -132,6 +150,8 @@ impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemTechnicalContactBuilder
                 phone: self.phone,
                 fax: self.fax,
                 mailingaddress: self.mailingaddress,
+                email_address: self.email_address,
+                mailing_address: self.mailing_address,
             },
         )
     }

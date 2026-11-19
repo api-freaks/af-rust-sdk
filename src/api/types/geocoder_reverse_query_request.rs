@@ -18,6 +18,9 @@ pub struct GeocoderReverseQueryRequest {
     #[serde(default)]
     #[serde(with = "crate::core::number_serializers")]
     pub lon: f64,
+    /// Preferred language(s) for the results, sent as the `Accept-Language` header (e.g. `de`, `fr-FR`).
+    #[serde(skip)]
+    pub accept_language: Option<String>,
 }
 
 impl GeocoderReverseQueryRequest {
@@ -33,6 +36,7 @@ pub struct GeocoderReverseQueryRequestBuilder {
     format: Option<GeocoderReverseRequestFormat>,
     lat: Option<f64>,
     lon: Option<f64>,
+    accept_language: Option<String>,
 }
 
 impl GeocoderReverseQueryRequestBuilder {
@@ -56,6 +60,12 @@ impl GeocoderReverseQueryRequestBuilder {
         self
     }
 
+    /// Sets the `Accept-Language` header.
+    pub fn accept_language(mut self, value: impl Into<String>) -> Self {
+        self.accept_language = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`GeocoderReverseQueryRequest`].
     /// This method will fail if any of the following fields are not set:
     /// - [`api_key`](GeocoderReverseQueryRequestBuilder::api_key)
@@ -69,6 +79,7 @@ impl GeocoderReverseQueryRequestBuilder {
             format: self.format,
             lat: self.lat.ok_or_else(|| BuildError::missing_field("lat"))?,
             lon: self.lon.ok_or_else(|| BuildError::missing_field("lon"))?,
+            accept_language: self.accept_language,
         })
     }
 }

@@ -7,29 +7,32 @@ pub struct PdfConvertToPngRequest {
     #[serde(with = "crate::core::base64_bytes::option")]
     pub file: Option<Vec<u8>>,
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub format: Option<PdfConvertToPngRequestFormat>,
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub file_id: Option<String>,
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub destroy: Option<bool>,
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub output: Option<String>,
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub pages: Option<String>,
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub resolution: Option<i64>,
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub image_smoothing: Option<String>,
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub profile: Option<PdfConvertToPngRequestProfile>,
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub webhook_url: Option<String>,
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub webhook_failure_notification: Option<bool>,
+    /// Value sent in the `X-Webhook-Authorization` header of the webhook call to `webhook_url`, so your endpoint can verify the request.
+    #[serde(skip)]
+    pub webhook_authorization: Option<String>,
 }
 impl PdfConvertToPngRequest {
     pub fn to_multipart(self) -> reqwest::multipart::Form {
@@ -39,8 +42,8 @@ impl PdfConvertToPngRequest {
             form = form.part(
                 "file",
                 reqwest::multipart::Part::bytes(file_data.clone())
-                    .file_name("file")
-                    .mime_str("application/octet-stream")
+                    .file_name(crate::core::upload_file_name(&file_data))
+                    .mime_str(crate::core::upload_mime_type(&file_data))
                     .unwrap(),
             );
         }
@@ -70,6 +73,7 @@ pub struct PdfConvertToPngRequestBuilder {
     profile: Option<PdfConvertToPngRequestProfile>,
     webhook_url: Option<String>,
     webhook_failure_notification: Option<bool>,
+    webhook_authorization: Option<String>,
 }
 
 impl PdfConvertToPngRequestBuilder {
@@ -133,6 +137,12 @@ impl PdfConvertToPngRequestBuilder {
         self
     }
 
+    /// Sets the `X-Webhook-Authorization` header.
+    pub fn webhook_authorization(mut self, value: impl Into<String>) -> Self {
+        self.webhook_authorization = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`PdfConvertToPngRequest`].
     /// This method will fail if any of the following fields are not set:
     /// - [`api_key`](PdfConvertToPngRequestBuilder::api_key)
@@ -152,6 +162,7 @@ impl PdfConvertToPngRequestBuilder {
             profile: self.profile,
             webhook_url: self.webhook_url,
             webhook_failure_notification: self.webhook_failure_notification,
+            webhook_authorization: self.webhook_authorization,
         })
     }
 }

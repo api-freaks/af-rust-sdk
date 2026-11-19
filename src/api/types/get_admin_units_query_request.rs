@@ -13,10 +13,9 @@ pub struct GetAdminUnitsQueryRequest {
     /// Country code in ISO 3166-1 alpha-2 format.
     #[serde(default)]
     pub country: String,
-    /// Comma-separated list to filter results by one or more administrative levels.
-    #[serde(rename = "adminLevels")]
+    /// Filter results by one or more administrative level names (e.g. `land`, `state`, `province`), sent as a comma-separated list. Use the admin levels endpoint to list the levels a country has.
     #[serde(default)]
-    pub admin_levels: Vec<Option<String>>,
+    pub admin_level: Vec<Option<String>>,
 }
 
 impl GetAdminUnitsQueryRequest {
@@ -31,7 +30,7 @@ pub struct GetAdminUnitsQueryRequestBuilder {
     api_key: Option<String>,
     format: Option<GetAdminUnitsRequestFormat>,
     country: Option<String>,
-    admin_levels: Option<Vec<Option<String>>>,
+    admin_level: Option<Vec<Option<String>>>,
 }
 
 impl GetAdminUnitsQueryRequestBuilder {
@@ -50,8 +49,8 @@ impl GetAdminUnitsQueryRequestBuilder {
         self
     }
 
-    pub fn admin_levels(mut self, value: Vec<Option<String>>) -> Self {
-        self.admin_levels = Some(value);
+    pub fn admin_level(mut self, value: Vec<Option<String>>) -> Self {
+        self.admin_level = Some(value);
         self
     }
 
@@ -59,7 +58,6 @@ impl GetAdminUnitsQueryRequestBuilder {
     /// This method will fail if any of the following fields are not set:
     /// - [`api_key`](GetAdminUnitsQueryRequestBuilder::api_key)
     /// - [`country`](GetAdminUnitsQueryRequestBuilder::country)
-    /// - [`admin_levels`](GetAdminUnitsQueryRequestBuilder::admin_levels)
     pub fn build(self) -> Result<GetAdminUnitsQueryRequest, BuildError> {
         Ok(GetAdminUnitsQueryRequest {
             api_key: self
@@ -69,9 +67,7 @@ impl GetAdminUnitsQueryRequestBuilder {
             country: self
                 .country
                 .ok_or_else(|| BuildError::missing_field("country"))?,
-            admin_levels: self
-                .admin_levels
-                .ok_or_else(|| BuildError::missing_field("admin_levels"))?,
+            admin_level: self.admin_level.unwrap_or_default(),
         })
     }
 }

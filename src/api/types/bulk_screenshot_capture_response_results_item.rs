@@ -4,6 +4,7 @@ pub use crate::prelude::*;
 pub struct BulkScreenshotCaptureResponseResultsItem {
     #[serde(default)]
     pub status: String,
+    /// Error details for a failed URL; null when the capture succeeded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub error_message: Option<String>,
     #[serde(default)]

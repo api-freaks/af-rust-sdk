@@ -14,8 +14,7 @@ pub struct DomainDnsHistoryQueryRequest {
     #[serde(rename = "host-name")]
     #[serde(default)]
     pub host_name: String,
-    /// A comma-separated list of DNS record types for lookup.
-    /// Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, or all
+    /// DNS record types to look up, sent as a comma-separated list (e.g. `A,MX`). Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, or all.
     #[serde(default)]
     pub r#type: Vec<Option<String>>,
     /// Page number for paginated results

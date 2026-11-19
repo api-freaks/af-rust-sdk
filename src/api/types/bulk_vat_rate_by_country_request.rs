@@ -6,11 +6,11 @@ pub struct BulkVatRateByCountryRequest {
     pub countries: Vec<BulkVatRateByCountryRequestCountriesItem>,
     /// Your API key
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
     /// Specify the desired response format. Options: 'json' (default) or 'xml'.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub format: Option<BulkVatRateByCountryRequestFormat>,
 }
 

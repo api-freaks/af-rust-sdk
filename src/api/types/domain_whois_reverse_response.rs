@@ -2,13 +2,16 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct DomainWhoisReverseResponse {
-    #[serde(rename = "totalResult")]
+    /// Total results found across the query.
+    #[serde(rename = "total_Result")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_result: Option<i64>,
-    #[serde(rename = "totalPages")]
+    /// Total number of pages (50 records per page in default mode, 100 in mini mode).
+    #[serde(rename = "total_Pages")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_pages: Option<i64>,
-    #[serde(rename = "currentPage")]
+    /// Current page number.
+    #[serde(rename = "current_Page")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub current_page: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]

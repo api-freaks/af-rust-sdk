@@ -7,12 +7,12 @@ pub enum BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItem {
         BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemAddress,
     ),
 
-    BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne(
-        BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne,
-    ),
-
     BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemPriority(
         BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemPriority,
+    ),
+
+    BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne(
+        BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne,
     ),
 
     BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemSingleName(
@@ -38,21 +38,21 @@ impl BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItem {
         )
     }
 
-    pub fn is_bulk_domain_dns_lookup_response_bulk_dns_info_item_dns_records_item_one(
-        &self,
-    ) -> bool {
-        matches!(
-            self,
-            Self::BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne(_)
-        )
-    }
-
     pub fn is_bulk_domain_dns_lookup_response_bulk_dns_info_item_dns_records_item_priority(
         &self,
     ) -> bool {
         matches!(
             self,
             Self::BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemPriority(_)
+        )
+    }
+
+    pub fn is_bulk_domain_dns_lookup_response_bulk_dns_info_item_dns_records_item_one(
+        &self,
+    ) -> bool {
+        matches!(
+            self,
+            Self::BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne(_)
         )
     }
 
@@ -105,24 +105,6 @@ impl BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItem {
         }
     }
 
-    pub fn as_bulk_domain_dns_lookup_response_bulk_dns_info_item_dns_records_item_one(
-        &self,
-    ) -> Option<&BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne> {
-        match self {
-            Self::BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_bulk_domain_dns_lookup_response_bulk_dns_info_item_dns_records_item_one(
-        self,
-    ) -> Option<BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne> {
-        match self {
-            Self::BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne(value) => Some(value),
-            _ => None,
-        }
-    }
-
     pub fn as_bulk_domain_dns_lookup_response_bulk_dns_info_item_dns_records_item_priority(
         &self,
     ) -> Option<&BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemPriority> {
@@ -141,6 +123,24 @@ impl BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItem {
             Self::BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemPriority(value) => {
                 Some(value)
             }
+            _ => None,
+        }
+    }
+
+    pub fn as_bulk_domain_dns_lookup_response_bulk_dns_info_item_dns_records_item_one(
+        &self,
+    ) -> Option<&BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne> {
+        match self {
+            Self::BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne(value) => Some(value),
+            _ => None,
+        }
+    }
+
+    pub fn into_bulk_domain_dns_lookup_response_bulk_dns_info_item_dns_records_item_one(
+        self,
+    ) -> Option<BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne> {
+        match self {
+            Self::BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne(value) => Some(value),
             _ => None,
         }
     }
@@ -220,11 +220,6 @@ impl fmt::Display for BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItem {
                 "{}",
                 serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
             ),
-            Self::BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
             Self::BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemPriority(value) => {
                 write!(
                     f,
@@ -232,6 +227,11 @@ impl fmt::Display for BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItem {
                     serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
                 )
             }
+            Self::BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemOne(value) => write!(
+                f,
+                "{}",
+                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
+            ),
             Self::BulkDomainDnsLookupResponseBulkDnsInfoItemDnsRecordsItemSingleName(value) => {
                 write!(
                     f,

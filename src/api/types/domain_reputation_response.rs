@@ -34,6 +34,12 @@ pub struct DomainReputationResponse {
     /// List of errors encountered during processing, if any (e.g. "WHOIS lookup failed"). An empty array means every signal resolved.
     #[serde(default)]
     pub errors: Vec<String>,
+    /// Backlink profile of the domain.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub backlinks: Option<DomainReputationResponseBacklinks>,
+    /// Current registration status of the domain.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub registration: Option<DomainReputationResponseRegistration>,
 }
 
 impl DomainReputationResponse {
@@ -56,6 +62,8 @@ pub struct DomainReputationResponseBuilder {
     intelligence: Option<DomainReputationResponseIntelligence>,
     evidence_summary: Option<DomainReputationResponseEvidenceSummary>,
     errors: Option<Vec<String>>,
+    backlinks: Option<DomainReputationResponseBacklinks>,
+    registration: Option<DomainReputationResponseRegistration>,
 }
 
 impl DomainReputationResponseBuilder {
@@ -117,6 +125,16 @@ impl DomainReputationResponseBuilder {
         self
     }
 
+    pub fn backlinks(mut self, value: DomainReputationResponseBacklinks) -> Self {
+        self.backlinks = Some(value);
+        self
+    }
+
+    pub fn registration(mut self, value: DomainReputationResponseRegistration) -> Self {
+        self.registration = Some(value);
+        self
+    }
+
     /// Consumes the builder and constructs a [`DomainReputationResponse`].
     /// This method will fail if any of the following fields are not set:
     /// - [`input`](DomainReputationResponseBuilder::input)
@@ -165,6 +183,8 @@ impl DomainReputationResponseBuilder {
             errors: self
                 .errors
                 .ok_or_else(|| BuildError::missing_field("errors"))?,
+            backlinks: self.backlinks,
+            registration: self.registration,
         })
     }
 }

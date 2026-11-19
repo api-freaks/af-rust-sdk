@@ -7,8 +7,8 @@ pub enum DomainWhoisReverseResponseWhoisDomainsHistoricalItem {
         DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContact,
     ),
 
-    DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyname(
-        DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyname,
+    DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyName(
+        DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyName,
     ),
 }
 
@@ -22,12 +22,12 @@ impl DomainWhoisReverseResponseWhoisDomainsHistoricalItem {
         )
     }
 
-    pub fn is_domain_whois_reverse_response_whois_domains_historical_item_companyname(
+    pub fn is_domain_whois_reverse_response_whois_domains_historical_item_company_name(
         &self,
     ) -> bool {
         matches!(
             self,
-            Self::DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyname(_)
+            Self::DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyName(_)
         )
     }
 
@@ -53,22 +53,22 @@ impl DomainWhoisReverseResponseWhoisDomainsHistoricalItem {
         }
     }
 
-    pub fn as_domain_whois_reverse_response_whois_domains_historical_item_companyname(
+    pub fn as_domain_whois_reverse_response_whois_domains_historical_item_company_name(
         &self,
-    ) -> Option<&DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyname> {
+    ) -> Option<&DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyName> {
         match self {
-            Self::DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyname(value) => {
+            Self::DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyName(value) => {
                 Some(value)
             }
             _ => None,
         }
     }
 
-    pub fn into_domain_whois_reverse_response_whois_domains_historical_item_companyname(
+    pub fn into_domain_whois_reverse_response_whois_domains_historical_item_company_name(
         self,
-    ) -> Option<DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyname> {
+    ) -> Option<DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyName> {
         match self {
-            Self::DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyname(value) => {
+            Self::DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyName(value) => {
                 Some(value)
             }
             _ => None,
@@ -86,7 +86,7 @@ impl fmt::Display for DomainWhoisReverseResponseWhoisDomainsHistoricalItem {
                 "{}",
                 serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
             ),
-            Self::DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyname(value) => write!(
+            Self::DomainWhoisReverseResponseWhoisDomainsHistoricalItemCompanyName(value) => write!(
                 f,
                 "{}",
                 serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))

@@ -1,6 +1,6 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct IpWhoisLookupResponseIrt {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub handle: Option<String>,
@@ -54,6 +54,18 @@ pub struct IpWhoisLookupResponseIrt {
     pub date_updated: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
+    /// Abuse contacts linked to this IRT.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub abuse_contacts: Option<Vec<IpWhoisLookupResponseIrtAbuseContactsItem>>,
+    /// Administrative contacts linked to this IRT.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub administrative_contacts: Option<Vec<IpWhoisLookupResponseIrtAdministrativeContactsItem>>,
+    /// Organization object containing the registrant's handle, name, address, contact details, and linked admin/tech/abuse contacts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub organization: Option<IpWhoisLookupResponseIrtOrganization>,
+    /// Technical contacts linked to this IRT.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub technical_contacts: Option<Vec<IpWhoisLookupResponseIrtTechnicalContactsItem>>,
 }
 
 impl IpWhoisLookupResponseIrt {
@@ -91,6 +103,10 @@ pub struct IpWhoisLookupResponseIrtBuilder {
     date_created: Option<String>,
     date_updated: Option<String>,
     source: Option<String>,
+    abuse_contacts: Option<Vec<IpWhoisLookupResponseIrtAbuseContactsItem>>,
+    administrative_contacts: Option<Vec<IpWhoisLookupResponseIrtAdministrativeContactsItem>>,
+    organization: Option<IpWhoisLookupResponseIrtOrganization>,
+    technical_contacts: Option<Vec<IpWhoisLookupResponseIrtTechnicalContactsItem>>,
 }
 
 impl IpWhoisLookupResponseIrtBuilder {
@@ -224,6 +240,32 @@ impl IpWhoisLookupResponseIrtBuilder {
         self
     }
 
+    pub fn abuse_contacts(mut self, value: Vec<IpWhoisLookupResponseIrtAbuseContactsItem>) -> Self {
+        self.abuse_contacts = Some(value);
+        self
+    }
+
+    pub fn administrative_contacts(
+        mut self,
+        value: Vec<IpWhoisLookupResponseIrtAdministrativeContactsItem>,
+    ) -> Self {
+        self.administrative_contacts = Some(value);
+        self
+    }
+
+    pub fn organization(mut self, value: IpWhoisLookupResponseIrtOrganization) -> Self {
+        self.organization = Some(value);
+        self
+    }
+
+    pub fn technical_contacts(
+        mut self,
+        value: Vec<IpWhoisLookupResponseIrtTechnicalContactsItem>,
+    ) -> Self {
+        self.technical_contacts = Some(value);
+        self
+    }
+
     /// Consumes the builder and constructs a [`IpWhoisLookupResponseIrt`].
     pub fn build(self) -> Result<IpWhoisLookupResponseIrt, BuildError> {
         Ok(IpWhoisLookupResponseIrt {
@@ -253,6 +295,10 @@ impl IpWhoisLookupResponseIrtBuilder {
             date_created: self.date_created,
             date_updated: self.date_updated,
             source: self.source,
+            abuse_contacts: self.abuse_contacts,
+            administrative_contacts: self.administrative_contacts,
+            organization: self.organization,
+            technical_contacts: self.technical_contacts,
         })
     }
 }

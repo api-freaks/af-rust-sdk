@@ -1,144 +1,68 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
-#[serde(untagged)]
-pub enum WebScrapeRequestBodyOneInstructionsItem {
-    WebScrapeRequestBodyOneInstructionsItemPostForm(
-        WebScrapeRequestBodyOneInstructionsItemPostForm,
-    ),
-
-    WebScrapeRequestBodyOneInstructionsItemGetForm(WebScrapeRequestBodyOneInstructionsItemGetForm),
-
-    WebScrapeRequestBodyOneInstructionsItemExtract(WebScrapeRequestBodyOneInstructionsItemExtract),
-
-    WebScrapeRequestBodyOneInstructionsItemGetPage(WebScrapeRequestBodyOneInstructionsItemGetPage),
+/// A single static-HTML scraping step. Exactly one of these action fields is set per instruction; every other field is absent.
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+pub struct WebScrapeRequestBodyOneInstructionsItem {
+    /// Form selector and field values to submit via postForm or getForm.
+    #[serde(rename = "postForm")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub post_form: Option<WebScrapeRequestBodyOneInstructionsItemPostForm>,
+    /// Form selector and field values to submit via postForm or getForm.
+    #[serde(rename = "getForm")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub get_form: Option<WebScrapeRequestBodyOneInstructionsItemGetForm>,
+    /// Maps arbitrary output field names to CSS or XPath selectors. Each key becomes a field in the response's extractedData object.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extract: Option<HashMap<String, String>>,
+    /// Get page action: retrieves the full page content. Optionally provide a URL or selector to target a specific page.
+    #[serde(rename = "getPage")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub get_page: Option<String>,
 }
 
 impl WebScrapeRequestBodyOneInstructionsItem {
-    pub fn is_web_scrape_request_body_one_instructions_item_post_form(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyOneInstructionsItemPostForm(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_one_instructions_item_get_form(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyOneInstructionsItemGetForm(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_one_instructions_item_extract(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyOneInstructionsItemExtract(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_one_instructions_item_get_page(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyOneInstructionsItemGetPage(_)
-        )
-    }
-
-    pub fn as_web_scrape_request_body_one_instructions_item_post_form(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyOneInstructionsItemPostForm> {
-        match self {
-            Self::WebScrapeRequestBodyOneInstructionsItemPostForm(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_one_instructions_item_post_form(
-        self,
-    ) -> Option<WebScrapeRequestBodyOneInstructionsItemPostForm> {
-        match self {
-            Self::WebScrapeRequestBodyOneInstructionsItemPostForm(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_one_instructions_item_get_form(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyOneInstructionsItemGetForm> {
-        match self {
-            Self::WebScrapeRequestBodyOneInstructionsItemGetForm(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_one_instructions_item_get_form(
-        self,
-    ) -> Option<WebScrapeRequestBodyOneInstructionsItemGetForm> {
-        match self {
-            Self::WebScrapeRequestBodyOneInstructionsItemGetForm(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_one_instructions_item_extract(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyOneInstructionsItemExtract> {
-        match self {
-            Self::WebScrapeRequestBodyOneInstructionsItemExtract(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_one_instructions_item_extract(
-        self,
-    ) -> Option<WebScrapeRequestBodyOneInstructionsItemExtract> {
-        match self {
-            Self::WebScrapeRequestBodyOneInstructionsItemExtract(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_one_instructions_item_get_page(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyOneInstructionsItemGetPage> {
-        match self {
-            Self::WebScrapeRequestBodyOneInstructionsItemGetPage(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_one_instructions_item_get_page(
-        self,
-    ) -> Option<WebScrapeRequestBodyOneInstructionsItemGetPage> {
-        match self {
-            Self::WebScrapeRequestBodyOneInstructionsItemGetPage(value) => Some(value),
-            _ => None,
-        }
+    pub fn builder() -> WebScrapeRequestBodyOneInstructionsItemBuilder {
+        <WebScrapeRequestBodyOneInstructionsItemBuilder as Default>::default()
     }
 }
 
-impl fmt::Display for WebScrapeRequestBodyOneInstructionsItem {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::WebScrapeRequestBodyOneInstructionsItemPostForm(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyOneInstructionsItemGetForm(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyOneInstructionsItemExtract(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyOneInstructionsItemGetPage(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-        }
+#[derive(Clone, PartialEq, Default, Debug)]
+#[non_exhaustive]
+pub struct WebScrapeRequestBodyOneInstructionsItemBuilder {
+    post_form: Option<WebScrapeRequestBodyOneInstructionsItemPostForm>,
+    get_form: Option<WebScrapeRequestBodyOneInstructionsItemGetForm>,
+    extract: Option<HashMap<String, String>>,
+    get_page: Option<String>,
+}
+
+impl WebScrapeRequestBodyOneInstructionsItemBuilder {
+    pub fn post_form(mut self, value: WebScrapeRequestBodyOneInstructionsItemPostForm) -> Self {
+        self.post_form = Some(value);
+        self
+    }
+
+    pub fn get_form(mut self, value: WebScrapeRequestBodyOneInstructionsItemGetForm) -> Self {
+        self.get_form = Some(value);
+        self
+    }
+
+    pub fn extract(mut self, value: HashMap<String, String>) -> Self {
+        self.extract = Some(value);
+        self
+    }
+
+    pub fn get_page(mut self, value: impl Into<String>) -> Self {
+        self.get_page = Some(value.into());
+        self
+    }
+
+    /// Consumes the builder and constructs a [`WebScrapeRequestBodyOneInstructionsItem`].
+    pub fn build(self) -> Result<WebScrapeRequestBodyOneInstructionsItem, BuildError> {
+        Ok(WebScrapeRequestBodyOneInstructionsItem {
+            post_form: self.post_form,
+            get_form: self.get_form,
+            extract: self.extract,
+            get_page: self.get_page,
+        })
     }
 }

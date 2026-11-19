@@ -1,10 +1,14 @@
 pub use crate::prelude::*;
 
+/// A selector/value pair used by fill, select, and clickButtonByValue instructions.
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
-#[serde(transparent)]
 pub struct WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue {
-    pub click_button_by_value:
-        Option<WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValueClickButtonByValue>,
+    /// CSS or XPath selector identifying the target element.
+    #[serde(default)]
+    pub place: String,
+    /// Value to fill, select, or match against.
+    #[serde(default)]
+    pub value: String,
 }
 
 impl WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue {
@@ -17,26 +21,36 @@ impl WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValueBuilder {
-    click_button_by_value:
-        Option<WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValueClickButtonByValue>,
+    place: Option<String>,
+    value: Option<String>,
 }
 
 impl WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValueBuilder {
-    pub fn click_button_by_value(
-        mut self,
-        value: WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValueClickButtonByValue,
-    ) -> Self {
-        self.click_button_by_value = Some(value);
+    pub fn place(mut self, value: impl Into<String>) -> Self {
+        self.place = Some(value.into());
+        self
+    }
+
+    pub fn value(mut self, value: impl Into<String>) -> Self {
+        self.value = Some(value.into());
         self
     }
 
     /// Consumes the builder and constructs a [`WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue`].
+    /// This method will fail if any of the following fields are not set:
+    /// - [`place`](WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValueBuilder::place)
+    /// - [`value`](WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValueBuilder::value)
     pub fn build(
         self,
     ) -> Result<WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue, BuildError> {
         Ok(
             WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue {
-                click_button_by_value: self.click_button_by_value,
+                place: self
+                    .place
+                    .ok_or_else(|| BuildError::missing_field("place"))?,
+                value: self
+                    .value
+                    .ok_or_else(|| BuildError::missing_field("value"))?,
             },
         )
     }

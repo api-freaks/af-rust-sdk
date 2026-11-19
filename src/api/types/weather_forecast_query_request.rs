@@ -7,7 +7,7 @@ pub struct WeatherForecastQueryRequest {
     #[serde(rename = "apiKey")]
     #[serde(default)]
     pub api_key: String,
-    /// Response format returned by the API.
+    /// Response format returned by the API. Only JSON is supported.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub format: Option<WeatherForecastRequestFormat>,
     /// Start date for the forecast in YYYY-MM-DD format. Forecast dates must be current or future dates only. Past dates are not allowed for forecast data. The difference between startDate and endDate must not exceed 16 days.

@@ -7,7 +7,7 @@ pub struct HistoricalWeatherQueryRequest {
     #[serde(rename = "apiKey")]
     #[serde(default)]
     pub api_key: String,
-    /// Response format returned by the API.
+    /// Response format returned by the API. Only JSON is supported.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub format: Option<HistoricalWeatherRequestFormat>,
     /// Specific date for which to fetch weather data in YYYY-MM-DD format. Historical dates must be past dates only. Current or future dates are not allowed for historical data. Data available from 1940 onwards.

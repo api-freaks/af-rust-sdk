@@ -4,8 +4,8 @@ pub use crate::prelude::*;
 pub struct SubdomainsLookupResponseSubdomainsItem {
     #[serde(default)]
     pub subdomain: String,
-    #[serde(default)]
-    pub first_seen: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_seen: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_seen: Option<String>,
     /// The date from which the subdomain is considered inactive. Appears only if the subdomain is no longer active.
@@ -52,15 +52,12 @@ impl SubdomainsLookupResponseSubdomainsItemBuilder {
     /// Consumes the builder and constructs a [`SubdomainsLookupResponseSubdomainsItem`].
     /// This method will fail if any of the following fields are not set:
     /// - [`subdomain`](SubdomainsLookupResponseSubdomainsItemBuilder::subdomain)
-    /// - [`first_seen`](SubdomainsLookupResponseSubdomainsItemBuilder::first_seen)
     pub fn build(self) -> Result<SubdomainsLookupResponseSubdomainsItem, BuildError> {
         Ok(SubdomainsLookupResponseSubdomainsItem {
             subdomain: self
                 .subdomain
                 .ok_or_else(|| BuildError::missing_field("subdomain"))?,
-            first_seen: self
-                .first_seen
-                .ok_or_else(|| BuildError::missing_field("first_seen"))?,
+            first_seen: self.first_seen,
             last_seen: self.last_seen,
             inactive_from: self.inactive_from,
         })

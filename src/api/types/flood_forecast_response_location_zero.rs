@@ -1,21 +1,17 @@
 pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
+// required fields kept strict for untagged-union matching (fix_rust_untagged_union_required.py)
 pub struct FloodForecastResponseLocationZero {
     /// Geographic latitude coordinate in decimal degrees, ranging from -90 (South Pole) to +90 (North Pole).
-    #[serde(default)]
     pub latitude: String,
     /// Geographic longitude coordinate in decimal degrees, ranging from -180 (West) to +180 (East).
-    #[serde(default)]
     pub longitude: String,
     /// Full name of the country corresponding to the provided coordinates.
-    #[serde(default)]
     pub country_name: String,
     /// State, province, or primary administrative division name for the location.
-    #[serde(default)]
     pub state_prov: String,
     /// City or municipal area name associated with the coordinate location.
-    #[serde(default)]
     pub city: String,
     /// Specific locality, neighborhood, district, or village name within the broader area.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -24,10 +20,8 @@ pub struct FloodForecastResponseLocationZero {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub elevation: Option<String>,
     /// IANA timezone database identifier for the location (e.g., America/New_York, Europe/London).
-    #[serde(default)]
     pub timezone: String,
     /// Abbreviated timezone representation based on current offset (e.g., EST, GMT, PST).
-    #[serde(default)]
     pub timezone_abbreviation: String,
 }
 

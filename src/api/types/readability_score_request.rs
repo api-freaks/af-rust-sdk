@@ -7,14 +7,14 @@ pub struct ReadabilityScoreRequest {
     pub text: String,
     /// Your API key
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
     /// Target audience used to tune sentence difficulty levels
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub target: Option<ReadabilityScoreRequestTarget>,
     /// Comma-separated response sections to omit. Possible values are readability_scores, sentence_readability, readability_grade
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub exclude: Option<String>,
 }
 

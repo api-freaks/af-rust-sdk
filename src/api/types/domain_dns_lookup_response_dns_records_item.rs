@@ -5,9 +5,9 @@ pub use crate::prelude::*;
 pub enum DomainDnsLookupResponseDnsRecordsItem {
     DomainDnsLookupResponseDnsRecordsItemAddress(DomainDnsLookupResponseDnsRecordsItemAddress),
 
-    DomainDnsLookupResponseDnsRecordsItemOne(DomainDnsLookupResponseDnsRecordsItemOne),
-
     DomainDnsLookupResponseDnsRecordsItemPriority(DomainDnsLookupResponseDnsRecordsItemPriority),
+
+    DomainDnsLookupResponseDnsRecordsItemOne(DomainDnsLookupResponseDnsRecordsItemOne),
 
     DomainDnsLookupResponseDnsRecordsItemSingleName(
         DomainDnsLookupResponseDnsRecordsItemSingleName,
@@ -23,12 +23,12 @@ impl DomainDnsLookupResponseDnsRecordsItem {
         matches!(self, Self::DomainDnsLookupResponseDnsRecordsItemAddress(_))
     }
 
-    pub fn is_domain_dns_lookup_response_dns_records_item_one(&self) -> bool {
-        matches!(self, Self::DomainDnsLookupResponseDnsRecordsItemOne(_))
-    }
-
     pub fn is_domain_dns_lookup_response_dns_records_item_priority(&self) -> bool {
         matches!(self, Self::DomainDnsLookupResponseDnsRecordsItemPriority(_))
+    }
+
+    pub fn is_domain_dns_lookup_response_dns_records_item_one(&self) -> bool {
+        matches!(self, Self::DomainDnsLookupResponseDnsRecordsItemOne(_))
     }
 
     pub fn is_domain_dns_lookup_response_dns_records_item_single_name(&self) -> bool {
@@ -64,24 +64,6 @@ impl DomainDnsLookupResponseDnsRecordsItem {
         }
     }
 
-    pub fn as_domain_dns_lookup_response_dns_records_item_one(
-        &self,
-    ) -> Option<&DomainDnsLookupResponseDnsRecordsItemOne> {
-        match self {
-            Self::DomainDnsLookupResponseDnsRecordsItemOne(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_domain_dns_lookup_response_dns_records_item_one(
-        self,
-    ) -> Option<DomainDnsLookupResponseDnsRecordsItemOne> {
-        match self {
-            Self::DomainDnsLookupResponseDnsRecordsItemOne(value) => Some(value),
-            _ => None,
-        }
-    }
-
     pub fn as_domain_dns_lookup_response_dns_records_item_priority(
         &self,
     ) -> Option<&DomainDnsLookupResponseDnsRecordsItemPriority> {
@@ -96,6 +78,24 @@ impl DomainDnsLookupResponseDnsRecordsItem {
     ) -> Option<DomainDnsLookupResponseDnsRecordsItemPriority> {
         match self {
             Self::DomainDnsLookupResponseDnsRecordsItemPriority(value) => Some(value),
+            _ => None,
+        }
+    }
+
+    pub fn as_domain_dns_lookup_response_dns_records_item_one(
+        &self,
+    ) -> Option<&DomainDnsLookupResponseDnsRecordsItemOne> {
+        match self {
+            Self::DomainDnsLookupResponseDnsRecordsItemOne(value) => Some(value),
+            _ => None,
+        }
+    }
+
+    pub fn into_domain_dns_lookup_response_dns_records_item_one(
+        self,
+    ) -> Option<DomainDnsLookupResponseDnsRecordsItemOne> {
+        match self {
+            Self::DomainDnsLookupResponseDnsRecordsItemOne(value) => Some(value),
             _ => None,
         }
     }
@@ -163,12 +163,12 @@ impl fmt::Display for DomainDnsLookupResponseDnsRecordsItem {
                 "{}",
                 serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
             ),
-            Self::DomainDnsLookupResponseDnsRecordsItemOne(value) => write!(
+            Self::DomainDnsLookupResponseDnsRecordsItemPriority(value) => write!(
                 f,
                 "{}",
                 serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
             ),
-            Self::DomainDnsLookupResponseDnsRecordsItemPriority(value) => write!(
+            Self::DomainDnsLookupResponseDnsRecordsItemOne(value) => write!(
                 f,
                 "{}",
                 serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))

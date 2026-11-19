@@ -7,7 +7,7 @@ pub struct GrammarCorrectRequest {
     pub text: String,
     /// Your API key
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
 }

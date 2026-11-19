@@ -1,768 +1,266 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-#[serde(untagged)]
-pub enum WebScrapeRequestBodyBlockUrlInstructionsItem {
-    WebScrapeRequestBodyBlockUrlInstructionsItemFill(
-        WebScrapeRequestBodyBlockUrlInstructionsItemFill,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemClick(
-        WebScrapeRequestBodyBlockUrlInstructionsItemClick,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemClickIfExist(
-        WebScrapeRequestBodyBlockUrlInstructionsItemClickIfExist,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemEnter(
-        WebScrapeRequestBodyBlockUrlInstructionsItemEnter,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemNewTab(
-        WebScrapeRequestBodyBlockUrlInstructionsItemNewTab,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemMoveToRelativeTab(
-        WebScrapeRequestBodyBlockUrlInstructionsItemMoveToRelativeTab,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemWait(
-        WebScrapeRequestBodyBlockUrlInstructionsItemWait,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemWaitFor(
-        WebScrapeRequestBodyBlockUrlInstructionsItemWaitFor,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemSelect(
-        WebScrapeRequestBodyBlockUrlInstructionsItemSelect,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemJsExe(
-        WebScrapeRequestBodyBlockUrlInstructionsItemJsExe,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemConditionalCheck(
-        WebScrapeRequestBodyBlockUrlInstructionsItemConditionalCheck,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue(
-        WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemGeneralImageCaptcha(
-        WebScrapeRequestBodyBlockUrlInstructionsItemGeneralImageCaptcha,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemBlockElement(
-        WebScrapeRequestBodyBlockUrlInstructionsItemBlockElement,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemExtract(
-        WebScrapeRequestBodyBlockUrlInstructionsItemExtract,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemFillImageCaptcha(
-        WebScrapeRequestBodyBlockUrlInstructionsItemFillImageCaptcha,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToIframe(
-        WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToIframe,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToParentFrame(
-        WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToParentFrame,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemResolveAudioCaptcha(
-        WebScrapeRequestBodyBlockUrlInstructionsItemResolveAudioCaptcha,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemScreenshot(
-        WebScrapeRequestBodyBlockUrlInstructionsItemScreenshot,
-    ),
-
-    WebScrapeRequestBodyBlockUrlInstructionsItemSaveimage(
-        WebScrapeRequestBodyBlockUrlInstructionsItemSaveimage,
-    ),
+/// A single browser scraping step. Exactly one of these action fields is set per instruction; every other field is absent.
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+pub struct WebScrapeRequestBodyBlockUrlInstructionsItem {
+    /// A selector/value pair used by fill, select, and clickButtonByValue instructions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fill: Option<WebScrapeRequestBodyBlockUrlInstructionsItemFill>,
+    /// Click action: CSS selector or XPath identifying the element to click.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub click: Option<String>,
+    /// Click if exists action: CSS selector or XPath identifying the element to click, only if it appears on the page within a short timeout.
+    #[serde(rename = "clickIfExist")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub click_if_exist: Option<String>,
+    /// Enter key action: CSS selector or XPath identifying the element to send an Enter keystroke to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enter: Option<String>,
+    /// New tab action: set to true to switch focus to a newly opened browser tab.
+    #[serde(rename = "newTab")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub new_tab: Option<bool>,
+    /// Move to relative tab action: relative tab index to move to (e.g. 1 for the next tab, -1 for the previous tab).
+    #[serde(rename = "moveToRelativeTab")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub move_to_relative_tab: Option<i64>,
+    /// Wait action: pauses execution for this many milliseconds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wait: Option<i64>,
+    /// Wait for element action: CSS selector or XPath identifying the element to wait for before continuing.
+    #[serde(rename = "waitFor")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wait_for: Option<String>,
+    /// A selector/value pair used by fill, select, and clickButtonByValue instructions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub select: Option<WebScrapeRequestBodyBlockUrlInstructionsItemSelect>,
+    /// Execute JavaScript action: JavaScript code to execute inside the page context.
+    #[serde(rename = "jsExe")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub js_exe: Option<String>,
+    /// Conditional check action: list of conditional steps, each supporting if-<method> and else-<method> keys with conditions, executed based on element state.
+    #[serde(rename = "conditionalCheck")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub conditional_check: Option<Vec<HashMap<String, serde_json::Value>>>,
+    /// A selector/value pair used by fill, select, and clickButtonByValue instructions.
+    #[serde(rename = "clickButtonByValue")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub click_button_by_value:
+        Option<WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue>,
+    /// Image captcha solver action: instructions for solving image-based captchas using a selected model.
+    #[serde(rename = "generalImageCaptcha")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub general_image_captcha:
+        Option<Vec<WebScrapeRequestBodyBlockUrlInstructionsItemGeneralImageCaptchaItem>>,
+    /// Block element action: list of CSS selectors or XPaths for elements to block or hide on the page.
+    #[serde(rename = "blockElement")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub block_element: Option<Vec<String>>,
+    /// Maps arbitrary output field names to CSS or XPath selectors. Each key becomes a field in the response's extractedData object.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extract: Option<HashMap<String, String>>,
+    /// Fill image captcha action: captures and fills image-based captcha values automatically.
+    #[serde(rename = "fillImageCaptcha")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fill_image_captcha:
+        Option<Vec<WebScrapeRequestBodyBlockUrlInstructionsItemFillImageCaptchaItem>>,
+    /// Switch to iframe action: switches the browser context into an iframe identified by name or ID.
+    #[serde(rename = "switchToIframe")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub switch_to_iframe: Option<String>,
+    /// Switch to parent frame action: returns the browser context from an iframe back to its parent frame.
+    #[serde(rename = "switchToParentFrame")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub switch_to_parent_frame: Option<bool>,
+    /// Selectors for locating and solving a single audio CAPTCHA challenge.
+    #[serde(rename = "resolveAudioCaptcha")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub resolve_audio_captcha:
+        Option<WebScrapeRequestBodyBlockUrlInstructionsItemResolveAudioCaptcha>,
+    /// Screenshot action: captures a screenshot of the current page state. Can be a boolean-like value or a selector.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub screenshot: Option<String>,
+    /// Save image action: saves an image from the page by CSS selector or element ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub saveimage: Option<String>,
 }
 
 impl WebScrapeRequestBodyBlockUrlInstructionsItem {
-    pub fn is_web_scrape_request_body_block_url_instructions_item_fill(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemFill(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_click(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemClick(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_click_if_exist(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemClickIfExist(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_enter(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemEnter(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_new_tab(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemNewTab(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_move_to_relative_tab(
-        &self,
-    ) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemMoveToRelativeTab(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_wait(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemWait(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_wait_for(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemWaitFor(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_select(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSelect(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_js_exe(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemJsExe(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_conditional_check(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemConditionalCheck(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_click_button_by_value(
-        &self,
-    ) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_general_image_captcha(
-        &self,
-    ) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemGeneralImageCaptcha(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_block_element(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemBlockElement(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_extract(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemExtract(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_fill_image_captcha(
-        &self,
-    ) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemFillImageCaptcha(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_switch_to_iframe(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToIframe(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_switch_to_parent_frame(
-        &self,
-    ) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToParentFrame(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_resolve_audio_captcha(
-        &self,
-    ) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemResolveAudioCaptcha(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_screenshot(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemScreenshot(_)
-        )
-    }
-
-    pub fn is_web_scrape_request_body_block_url_instructions_item_saveimage(&self) -> bool {
-        matches!(
-            self,
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSaveimage(_)
-        )
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_fill(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemFill> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemFill(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_fill(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemFill> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemFill(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_click(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemClick> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemClick(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_click(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemClick> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemClick(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_click_if_exist(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemClickIfExist> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemClickIfExist(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_click_if_exist(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemClickIfExist> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemClickIfExist(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_enter(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemEnter> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemEnter(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_enter(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemEnter> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemEnter(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_new_tab(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemNewTab> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemNewTab(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_new_tab(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemNewTab> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemNewTab(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_move_to_relative_tab(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemMoveToRelativeTab> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemMoveToRelativeTab(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_move_to_relative_tab(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemMoveToRelativeTab> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemMoveToRelativeTab(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_wait(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemWait> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemWait(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_wait(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemWait> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemWait(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_wait_for(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemWaitFor> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemWaitFor(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_wait_for(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemWaitFor> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemWaitFor(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_select(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemSelect> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSelect(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_select(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemSelect> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSelect(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_js_exe(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemJsExe> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemJsExe(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_js_exe(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemJsExe> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemJsExe(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_conditional_check(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemConditionalCheck> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemConditionalCheck(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_conditional_check(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemConditionalCheck> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemConditionalCheck(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_click_button_by_value(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_click_button_by_value(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_general_image_captcha(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemGeneralImageCaptcha> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemGeneralImageCaptcha(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_general_image_captcha(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemGeneralImageCaptcha> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemGeneralImageCaptcha(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_block_element(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemBlockElement> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemBlockElement(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_block_element(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemBlockElement> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemBlockElement(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_extract(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemExtract> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemExtract(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_extract(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemExtract> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemExtract(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_fill_image_captcha(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemFillImageCaptcha> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemFillImageCaptcha(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_fill_image_captcha(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemFillImageCaptcha> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemFillImageCaptcha(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_switch_to_iframe(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToIframe> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToIframe(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_switch_to_iframe(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToIframe> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToIframe(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_switch_to_parent_frame(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToParentFrame> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToParentFrame(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_switch_to_parent_frame(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToParentFrame> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToParentFrame(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_resolve_audio_captcha(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemResolveAudioCaptcha> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemResolveAudioCaptcha(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_resolve_audio_captcha(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemResolveAudioCaptcha> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemResolveAudioCaptcha(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_screenshot(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemScreenshot> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemScreenshot(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_screenshot(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemScreenshot> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemScreenshot(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn as_web_scrape_request_body_block_url_instructions_item_saveimage(
-        &self,
-    ) -> Option<&WebScrapeRequestBodyBlockUrlInstructionsItemSaveimage> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSaveimage(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_web_scrape_request_body_block_url_instructions_item_saveimage(
-        self,
-    ) -> Option<WebScrapeRequestBodyBlockUrlInstructionsItemSaveimage> {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSaveimage(value) => Some(value),
-            _ => None,
-        }
+    pub fn builder() -> WebScrapeRequestBodyBlockUrlInstructionsItemBuilder {
+        <WebScrapeRequestBodyBlockUrlInstructionsItemBuilder as Default>::default()
     }
 }
 
-impl fmt::Display for WebScrapeRequestBodyBlockUrlInstructionsItem {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemFill(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemClick(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemClickIfExist(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemEnter(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemNewTab(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemMoveToRelativeTab(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemWait(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemWaitFor(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSelect(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemJsExe(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemConditionalCheck(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemGeneralImageCaptcha(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemBlockElement(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemExtract(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemFillImageCaptcha(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToIframe(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSwitchToParentFrame(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemResolveAudioCaptcha(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemScreenshot(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-            Self::WebScrapeRequestBodyBlockUrlInstructionsItemSaveimage(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
-        }
+#[derive(Clone, PartialEq, Default, Debug)]
+#[non_exhaustive]
+pub struct WebScrapeRequestBodyBlockUrlInstructionsItemBuilder {
+    fill: Option<WebScrapeRequestBodyBlockUrlInstructionsItemFill>,
+    click: Option<String>,
+    click_if_exist: Option<String>,
+    enter: Option<String>,
+    new_tab: Option<bool>,
+    move_to_relative_tab: Option<i64>,
+    wait: Option<i64>,
+    wait_for: Option<String>,
+    select: Option<WebScrapeRequestBodyBlockUrlInstructionsItemSelect>,
+    js_exe: Option<String>,
+    conditional_check: Option<Vec<HashMap<String, serde_json::Value>>>,
+    click_button_by_value: Option<WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue>,
+    general_image_captcha:
+        Option<Vec<WebScrapeRequestBodyBlockUrlInstructionsItemGeneralImageCaptchaItem>>,
+    block_element: Option<Vec<String>>,
+    extract: Option<HashMap<String, String>>,
+    fill_image_captcha:
+        Option<Vec<WebScrapeRequestBodyBlockUrlInstructionsItemFillImageCaptchaItem>>,
+    switch_to_iframe: Option<String>,
+    switch_to_parent_frame: Option<bool>,
+    resolve_audio_captcha: Option<WebScrapeRequestBodyBlockUrlInstructionsItemResolveAudioCaptcha>,
+    screenshot: Option<String>,
+    saveimage: Option<String>,
+}
+
+impl WebScrapeRequestBodyBlockUrlInstructionsItemBuilder {
+    pub fn fill(mut self, value: WebScrapeRequestBodyBlockUrlInstructionsItemFill) -> Self {
+        self.fill = Some(value);
+        self
+    }
+
+    pub fn click(mut self, value: impl Into<String>) -> Self {
+        self.click = Some(value.into());
+        self
+    }
+
+    pub fn click_if_exist(mut self, value: impl Into<String>) -> Self {
+        self.click_if_exist = Some(value.into());
+        self
+    }
+
+    pub fn enter(mut self, value: impl Into<String>) -> Self {
+        self.enter = Some(value.into());
+        self
+    }
+
+    pub fn new_tab(mut self, value: bool) -> Self {
+        self.new_tab = Some(value);
+        self
+    }
+
+    pub fn move_to_relative_tab(mut self, value: i64) -> Self {
+        self.move_to_relative_tab = Some(value);
+        self
+    }
+
+    pub fn wait(mut self, value: i64) -> Self {
+        self.wait = Some(value);
+        self
+    }
+
+    pub fn wait_for(mut self, value: impl Into<String>) -> Self {
+        self.wait_for = Some(value.into());
+        self
+    }
+
+    pub fn select(mut self, value: WebScrapeRequestBodyBlockUrlInstructionsItemSelect) -> Self {
+        self.select = Some(value);
+        self
+    }
+
+    pub fn js_exe(mut self, value: impl Into<String>) -> Self {
+        self.js_exe = Some(value.into());
+        self
+    }
+
+    pub fn conditional_check(mut self, value: Vec<HashMap<String, serde_json::Value>>) -> Self {
+        self.conditional_check = Some(value);
+        self
+    }
+
+    pub fn click_button_by_value(
+        mut self,
+        value: WebScrapeRequestBodyBlockUrlInstructionsItemClickButtonByValue,
+    ) -> Self {
+        self.click_button_by_value = Some(value);
+        self
+    }
+
+    pub fn general_image_captcha(
+        mut self,
+        value: Vec<WebScrapeRequestBodyBlockUrlInstructionsItemGeneralImageCaptchaItem>,
+    ) -> Self {
+        self.general_image_captcha = Some(value);
+        self
+    }
+
+    pub fn block_element(mut self, value: Vec<String>) -> Self {
+        self.block_element = Some(value);
+        self
+    }
+
+    pub fn extract(mut self, value: HashMap<String, String>) -> Self {
+        self.extract = Some(value);
+        self
+    }
+
+    pub fn fill_image_captcha(
+        mut self,
+        value: Vec<WebScrapeRequestBodyBlockUrlInstructionsItemFillImageCaptchaItem>,
+    ) -> Self {
+        self.fill_image_captcha = Some(value);
+        self
+    }
+
+    pub fn switch_to_iframe(mut self, value: impl Into<String>) -> Self {
+        self.switch_to_iframe = Some(value.into());
+        self
+    }
+
+    pub fn switch_to_parent_frame(mut self, value: bool) -> Self {
+        self.switch_to_parent_frame = Some(value);
+        self
+    }
+
+    pub fn resolve_audio_captcha(
+        mut self,
+        value: WebScrapeRequestBodyBlockUrlInstructionsItemResolveAudioCaptcha,
+    ) -> Self {
+        self.resolve_audio_captcha = Some(value);
+        self
+    }
+
+    pub fn screenshot(mut self, value: impl Into<String>) -> Self {
+        self.screenshot = Some(value.into());
+        self
+    }
+
+    pub fn saveimage(mut self, value: impl Into<String>) -> Self {
+        self.saveimage = Some(value.into());
+        self
+    }
+
+    /// Consumes the builder and constructs a [`WebScrapeRequestBodyBlockUrlInstructionsItem`].
+    pub fn build(self) -> Result<WebScrapeRequestBodyBlockUrlInstructionsItem, BuildError> {
+        Ok(WebScrapeRequestBodyBlockUrlInstructionsItem {
+            fill: self.fill,
+            click: self.click,
+            click_if_exist: self.click_if_exist,
+            enter: self.enter,
+            new_tab: self.new_tab,
+            move_to_relative_tab: self.move_to_relative_tab,
+            wait: self.wait,
+            wait_for: self.wait_for,
+            select: self.select,
+            js_exe: self.js_exe,
+            conditional_check: self.conditional_check,
+            click_button_by_value: self.click_button_by_value,
+            general_image_captcha: self.general_image_captcha,
+            block_element: self.block_element,
+            extract: self.extract,
+            fill_image_captcha: self.fill_image_captcha,
+            switch_to_iframe: self.switch_to_iframe,
+            switch_to_parent_frame: self.switch_to_parent_frame,
+            resolve_audio_captcha: self.resolve_audio_captcha,
+            screenshot: self.screenshot,
+            saveimage: self.saveimage,
+        })
     }
 }

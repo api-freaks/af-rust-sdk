@@ -7,8 +7,8 @@ pub struct DomainReputationResponseEmailDeliverabilityAuthenticationDmarc {
     #[serde(default)]
     pub present: bool,
     /// DMARC enforcement policy applied to failing messages (e.g. none, quarantine, reject).
-    #[serde(default)]
-    pub policy: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub policy: Option<String>,
     /// Indicates whether DMARC aggregate / forensic reporting addresses are configured.
     #[serde(default)]
     pub reporting_configured: bool,
@@ -48,7 +48,6 @@ impl DomainReputationResponseEmailDeliverabilityAuthenticationDmarcBuilder {
     /// Consumes the builder and constructs a [`DomainReputationResponseEmailDeliverabilityAuthenticationDmarc`].
     /// This method will fail if any of the following fields are not set:
     /// - [`present`](DomainReputationResponseEmailDeliverabilityAuthenticationDmarcBuilder::present)
-    /// - [`policy`](DomainReputationResponseEmailDeliverabilityAuthenticationDmarcBuilder::policy)
     /// - [`reporting_configured`](DomainReputationResponseEmailDeliverabilityAuthenticationDmarcBuilder::reporting_configured)
     pub fn build(
         self,
@@ -58,9 +57,7 @@ impl DomainReputationResponseEmailDeliverabilityAuthenticationDmarcBuilder {
                 present: self
                     .present
                     .ok_or_else(|| BuildError::missing_field("present"))?,
-                policy: self
-                    .policy
-                    .ok_or_else(|| BuildError::missing_field("policy"))?,
+                policy: self.policy,
                 reporting_configured: self
                     .reporting_configured
                     .ok_or_else(|| BuildError::missing_field("reporting_configured"))?,

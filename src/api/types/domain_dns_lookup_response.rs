@@ -11,12 +11,12 @@ pub struct DomainDnsLookupResponse {
     pub query_time: String,
     /// Queried domain.
     #[serde(rename = "domainName")]
-    #[serde(default)]
-    pub domain_name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub domain_name: Option<String>,
     /// Indicates whether the domain is registered.
     #[serde(rename = "domainRegistered")]
-    #[serde(default)]
-    pub domain_registered: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub domain_registered: Option<bool>,
     #[serde(rename = "dnsTypes")]
     #[serde(default)]
     pub dns_types: DomainDnsLookupResponseDnsTypes,
@@ -24,6 +24,10 @@ pub struct DomainDnsLookupResponse {
     #[serde(rename = "dnsRecords")]
     #[serde(default)]
     pub dns_records: Vec<DomainDnsLookupResponseDnsRecordsItem>,
+    /// IP address queried (present when ipAddress parameter is used instead of host-name).
+    #[serde(rename = "ipAddress")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip_address: Option<String>,
 }
 
 impl DomainDnsLookupResponse {
@@ -41,6 +45,7 @@ pub struct DomainDnsLookupResponseBuilder {
     domain_registered: Option<bool>,
     dns_types: Option<DomainDnsLookupResponseDnsTypes>,
     dns_records: Option<Vec<DomainDnsLookupResponseDnsRecordsItem>>,
+    ip_address: Option<String>,
 }
 
 impl DomainDnsLookupResponseBuilder {
@@ -74,12 +79,15 @@ impl DomainDnsLookupResponseBuilder {
         self
     }
 
+    pub fn ip_address(mut self, value: impl Into<String>) -> Self {
+        self.ip_address = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`DomainDnsLookupResponse`].
     /// This method will fail if any of the following fields are not set:
     /// - [`status`](DomainDnsLookupResponseBuilder::status)
     /// - [`query_time`](DomainDnsLookupResponseBuilder::query_time)
-    /// - [`domain_name`](DomainDnsLookupResponseBuilder::domain_name)
-    /// - [`domain_registered`](DomainDnsLookupResponseBuilder::domain_registered)
     /// - [`dns_types`](DomainDnsLookupResponseBuilder::dns_types)
     /// - [`dns_records`](DomainDnsLookupResponseBuilder::dns_records)
     pub fn build(self) -> Result<DomainDnsLookupResponse, BuildError> {
@@ -90,18 +98,15 @@ impl DomainDnsLookupResponseBuilder {
             query_time: self
                 .query_time
                 .ok_or_else(|| BuildError::missing_field("query_time"))?,
-            domain_name: self
-                .domain_name
-                .ok_or_else(|| BuildError::missing_field("domain_name"))?,
-            domain_registered: self
-                .domain_registered
-                .ok_or_else(|| BuildError::missing_field("domain_registered"))?,
+            domain_name: self.domain_name,
+            domain_registered: self.domain_registered,
             dns_types: self
                 .dns_types
                 .ok_or_else(|| BuildError::missing_field("dns_types"))?,
             dns_records: self
                 .dns_records
                 .ok_or_else(|| BuildError::missing_field("dns_records"))?,
+            ip_address: self.ip_address,
         })
     }
 }

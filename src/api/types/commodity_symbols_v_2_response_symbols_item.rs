@@ -16,7 +16,7 @@ pub struct CommoditySymbolsV2ResponseSymbolsItem {
     pub category: String,
     /// Current status of the commodity. "inactive" means the symbol is deprecated - latest rates are unavailable, but historical rates remain available up to its deprecationDate.
     pub status: CommoditySymbolsV2ResponseSymbolsItemStatus,
-    /// The rate at which this commodity's price is updated.
+    /// The rate at which this commodity's price is updated. New values may be added over time.
     #[serde(rename = "updateInterval")]
     pub update_interval: CommoditySymbolsV2ResponseSymbolsItemUpdateInterval,
     /// Data source for the symbol (e.g., World Bank). Present only for some symbols.
@@ -30,6 +30,20 @@ pub struct CommoditySymbolsV2ResponseSymbolsItem {
     pub currency: CommoditySymbolsV2ResponseSymbolsItemCurrency,
     #[serde(default)]
     pub unit: CommoditySymbolsV2ResponseSymbolsItemUnit,
+    /// Optional. Present only for dated futures contracts (for example `WTIOIL-FUT-DEC26`). Contract type, currently always `futures`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub contract: Option<String>,
+    /// Optional. Present only for dated futures contracts. Delivery month of the contract (YYYY-MM), for example `2026-12`.
+    #[serde(rename = "deliveryMonth")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delivery_month: Option<String>,
+    /// Optional. Present for most dated futures contracts. Last trading date of the contract (YYYY-MM-DD), for example `2026-11-20`.
+    #[serde(rename = "expiresAt")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<NaiveDate>,
+    /// Optional. Present only for dated futures contracts. Symbol of the continuous futures series this contract belongs to (for example `WTIOIL-FUT`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub underlying: Option<String>,
 }
 
 impl CommoditySymbolsV2ResponseSymbolsItem {
@@ -51,6 +65,10 @@ pub struct CommoditySymbolsV2ResponseSymbolsItemBuilder {
     deprecation_date: Option<NaiveDate>,
     currency: Option<CommoditySymbolsV2ResponseSymbolsItemCurrency>,
     unit: Option<CommoditySymbolsV2ResponseSymbolsItemUnit>,
+    contract: Option<String>,
+    delivery_month: Option<String>,
+    expires_at: Option<NaiveDate>,
+    underlying: Option<String>,
 }
 
 impl CommoditySymbolsV2ResponseSymbolsItemBuilder {
@@ -107,6 +125,26 @@ impl CommoditySymbolsV2ResponseSymbolsItemBuilder {
         self
     }
 
+    pub fn contract(mut self, value: impl Into<String>) -> Self {
+        self.contract = Some(value.into());
+        self
+    }
+
+    pub fn delivery_month(mut self, value: impl Into<String>) -> Self {
+        self.delivery_month = Some(value.into());
+        self
+    }
+
+    pub fn expires_at(mut self, value: NaiveDate) -> Self {
+        self.expires_at = Some(value);
+        self
+    }
+
+    pub fn underlying(mut self, value: impl Into<String>) -> Self {
+        self.underlying = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`CommoditySymbolsV2ResponseSymbolsItem`].
     /// This method will fail if any of the following fields are not set:
     /// - [`symbol`](CommoditySymbolsV2ResponseSymbolsItemBuilder::symbol)
@@ -138,6 +176,10 @@ impl CommoditySymbolsV2ResponseSymbolsItemBuilder {
                 .currency
                 .ok_or_else(|| BuildError::missing_field("currency"))?,
             unit: self.unit.ok_or_else(|| BuildError::missing_field("unit"))?,
+            contract: self.contract,
+            delivery_month: self.delivery_month,
+            expires_at: self.expires_at,
+            underlying: self.underlying,
         })
     }
 }

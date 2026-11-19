@@ -1,19 +1,18 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
+// required fields kept strict for untagged-union matching (fix_rust_untagged_union_required.py)
 pub struct DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContact {
-    #[serde(default)]
     pub num: i64,
-    #[serde(default)]
     pub status: bool,
-    #[serde(default)]
     pub domain_name: String,
     /// Timestamp when the WHOIS query was executed (format YYYY-MM-DD HH:mm:ss, not ISO 8601).
-    #[serde(default)]
-    pub query_time: String,
-    #[serde(default)]
-    pub whois_server: String,
-    pub domain_registered: DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContactDomainRegistered,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub query_time: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub whois_server: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub domain_registered: Option<DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContactDomainRegistered>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub create_date: Option<NaiveDate>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -198,9 +197,6 @@ impl DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContactBu
     /// - [`num`](DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContactBuilder::num)
     /// - [`status`](DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContactBuilder::status)
     /// - [`domain_name`](DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContactBuilder::domain_name)
-    /// - [`query_time`](DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContactBuilder::query_time)
-    /// - [`whois_server`](DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContactBuilder::whois_server)
-    /// - [`domain_registered`](DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContactBuilder::domain_registered)
     pub fn build(
         self,
     ) -> Result<DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContact, BuildError>
@@ -214,15 +210,9 @@ impl DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContactBu
                 domain_name: self
                     .domain_name
                     .ok_or_else(|| BuildError::missing_field("domain_name"))?,
-                query_time: self
-                    .query_time
-                    .ok_or_else(|| BuildError::missing_field("query_time"))?,
-                whois_server: self
-                    .whois_server
-                    .ok_or_else(|| BuildError::missing_field("whois_server"))?,
-                domain_registered: self
-                    .domain_registered
-                    .ok_or_else(|| BuildError::missing_field("domain_registered"))?,
+                query_time: self.query_time,
+                whois_server: self.whois_server,
+                domain_registered: self.domain_registered,
                 create_date: self.create_date,
                 update_date: self.update_date,
                 expiry_date: self.expiry_date,

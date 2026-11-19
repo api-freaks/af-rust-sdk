@@ -42,6 +42,11 @@ pub struct DomainDnsLookupResponseDnsTypes {
     #[serde(default)]
     #[serde(with = "crate::core::number_serializers::option")]
     pub spf: Option<f64>,
+    #[serde(rename = "PTR")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
+    #[serde(with = "crate::core::number_serializers::option")]
+    pub ptr: Option<f64>,
 }
 
 impl DomainDnsLookupResponseDnsTypes {
@@ -61,6 +66,7 @@ pub struct DomainDnsLookupResponseDnsTypesBuilder {
     soa: Option<f64>,
     txt: Option<f64>,
     spf: Option<f64>,
+    ptr: Option<f64>,
 }
 
 impl DomainDnsLookupResponseDnsTypesBuilder {
@@ -104,6 +110,11 @@ impl DomainDnsLookupResponseDnsTypesBuilder {
         self
     }
 
+    pub fn ptr(mut self, value: f64) -> Self {
+        self.ptr = Some(value);
+        self
+    }
+
     /// Consumes the builder and constructs a [`DomainDnsLookupResponseDnsTypes`].
     pub fn build(self) -> Result<DomainDnsLookupResponseDnsTypes, BuildError> {
         Ok(DomainDnsLookupResponseDnsTypes {
@@ -115,6 +126,7 @@ impl DomainDnsLookupResponseDnsTypesBuilder {
             soa: self.soa,
             txt: self.txt,
             spf: self.spf,
+            ptr: self.ptr,
         })
     }
 }

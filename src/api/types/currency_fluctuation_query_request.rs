@@ -78,7 +78,6 @@ impl CurrencyFluctuationQueryRequestBuilder {
     /// This method will fail if any of the following fields are not set:
     /// - [`api_key`](CurrencyFluctuationQueryRequestBuilder::api_key)
     /// - [`start_date`](CurrencyFluctuationQueryRequestBuilder::start_date)
-    /// - [`symbols`](CurrencyFluctuationQueryRequestBuilder::symbols)
     pub fn build(self) -> Result<CurrencyFluctuationQueryRequest, BuildError> {
         Ok(CurrencyFluctuationQueryRequest {
             api_key: self
@@ -90,9 +89,7 @@ impl CurrencyFluctuationQueryRequestBuilder {
                 .ok_or_else(|| BuildError::missing_field("start_date"))?,
             end_date: self.end_date,
             base: self.base,
-            symbols: self
-                .symbols
-                .ok_or_else(|| BuildError::missing_field("symbols"))?,
+            symbols: self.symbols.unwrap_or_default(),
         })
     }
 }

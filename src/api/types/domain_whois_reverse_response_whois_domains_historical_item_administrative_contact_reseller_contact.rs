@@ -27,6 +27,12 @@ pub struct DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeCon
     pub fax: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mailing_address: Option<String>,
+    /// Registry handle for the contact, when published.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub handle: Option<String>,
+    /// Contact identifier.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
 }
 
 impl DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContactResellerContact {
@@ -51,6 +57,8 @@ pub struct DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeCon
     phone: Option<String>,
     fax: Option<String>,
     mailing_address: Option<String>,
+    handle: Option<String>,
+    id: Option<String>,
 }
 
 impl
@@ -116,6 +124,16 @@ impl
         self
     }
 
+    pub fn handle(mut self, value: impl Into<String>) -> Self {
+        self.handle = Some(value.into());
+        self
+    }
+
+    pub fn id(mut self, value: impl Into<String>) -> Self {
+        self.id = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContactResellerContact`].
     pub fn build(
         self,
@@ -136,6 +154,8 @@ impl
             phone: self.phone,
             fax: self.fax,
             mailing_address: self.mailing_address,
+            handle: self.handle,
+            id: self.id,
         })
     }
 }

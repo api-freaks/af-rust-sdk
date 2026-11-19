@@ -1,13 +1,11 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 #[serde(untagged)]
 pub enum WebScrapeRequestProxy {
     Boolean(bool),
 
     String(String),
-
-    StringToValueMap(HashMap<String, serde_json::Value>),
 }
 
 impl WebScrapeRequestProxy {
@@ -17,10 +15,6 @@ impl WebScrapeRequestProxy {
 
     pub fn is_string(&self) -> bool {
         matches!(self, Self::String(_))
-    }
-
-    pub fn is_string_to_value_map(&self) -> bool {
-        matches!(self, Self::StringToValueMap(_))
     }
 
     pub fn as_boolean(&self) -> Option<&bool> {
@@ -50,18 +44,13 @@ impl WebScrapeRequestProxy {
             _ => None,
         }
     }
+}
 
-    pub fn as_string_to_value_map(&self) -> Option<&HashMap<String, serde_json::Value>> {
+impl fmt::Display for WebScrapeRequestProxy {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::StringToValueMap(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    pub fn into_string_to_value_map(self) -> Option<HashMap<String, serde_json::Value>> {
-        match self {
-            Self::StringToValueMap(value) => Some(value),
-            _ => None,
+            Self::Boolean(value) => write!(f, "{}", value),
+            Self::String(value) => write!(f, "{}", value),
         }
     }
 }

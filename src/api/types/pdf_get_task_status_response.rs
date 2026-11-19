@@ -12,9 +12,8 @@ pub struct PdfGetTaskStatusResponse {
     /// The timestamp when the task status was created, formatted as 'yyyy-MM-dd HH:mm:ss'.
     #[serde(rename = "createdAt")]
     #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset")]
-    pub created_at: DateTime<FixedOffset>,
-    /// The URL to download all output files as a single ZIP archive. This is present only when the task status is 'COMPLETED'.
+    pub created_at: String,
+    /// Deprecated: the API returns this field as `zipFileUrl`; read `zipFileUrl` instead.
     #[serde(rename = "zipOutputUrl")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub zip_output_url: Option<String>,
@@ -43,9 +42,11 @@ pub struct PdfGetTaskStatusResponse {
     /// The timestamp when the task status will expire and be removed from the system, formatted as 'yyyy-MM-dd HH:mm:ss'.
     #[serde(rename = "expiresAt")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    #[serde(with = "crate::core::flexible_datetime::offset::option")]
-    pub expires_at: Option<DateTime<FixedOffset>>,
+    pub expires_at: Option<String>,
+    /// URL to download all output files as a ZIP archive; present only on completed tasks.
+    #[serde(rename = "zipFileUrl")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip_file_url: Option<String>,
 }
 
 impl PdfGetTaskStatusResponse {
@@ -59,7 +60,7 @@ impl PdfGetTaskStatusResponse {
 pub struct PdfGetTaskStatusResponseBuilder {
     task_id: Option<String>,
     status: Option<String>,
-    created_at: Option<DateTime<FixedOffset>>,
+    created_at: Option<String>,
     zip_output_url: Option<String>,
     zip_file_id: Option<String>,
     output_urls: Option<Vec<String>>,
@@ -67,7 +68,8 @@ pub struct PdfGetTaskStatusResponseBuilder {
     input_ids: Option<Vec<String>>,
     error: Option<String>,
     message: Option<String>,
-    expires_at: Option<DateTime<FixedOffset>>,
+    expires_at: Option<String>,
+    zip_file_url: Option<String>,
 }
 
 impl PdfGetTaskStatusResponseBuilder {
@@ -81,8 +83,8 @@ impl PdfGetTaskStatusResponseBuilder {
         self
     }
 
-    pub fn created_at(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.created_at = Some(value);
+    pub fn created_at(mut self, value: impl Into<String>) -> Self {
+        self.created_at = Some(value.into());
         self
     }
 
@@ -121,8 +123,13 @@ impl PdfGetTaskStatusResponseBuilder {
         self
     }
 
-    pub fn expires_at(mut self, value: DateTime<FixedOffset>) -> Self {
-        self.expires_at = Some(value);
+    pub fn expires_at(mut self, value: impl Into<String>) -> Self {
+        self.expires_at = Some(value.into());
+        self
+    }
+
+    pub fn zip_file_url(mut self, value: impl Into<String>) -> Self {
+        self.zip_file_url = Some(value.into());
         self
     }
 
@@ -150,6 +157,7 @@ impl PdfGetTaskStatusResponseBuilder {
             error: self.error,
             message: self.message,
             expires_at: self.expires_at,
+            zip_file_url: self.zip_file_url,
         })
     }
 }

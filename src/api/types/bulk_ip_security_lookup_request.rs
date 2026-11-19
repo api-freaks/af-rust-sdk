@@ -7,17 +7,17 @@ pub struct BulkIpSecurityLookupRequest {
     pub ips: Vec<String>,
     /// Your API key
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
     /// Format of the response.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub format: Option<BulkIpSecurityLookupRequestFormat>,
     /// Comma-separated list of fields to return. Supports dot notation (e.g. security.threat_score).
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub fields: Option<String>,
     /// Comma-separated list of fields to remove from the response. Supports dot notation (e.g. security.is_tor).
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub excludes: Option<String>,
 }
 

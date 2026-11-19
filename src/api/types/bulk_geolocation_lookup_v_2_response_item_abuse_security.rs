@@ -23,6 +23,18 @@ pub struct BulkGeolocationLookupV2ResponseItemAbuseSecurity {
     /// Last observed proxy activity date in YYYY-MM-DD.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proxy_last_seen: Option<String>,
+    /// Number of days in the last 30 days on which the IP was seen acting as a proxy. `0` when no proxy activity was observed.
+    #[serde(rename = "proxy_days_seen_30d")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proxy_days_seen30d: Option<i64>,
+    /// Number of days in the last 7 days on which the IP was seen acting as a proxy. `0` when no proxy activity was observed.
+    #[serde(rename = "proxy_days_seen_7d")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proxy_days_seen7d: Option<i64>,
+    /// Number of distinct proxy providers that offered the IP in the last 30 days. `0` when no proxy activity was observed.
+    #[serde(rename = "proxy_provider_count_30d")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proxy_provider_count30d: Option<i64>,
     /// true if the IP is linked to a residential proxy network.
     #[serde(default)]
     pub is_residential_proxy: bool,
@@ -63,6 +75,32 @@ pub struct BulkGeolocationLookupV2ResponseItemAbuseSecurity {
     /// Cloud provider name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cloud_provider_name: Option<String>,
+    /// Bot detection confidence from 0 to 100. 0 unless is_bot is true.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
+    #[serde(with = "crate::core::number_serializers::option")]
+    pub bot_confidence_score: Option<f64>,
+    /// Last observed bot activity date in YYYY-MM-DD, when available.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bot_last_seen: Option<String>,
+    /// Organization running the bot, when known (mostly declared bots).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bot_operator_name: Option<String>,
+    /// Kind of bot activity, when known. Declared bots (is_known_good_bot true): search_engine, ai_crawler, ai_assistant, seo_crawler, site_monitor, link_preview, feed_fetcher, archiver, ad_verification, scanner. Undeclared bots (is_known_good_bot false): scanner, scraper, exploit, credential_stuffing, brute_force, worm. New values can be added over time, so treat it as a plain string.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bot_type: Option<String>,
+    /// Corporate gateway provider name, when known.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub corporate_gateway_provider_name: Option<String>,
+    /// Kind of corporate gateway, when known. Known values: secure_web_gateway, browser_isolation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub corporate_gateway_type: Option<String>,
+    /// true if the IP is an outbound address of a corporate security gateway (SWG, SSE, or SASE).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_corporate_gateway: Option<bool>,
+    /// true if the bot is a declared bot with a verifiable operator (e.g. a search engine crawler or uptime monitor).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_known_good_bot: Option<bool>,
 }
 
 impl BulkGeolocationLookupV2ResponseItemAbuseSecurity {
@@ -80,6 +118,9 @@ pub struct BulkGeolocationLookupV2ResponseItemAbuseSecurityBuilder {
     proxy_provider_names: Option<Vec<String>>,
     proxy_confidence_score: Option<f64>,
     proxy_last_seen: Option<String>,
+    proxy_days_seen30d: Option<i64>,
+    proxy_days_seen7d: Option<i64>,
+    proxy_provider_count30d: Option<i64>,
     is_residential_proxy: Option<bool>,
     is_vpn: Option<bool>,
     vpn_provider_names: Option<Vec<String>>,
@@ -93,6 +134,14 @@ pub struct BulkGeolocationLookupV2ResponseItemAbuseSecurityBuilder {
     is_spam: Option<bool>,
     is_cloud_provider: Option<bool>,
     cloud_provider_name: Option<String>,
+    bot_confidence_score: Option<f64>,
+    bot_last_seen: Option<String>,
+    bot_operator_name: Option<String>,
+    bot_type: Option<String>,
+    corporate_gateway_provider_name: Option<String>,
+    corporate_gateway_type: Option<String>,
+    is_corporate_gateway: Option<bool>,
+    is_known_good_bot: Option<bool>,
 }
 
 impl BulkGeolocationLookupV2ResponseItemAbuseSecurityBuilder {
@@ -123,6 +172,21 @@ impl BulkGeolocationLookupV2ResponseItemAbuseSecurityBuilder {
 
     pub fn proxy_last_seen(mut self, value: impl Into<String>) -> Self {
         self.proxy_last_seen = Some(value.into());
+        self
+    }
+
+    pub fn proxy_days_seen30d(mut self, value: i64) -> Self {
+        self.proxy_days_seen30d = Some(value);
+        self
+    }
+
+    pub fn proxy_days_seen7d(mut self, value: i64) -> Self {
+        self.proxy_days_seen7d = Some(value);
+        self
+    }
+
+    pub fn proxy_provider_count30d(mut self, value: i64) -> Self {
+        self.proxy_provider_count30d = Some(value);
         self
     }
 
@@ -191,6 +255,46 @@ impl BulkGeolocationLookupV2ResponseItemAbuseSecurityBuilder {
         self
     }
 
+    pub fn bot_confidence_score(mut self, value: f64) -> Self {
+        self.bot_confidence_score = Some(value);
+        self
+    }
+
+    pub fn bot_last_seen(mut self, value: impl Into<String>) -> Self {
+        self.bot_last_seen = Some(value.into());
+        self
+    }
+
+    pub fn bot_operator_name(mut self, value: impl Into<String>) -> Self {
+        self.bot_operator_name = Some(value.into());
+        self
+    }
+
+    pub fn bot_type(mut self, value: impl Into<String>) -> Self {
+        self.bot_type = Some(value.into());
+        self
+    }
+
+    pub fn corporate_gateway_provider_name(mut self, value: impl Into<String>) -> Self {
+        self.corporate_gateway_provider_name = Some(value.into());
+        self
+    }
+
+    pub fn corporate_gateway_type(mut self, value: impl Into<String>) -> Self {
+        self.corporate_gateway_type = Some(value.into());
+        self
+    }
+
+    pub fn is_corporate_gateway(mut self, value: bool) -> Self {
+        self.is_corporate_gateway = Some(value);
+        self
+    }
+
+    pub fn is_known_good_bot(mut self, value: bool) -> Self {
+        self.is_known_good_bot = Some(value);
+        self
+    }
+
     /// Consumes the builder and constructs a [`BulkGeolocationLookupV2ResponseItemAbuseSecurity`].
     /// This method will fail if any of the following fields are not set:
     /// - [`threat_score`](BulkGeolocationLookupV2ResponseItemAbuseSecurityBuilder::threat_score)
@@ -222,6 +326,9 @@ impl BulkGeolocationLookupV2ResponseItemAbuseSecurityBuilder {
                 .proxy_confidence_score
                 .ok_or_else(|| BuildError::missing_field("proxy_confidence_score"))?,
             proxy_last_seen: self.proxy_last_seen,
+            proxy_days_seen30d: self.proxy_days_seen30d,
+            proxy_days_seen7d: self.proxy_days_seen7d,
+            proxy_provider_count30d: self.proxy_provider_count30d,
             is_residential_proxy: self
                 .is_residential_proxy
                 .ok_or_else(|| BuildError::missing_field("is_residential_proxy"))?,
@@ -253,6 +360,14 @@ impl BulkGeolocationLookupV2ResponseItemAbuseSecurityBuilder {
                 .is_cloud_provider
                 .ok_or_else(|| BuildError::missing_field("is_cloud_provider"))?,
             cloud_provider_name: self.cloud_provider_name,
+            bot_confidence_score: self.bot_confidence_score,
+            bot_last_seen: self.bot_last_seen,
+            bot_operator_name: self.bot_operator_name,
+            bot_type: self.bot_type,
+            corporate_gateway_provider_name: self.corporate_gateway_provider_name,
+            corporate_gateway_type: self.corporate_gateway_type,
+            is_corporate_gateway: self.is_corporate_gateway,
+            is_known_good_bot: self.is_known_good_bot,
         })
     }
 }

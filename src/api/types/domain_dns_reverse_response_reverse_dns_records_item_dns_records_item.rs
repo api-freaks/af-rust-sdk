@@ -7,12 +7,12 @@ pub enum DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItem {
         DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemAddress,
     ),
 
-    DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne(
-        DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne,
-    ),
-
     DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemPriority(
         DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemPriority,
+    ),
+
+    DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne(
+        DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne,
     ),
 
     DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemSingleName(
@@ -38,21 +38,21 @@ impl DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItem {
         )
     }
 
-    pub fn is_domain_dns_reverse_response_reverse_dns_records_item_dns_records_item_one(
-        &self,
-    ) -> bool {
-        matches!(
-            self,
-            Self::DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne(_)
-        )
-    }
-
     pub fn is_domain_dns_reverse_response_reverse_dns_records_item_dns_records_item_priority(
         &self,
     ) -> bool {
         matches!(
             self,
             Self::DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemPriority(_)
+        )
+    }
+
+    pub fn is_domain_dns_reverse_response_reverse_dns_records_item_dns_records_item_one(
+        &self,
+    ) -> bool {
+        matches!(
+            self,
+            Self::DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne(_)
         )
     }
 
@@ -105,28 +105,6 @@ impl DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItem {
         }
     }
 
-    pub fn as_domain_dns_reverse_response_reverse_dns_records_item_dns_records_item_one(
-        &self,
-    ) -> Option<&DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne> {
-        match self {
-            Self::DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn into_domain_dns_reverse_response_reverse_dns_records_item_dns_records_item_one(
-        self,
-    ) -> Option<DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne> {
-        match self {
-            Self::DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne(value) => {
-                Some(value)
-            }
-            _ => None,
-        }
-    }
-
     pub fn as_domain_dns_reverse_response_reverse_dns_records_item_dns_records_item_priority(
         &self,
     ) -> Option<&DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemPriority> {
@@ -143,6 +121,28 @@ impl DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItem {
     ) -> Option<DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemPriority> {
         match self {
             Self::DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemPriority(value) => {
+                Some(value)
+            }
+            _ => None,
+        }
+    }
+
+    pub fn as_domain_dns_reverse_response_reverse_dns_records_item_dns_records_item_one(
+        &self,
+    ) -> Option<&DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne> {
+        match self {
+            Self::DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne(value) => {
+                Some(value)
+            }
+            _ => None,
+        }
+    }
+
+    pub fn into_domain_dns_reverse_response_reverse_dns_records_item_dns_records_item_one(
+        self,
+    ) -> Option<DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne> {
+        match self {
+            Self::DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne(value) => {
                 Some(value)
             }
             _ => None,
@@ -226,11 +226,6 @@ impl fmt::Display for DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsIte
                     serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
                 )
             }
-            Self::DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne(value) => write!(
-                f,
-                "{}",
-                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
-            ),
             Self::DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemPriority(value) => {
                 write!(
                     f,
@@ -238,6 +233,11 @@ impl fmt::Display for DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsIte
                     serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
                 )
             }
+            Self::DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne(value) => write!(
+                f,
+                "{}",
+                serde_json::to_string(value).unwrap_or_else(|_| format!("{:?}", value))
+            ),
             Self::DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemSingleName(value) => {
                 write!(
                     f,

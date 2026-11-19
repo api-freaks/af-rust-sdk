@@ -1,9 +1,14 @@
 pub use crate::prelude::*;
 
+/// A selector/value pair used by fill, select, and clickButtonByValue instructions.
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
-#[serde(transparent)]
 pub struct WebScrapeRequestBodyBlockUrlInstructionsItemFill {
-    pub fill: Option<WebScrapeRequestBodyBlockUrlInstructionsItemFillFill>,
+    /// CSS or XPath selector identifying the target element.
+    #[serde(default)]
+    pub place: String,
+    /// Value to fill, select, or match against.
+    #[serde(default)]
+    pub value: String,
 }
 
 impl WebScrapeRequestBodyBlockUrlInstructionsItemFill {
@@ -15,17 +20,33 @@ impl WebScrapeRequestBodyBlockUrlInstructionsItemFill {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct WebScrapeRequestBodyBlockUrlInstructionsItemFillBuilder {
-    fill: Option<WebScrapeRequestBodyBlockUrlInstructionsItemFillFill>,
+    place: Option<String>,
+    value: Option<String>,
 }
 
 impl WebScrapeRequestBodyBlockUrlInstructionsItemFillBuilder {
-    pub fn fill(mut self, value: WebScrapeRequestBodyBlockUrlInstructionsItemFillFill) -> Self {
-        self.fill = Some(value);
+    pub fn place(mut self, value: impl Into<String>) -> Self {
+        self.place = Some(value.into());
+        self
+    }
+
+    pub fn value(mut self, value: impl Into<String>) -> Self {
+        self.value = Some(value.into());
         self
     }
 
     /// Consumes the builder and constructs a [`WebScrapeRequestBodyBlockUrlInstructionsItemFill`].
+    /// This method will fail if any of the following fields are not set:
+    /// - [`place`](WebScrapeRequestBodyBlockUrlInstructionsItemFillBuilder::place)
+    /// - [`value`](WebScrapeRequestBodyBlockUrlInstructionsItemFillBuilder::value)
     pub fn build(self) -> Result<WebScrapeRequestBodyBlockUrlInstructionsItemFill, BuildError> {
-        Ok(WebScrapeRequestBodyBlockUrlInstructionsItemFill { fill: self.fill })
+        Ok(WebScrapeRequestBodyBlockUrlInstructionsItemFill {
+            place: self
+                .place
+                .ok_or_else(|| BuildError::missing_field("place"))?,
+            value: self
+                .value
+                .ok_or_else(|| BuildError::missing_field("value"))?,
+        })
     }
 }

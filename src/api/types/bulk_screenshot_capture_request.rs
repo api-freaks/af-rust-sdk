@@ -7,10 +7,10 @@ pub struct BulkScreenshotCaptureRequest {
     pub urls: Vec<BulkScreenshotCaptureRequestUrlsItem>,
     /// Your API key
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub format: Option<BulkScreenshotCaptureRequestFormat>,
 }
 

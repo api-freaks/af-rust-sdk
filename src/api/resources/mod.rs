@@ -35,6 +35,34 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .geolocation_lookup(
+    ///             &GeolocationLookupQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 ip: None,
+    ///                 lang: None,
+    ///                 fields: None,
+    ///                 excludes: None,
+    ///                 include: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn geolocation_lookup(
         &self,
         request: &GeolocationLookupQueryRequest,
@@ -75,6 +103,34 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_geolocation_lookup(
+    ///             &BulkGeolocationLookupRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 ips: vec!["ips".to_string()],
+    ///                 format: None,
+    ///                 lang: None,
+    ///                 fields: None,
+    ///                 excludes: None,
+    ///                 include: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn bulk_geolocation_lookup(
         &self,
         request: &BulkGeolocationLookupRequest,
@@ -112,6 +168,32 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .ip_security_lookup(
+    ///             &IpSecurityLookupQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 ip: None,
+    ///                 fields: None,
+    ///                 excludes: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn ip_security_lookup(
         &self,
         request: &IpSecurityLookupQueryRequest,
@@ -147,6 +229,32 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_ip_security_lookup(
+    ///             &BulkIpSecurityLookupRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 ips: vec!["ips".to_string()],
+    ///                 format: None,
+    ///                 fields: None,
+    ///                 excludes: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn bulk_ip_security_lookup(
         &self,
         request: &BulkIpSecurityLookupRequest,
@@ -185,11 +293,46 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .geocoder_search(
+    ///             &GeocoderSearchQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 query: "query".to_string(),
+    ///                 format: None,
+    ///                 limit: None,
+    ///                 min_lat: None,
+    ///                 max_lat: None,
+    ///                 min_lon: None,
+    ///                 max_lon: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn geocoder_search(
         &self,
         request: &GeocoderSearchQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<Vec<GeocoderSearchResponseItem>, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.accept_language {
+            options
+                .additional_headers
+                .insert("Accept-Language".to_string(), value.clone());
+        }
         self.http_client
             .execute_request(
                 Method::GET,
@@ -205,7 +348,7 @@ impl ApiFreaks {
                     .float("min_lon", request.min_lon.clone())
                     .float("max_lon", request.max_lon.clone())
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -223,11 +366,42 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .geocoder_reverse(
+    ///             &GeocoderReverseQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 lat: 1.1,
+    ///                 lon: 1.1,
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn geocoder_reverse(
         &self,
         request: &GeocoderReverseQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<GeocoderReverseResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.accept_language {
+            options
+                .additional_headers
+                .insert("Accept-Language".to_string(), value.clone());
+        }
         self.http_client
             .execute_request(
                 Method::GET,
@@ -239,7 +413,7 @@ impl ApiFreaks {
                     .float("lat", request.lat.clone())
                     .float("lon", request.lon.clone())
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -258,6 +432,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .domain_whois_lookup(
+    ///             &DomainWhoisLookupQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 domain_name: "domainName".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn domain_whois_lookup(
         &self,
         request: &DomainWhoisLookupQueryRequest,
@@ -289,6 +487,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_domain_whois_lookup(
+    ///             &BulkDomainWhoisLookupRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 domain_names: vec!["domainNames".to_string()],
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn bulk_domain_whois_lookup(
         &self,
         request: &BulkDomainWhoisLookupRequest,
@@ -320,6 +542,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .ip_whois_lookup(
+    ///             &IpWhoisLookupQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 ip: "ip".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn ip_whois_lookup(
         &self,
         request: &IpWhoisLookupQueryRequest,
@@ -352,6 +598,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .asn_whois_lookup(
+    ///             &AsnWhoisLookupQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 asn: "asn".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn asn_whois_lookup(
         &self,
         request: &AsnWhoisLookupQueryRequest,
@@ -385,6 +655,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .domain_whois_history(
+    ///             &DomainWhoisHistoryQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 domain_name: "domainName".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn domain_whois_history(
         &self,
         request: &DomainWhoisHistoryQueryRequest,
@@ -422,6 +716,36 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .domain_whois_reverse(
+    ///             &DomainWhoisReverseQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 keyword: None,
+    ///                 email: None,
+    ///                 owner: None,
+    ///                 company: None,
+    ///                 exact: None,
+    ///                 mode: None,
+    ///                 page: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn domain_whois_reverse(
         &self,
         request: &DomainWhoisReverseQueryRequest,
@@ -454,14 +778,40 @@ impl ApiFreaks {
     ///
     /// * `api_key` - Your API key
     /// * `format` - Format of the response.
-    /// * `host_name` - Hostname or URL whose DNS records are required.
-    /// * `ip_address` - The IP address for requested DNS's PTR record. 'type' parameter must be set to 'all'.
-    /// * `type_` - A comma-separated list of DNS record types for lookup. Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, or all. When ipAddress is provided, type must be "all".
+    /// * `host_name` - Hostname or URL whose DNS records are required. Give either `host-name` or `ipAddress`.
+    /// * `ip_address` - The IP address whose PTR (reverse DNS) record is required. Give either `host-name` or `ipAddress`; with `ipAddress`, set `type` to `all` or `PTR`.
+    /// * `type_` - DNS record types to look up, sent as a comma-separated list (e.g. `A,MX`). Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, PTR, or all. When ipAddress is provided, use "all" or "PTR".
     /// * `options` - Additional request options such as headers, timeout, etc.
     ///
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .domain_dns_lookup(
+    ///             &DomainDnsLookupQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 r#type: vec![Some("type".to_string())],
+    ///                 format: None,
+    ///                 host_name: None,
+    ///                 ip_address: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn domain_dns_lookup(
         &self,
         request: &DomainDnsLookupQueryRequest,
@@ -477,7 +827,20 @@ impl ApiFreaks {
                     .serialize("format", request.format.clone())
                     .string("host-name", request.host_name.clone())
                     .string("ipAddress", request.ip_address.clone())
-                    .string_array("type", request.r#type.clone())
+                    .string("type", {
+                        let joined = request
+                            .r#type
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .build(),
                 options,
             )
@@ -491,13 +854,38 @@ impl ApiFreaks {
     ///
     /// * `api_key` - Your API key
     /// * `format` - Format of the response.
-    /// * `type_` - A comma-separated list of DNS record types for lookup.
-    /// Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, or all
+    /// * `type_` - DNS record types to look up, sent as a comma-separated list (e.g. `A,MX`). Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, or all.
     /// * `options` - Additional request options such as headers, timeout, etc.
     ///
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_domain_dns_lookup(
+    ///             &BulkDomainDnsLookupRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 r#type: vec![Some("type".to_string())],
+    ///                 domain_names: vec!["domainNames".to_string()],
+    ///                 format: None,
+    ///                 ip_addresses: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn bulk_domain_dns_lookup(
         &self,
         request: &BulkDomainDnsLookupRequest,
@@ -511,7 +899,20 @@ impl ApiFreaks {
                 QueryBuilder::new()
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
-                    .string_array("type", request.r#type.clone())
+                    .string("type", {
+                        let joined = request
+                            .r#type
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .build(),
                 options,
             )
@@ -526,14 +927,39 @@ impl ApiFreaks {
     /// * `api_key` - Your API key
     /// * `format` - Format of the response.
     /// * `host_name` - Hostname or URL whose historical DNS records are required
-    /// * `type_` - A comma-separated list of DNS record types for lookup.
-    /// Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, or all
+    /// * `type_` - DNS record types to look up, sent as a comma-separated list (e.g. `A,MX`). Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, or all.
     /// * `page` - Page number for paginated results
     /// * `options` - Additional request options such as headers, timeout, etc.
     ///
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .domain_dns_history(
+    ///             &DomainDnsHistoryQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 host_name: "host-name".to_string(),
+    ///                 r#type: vec![Some("type".to_string())],
+    ///                 format: None,
+    ///                 page: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn domain_dns_history(
         &self,
         request: &DomainDnsHistoryQueryRequest,
@@ -548,7 +974,20 @@ impl ApiFreaks {
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
                     .string("host-name", request.host_name.clone())
-                    .string_array("type", request.r#type.clone())
+                    .string("type", {
+                        let joined = request
+                            .r#type
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .int("page", request.page.clone())
                     .build(),
                 options,
@@ -578,6 +1017,33 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .domain_dns_reverse(
+    ///             &DomainDnsReverseQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 r#type: DomainDnsReverseRequestType::A,
+    ///                 value: "value".to_string(),
+    ///                 format: None,
+    ///                 exact: None,
+    ///                 page: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn domain_dns_reverse(
         &self,
         request: &DomainDnsReverseQueryRequest,
@@ -614,7 +1080,7 @@ impl ApiFreaks {
     ///
     ///
     /// Default value is `true`.
-    /// * `proxy` - Use proxy for requests
+    /// * `proxy` - Use a proxy for the request. Pass true/false to toggle the default proxy pool, or a proxy URL string to use a specific proxy.
     /// * `ssl_ignore` - Ignore SSL certificate errors.
     ///
     ///
@@ -636,6 +1102,70 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .web_scrape(
+    ///             &WebScrapeRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 url: "https://example.com".to_string(),
+    ///                 body: WebScrapeRequestBody::WebScrapeRequestBodyBlockUrl(
+    ///                     WebScrapeRequestBodyBlockUrl {
+    ///                         instructions: vec![
+    ///                             WebScrapeRequestBodyBlockUrlInstructionsItem {
+    ///                                 ..Default::default()
+    ///                             },
+    ///                             WebScrapeRequestBodyBlockUrlInstructionsItem {
+    ///                                 ..Default::default()
+    ///                             },
+    ///                             WebScrapeRequestBodyBlockUrlInstructionsItem {
+    ///                                 ..Default::default()
+    ///                             },
+    ///                             WebScrapeRequestBodyBlockUrlInstructionsItem {
+    ///                                 ..Default::default()
+    ///                             },
+    ///                             WebScrapeRequestBodyBlockUrlInstructionsItem {
+    ///                                 extract: Some(HashMap::from([
+    ///                                     ("profile".to_string(), "#profile".to_string()),
+    ///                                     ("welcomeMessage".to_string(), "#welcome-message".to_string()),
+    ///                                     ("userInfo".to_string(), "#user-info".to_string()),
+    ///                                 ])),
+    ///                                 ..Default::default()
+    ///                             },
+    ///                             WebScrapeRequestBodyBlockUrlInstructionsItem {
+    ///                                 ..Default::default()
+    ///                             },
+    ///                             WebScrapeRequestBodyBlockUrlInstructionsItem {
+    ///                                 ..Default::default()
+    ///                             },
+    ///                         ],
+    ///                         ..Default::default()
+    ///                     },
+    ///                 ),
+    ///                 format: None,
+    ///                 text: None,
+    ///                 js_enabled: None,
+    ///                 proxy: None,
+    ///                 ssl_ignore: None,
+    ///                 window_size: None,
+    ///                 ad_block: None,
+    ///                 captcha: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn web_scrape(
         &self,
         request: &WebScrapeRequest,
@@ -674,6 +1204,32 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .email_validate(
+    ///             &EmailValidateRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 email: "email".to_string(),
+    ///                 format: None,
+    ///                 name: None,
+    ///                 ip: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn email_validate(
         &self,
         request: &EmailValidateRequest,
@@ -704,6 +1260,33 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_email_validate(
+    ///             &BulkEmailValidateRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 email_data: vec![BulkEmailValidateRequestEmailDataItem {
+    ///                     email: "email".to_string(),
+    ///                     ..Default::default()
+    ///                 }],
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn bulk_email_validate(
         &self,
         request: &BulkEmailValidateRequest,
@@ -713,6 +1296,129 @@ impl ApiFreaks {
             .execute_request(
                 Method::POST,
                 "v1.0/email-validation/bulk",
+                Some(serde_json::to_value(request).map_err(ApiError::Serialization)?),
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Validates email syntax and checks the domain for disposable, free, spam, and role-account signals, plus MX/A DNS records. Send the email (and optionally an ip) as a JSON request body. When an ip is included, the response also carries geolocation and security data for it.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Format of the response.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .disposable_email_check_v2(
+    ///             &DisposableEmailCheckV2Request {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 email: "test@sogetthis.com".to_string(),
+    ///                 format: None,
+    ///                 ip: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
+    pub async fn disposable_email_check_v2(
+        &self,
+        request: &DisposableEmailCheckV2Request,
+        options: Option<RequestOptions>,
+    ) -> Result<DisposableEmailCheckV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::POST,
+                "v2.0/email/disposable-check",
+                Some(serde_json::to_value(request).map_err(ApiError::Serialization)?),
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Checks a bulk of email addresses (each with an optional ip) and returns a disposable email check result for each, in the same order as the request. Maximum `100` entries per request.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Format of the response.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_disposable_email_check_v2(
+    ///             &BulkDisposableEmailCheckV2Request {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 email_data: vec![
+    ///                     BulkDisposableEmailCheckV2RequestEmailDataItem {
+    ///                         email: "abc".to_string(),
+    ///                         ..Default::default()
+    ///                     },
+    ///                     BulkDisposableEmailCheckV2RequestEmailDataItem {
+    ///                         email: "john@microsoft.com".to_string(),
+    ///                         ip: Some("8.8.8.8".to_string()),
+    ///                         ..Default::default()
+    ///                     },
+    ///                     BulkDisposableEmailCheckV2RequestEmailDataItem {
+    ///                         email: "test@mailinator.com".to_string(),
+    ///                         ..Default::default()
+    ///                     },
+    ///                 ],
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
+    pub async fn bulk_disposable_email_check_v2(
+        &self,
+        request: &BulkDisposableEmailCheckV2Request,
+        options: Option<RequestOptions>,
+    ) -> Result<BulkDisposableEmailCheckV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::POST,
+                "v2.0/email/disposable-check/bulk",
                 Some(serde_json::to_value(request).map_err(ApiError::Serialization)?),
                 QueryBuilder::new()
                     .string("apiKey", request.api_key.clone())
@@ -734,6 +1440,32 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .phone_validate(
+    ///             &PhoneValidateRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 number: "+14155552671".to_string(),
+    ///                 format: None,
+    ///                 region: None,
+    ///                 dialer_region: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn phone_validate(
         &self,
         request: &PhoneValidateRequest,
@@ -764,6 +1496,43 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_phone_validate(
+    ///             &BulkPhoneValidateRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 numbers: vec![
+    ///                     BulkPhoneValidateRequestNumbersItem {
+    ///                         number: "+14155552671".to_string(),
+    ///                         ..Default::default()
+    ///                     },
+    ///                     BulkPhoneValidateRequestNumbersItem {
+    ///                         number: "+447911123456".to_string(),
+    ///                         ..Default::default()
+    ///                     },
+    ///                     BulkPhoneValidateRequestNumbersItem {
+    ///                         number: "+919876543210".to_string(),
+    ///                         ..Default::default()
+    ///                     },
+    ///                 ],
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn bulk_phone_validate(
         &self,
         request: &BulkPhoneValidateRequest,
@@ -797,6 +1566,31 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .domain_ssl_lookup(
+    ///             &DomainSslLookupQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 domain_name: "domainName".to_string(),
+    ///                 format: None,
+    ///                 ssl_raw: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn domain_ssl_lookup(
         &self,
         request: &DomainSslLookupQueryRequest,
@@ -832,6 +1626,31 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .domain_ssl_chain_lookup(
+    ///             &DomainSslChainLookupQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 domain_name: "domainName".to_string(),
+    ///                 format: None,
+    ///                 ssl_raw: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn domain_ssl_chain_lookup(
         &self,
         request: &DomainSslChainLookupQueryRequest,
@@ -866,6 +1685,31 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .domain_availability_check(
+    ///             &DomainAvailabilityCheckQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 domain: "domain".to_string(),
+    ///                 format: None,
+    ///                 source: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn domain_availability_check(
         &self,
         request: &DomainAvailabilityCheckQueryRequest,
@@ -899,6 +1743,31 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_domain_availability_check(
+    ///             &BulkDomainAvailabilityCheckRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 domain_names: vec!["domainNames".to_string()],
+    ///                 format: None,
+    ///                 source: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn bulk_domain_availability_check(
         &self,
         request: &BulkDomainAvailabilityCheckRequest,
@@ -934,6 +1803,33 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .domain_availability_suggestions(
+    ///             &DomainAvailabilitySuggestionsQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 domain: "domain".to_string(),
+    ///                 format: None,
+    ///                 source: None,
+    ///                 count: None,
+    ///                 sug: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn domain_availability_suggestions(
         &self,
         request: &DomainAvailabilitySuggestionsQueryRequest,
@@ -973,6 +1869,34 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .subdomains_lookup(
+    ///             &SubdomainsLookupQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 domain: "domain".to_string(),
+    ///                 format: None,
+    ///                 after: None,
+    ///                 before: None,
+    ///                 status: None,
+    ///                 page: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn subdomains_lookup(
         &self,
         request: &SubdomainsLookupQueryRequest,
@@ -1011,6 +1935,32 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .domain_typosquatting(
+    ///             &DomainTyposquattingQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 keyword: None,
+    ///                 pattern: None,
+    ///                 page_token: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn domain_typosquatting(
         &self,
         request: &DomainTyposquattingQueryRequest,
@@ -1045,6 +1995,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .domain_reputation(
+    ///             &DomainReputationQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 domain_name: "domainName".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn domain_reputation(
         &self,
         request: &DomainReputationQueryRequest,
@@ -1084,6 +2058,37 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .astronomy_lookup_v2(
+    ///             &AstronomyLookupV2QueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 location: None,
+    ///                 lat: None,
+    ///                 long: None,
+    ///                 ip: None,
+    ///                 lang: None,
+    ///                 date: None,
+    ///                 elevation: None,
+    ///                 time_zone: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn astronomy_lookup_v2(
         &self,
         request: &AstronomyLookupV2QueryRequest,
@@ -1131,6 +2136,38 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .timezone_lookup_v2(
+    ///             &TimezoneLookupV2QueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 ip: None,
+    ///                 tz: None,
+    ///                 location: None,
+    ///                 lat: None,
+    ///                 long: None,
+    ///                 lang: None,
+    ///                 iata_code: None,
+    ///                 icao_code: None,
+    ///                 lo_code: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn timezone_lookup_v2(
         &self,
         request: &TimezoneLookupV2QueryRequest,
@@ -1175,6 +2212,34 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .geolocation_lookup_v2(
+    ///             &GeolocationLookupV2QueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 ip: None,
+    ///                 lang: None,
+    ///                 fields: None,
+    ///                 excludes: None,
+    ///                 include: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn geolocation_lookup_v2(
         &self,
         request: &GeolocationLookupV2QueryRequest,
@@ -1214,6 +2279,34 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_geolocation_lookup_v2(
+    ///             &BulkGeolocationLookupV2Request {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 ips: vec!["ips".to_string()],
+    ///                 format: None,
+    ///                 lang: None,
+    ///                 fields: None,
+    ///                 excludes: None,
+    ///                 include: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn bulk_geolocation_lookup_v2(
         &self,
         request: &BulkGeolocationLookupV2Request,
@@ -1249,6 +2342,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .domain_whois_lookup_v2(
+    ///             &DomainWhoisLookupV2QueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 domain_name: "domainName".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn domain_whois_lookup_v2(
         &self,
         request: &DomainWhoisLookupV2QueryRequest,
@@ -1280,6 +2397,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_domain_whois_lookup_v2(
+    ///             &BulkDomainWhoisLookupV2Request {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 domain_names: vec!["domainNames".to_string()],
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn bulk_domain_whois_lookup_v2(
         &self,
         request: &BulkDomainWhoisLookupV2Request,
@@ -1312,6 +2453,31 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .commodity_latest_rates_v2(
+    ///             &CommodityLatestRatesV2QueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 symbols: vec![Some("symbols".to_string())],
+    ///                 format: None,
+    ///                 quote: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn commodity_latest_rates_v2(
         &self,
         request: &CommodityLatestRatesV2QueryRequest,
@@ -1325,7 +2491,20 @@ impl ApiFreaks {
                 QueryBuilder::new()
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
-                    .string_array("symbols", request.symbols.clone())
+                    .string("symbols", {
+                        let joined = request
+                            .symbols
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .string("quote", request.quote.clone())
                     .build(),
                 options,
@@ -1346,6 +2525,31 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .commodity_historical_rates_v2(
+    ///             &CommodityHistoricalRatesV2QueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 symbols: vec![Some("symbols".to_string())],
+    ///                 date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn commodity_historical_rates_v2(
         &self,
         request: &CommodityHistoricalRatesV2QueryRequest,
@@ -1359,7 +2563,20 @@ impl ApiFreaks {
                 QueryBuilder::new()
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
-                    .string_array("symbols", request.symbols.clone())
+                    .string("symbols", {
+                        let joined = request
+                            .symbols
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .date("date", request.date.clone())
                     .build(),
                 options,
@@ -1381,6 +2598,32 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .commodity_fluctuation_v2(
+    ///             &CommodityFluctuationV2QueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 symbols: vec![Some("symbols".to_string())],
+    ///                 start_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 end_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn commodity_fluctuation_v2(
         &self,
         request: &CommodityFluctuationV2QueryRequest,
@@ -1394,7 +2637,20 @@ impl ApiFreaks {
                 QueryBuilder::new()
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
-                    .string_array("symbols", request.symbols.clone())
+                    .string("symbols", {
+                        let joined = request
+                            .symbols
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .date("startDate", request.start_date.clone())
                     .date("endDate", request.end_date.clone())
                     .build(),
@@ -1417,6 +2673,32 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .commodity_time_series_v2(
+    ///             &CommodityTimeSeriesV2QueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 symbols: vec![Some("symbols".to_string())],
+    ///                 start_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 end_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn commodity_time_series_v2(
         &self,
         request: &CommodityTimeSeriesV2QueryRequest,
@@ -1430,7 +2712,20 @@ impl ApiFreaks {
                 QueryBuilder::new()
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
-                    .string_array("symbols", request.symbols.clone())
+                    .string("symbols", {
+                        let joined = request
+                            .symbols
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .date("startDate", request.start_date.clone())
                     .date("endDate", request.end_date.clone())
                     .build(),
@@ -1450,6 +2745,29 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .commodity_symbols_v2(
+    ///             &CommoditySymbolsV2QueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn commodity_symbols_v2(
         &self,
         request: &CommoditySymbolsV2QueryRequest,
@@ -1463,6 +2781,71 @@ impl ApiFreaks {
                 QueryBuilder::new()
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Returns the prices of one commodity through a UTC day at the requested interval, keyed by UTC timestamp. Each request costs a flat 50 credits however many points it returns.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `symbols` - Exactly one commodity symbol. Case-insensitive. Sending two or more returns a 400. Only symbols updated every second, every minute, or every 10 minutes have intraday rates; symbols updated hourly or less often return a 400. Use the Commodity Symbols endpoint for all valid values.
+    /// * `interval` - Spacing between points. Case-insensitive. Symbols updated every 10 minutes accept only `10m`, `30m`, `1h`, `2h`, `4h`, `8h`, `12h`, `1d`.
+    /// * `date` - The UTC day to read, in `YYYY-MM-DD` format. Cannot be in the future. For today, points stop at the current UTC minute.
+    /// * `start_time` - First mark of the window, as a 24-hour UTC time in `HH:mm`. Must fall on a mark of the interval (for example, `14:30` works for `5m` or `30m`, but not for `1h`). For `1d` it can only be `00:00`.
+    /// * `metadata` - Whether to include the `metadata` object. Pass `false` to receive only the prices.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .commodity_intraday_rates_v2(
+    ///             &CommodityIntradayRatesV2QueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 symbols: "symbols".to_string(),
+    ///                 interval: CommodityIntradayRatesV2RequestInterval::OneM,
+    ///                 date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 start_time: None,
+    ///                 metadata: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
+    pub async fn commodity_intraday_rates_v2(
+        &self,
+        request: &CommodityIntradayRatesV2QueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<CommodityIntradayRatesV2Response, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v2.0/commodity/rates/intraday",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .string("symbols", request.symbols.clone())
+                    .serialize("interval", Some(request.interval.clone()))
+                    .date("date", request.date.clone())
+                    .string("startTime", request.start_time.clone())
+                    .bool("metadata", request.metadata.clone())
                     .build(),
                 options,
             )
@@ -1485,11 +2868,46 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_merge(
+    ///             &PdfMergeRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 file: vec![b"test file 1".to_vec(), b"test file 2".to_vec()],
+    ///                 format: None,
+    ///                 file_id: vec![],
+    ///                 destroy: None,
+    ///                 output: None,
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_merge(
         &self,
         request: &PdfMergeRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfMergeResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -1507,7 +2925,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -1529,11 +2947,47 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_remove_pages(
+    ///             &PdfRemovePagesRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 pages: "pages".to_string(),
+    ///                 file: b"test file content".to_vec(),
+    ///                 format: None,
+    ///                 file_id: None,
+    ///                 destroy: None,
+    ///                 output: None,
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_remove_pages(
         &self,
         request: &PdfRemovePagesRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfRemovePagesResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -1552,7 +3006,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -1592,11 +3046,47 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_split(
+    ///             &PdfSplitRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 file: b"test file content".to_vec(),
+    ///                 format: None,
+    ///                 file_id: None,
+    ///                 destroy: None,
+    ///                 output: None,
+    ///                 pages: vec![],
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_split(
         &self,
         request: &PdfSplitRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfSplitResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -1615,7 +3105,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -1638,11 +3128,48 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_rotate(
+    ///             &PdfRotateRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 rotate: 1,
+    ///                 file: b"test file content".to_vec(),
+    ///                 format: None,
+    ///                 file_id: None,
+    ///                 destroy: None,
+    ///                 output: None,
+    ///                 pages: None,
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_rotate(
         &self,
         request: &PdfRotateRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfRotateResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -1662,7 +3189,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -1684,11 +3211,47 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_compress(
+    ///             &PdfCompressRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 compression_level: PdfCompressRequestCompressionLevel::Low,
+    ///                 file: b"test file content".to_vec(),
+    ///                 format: None,
+    ///                 file_id: None,
+    ///                 output: None,
+    ///                 destroy: None,
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_compress(
         &self,
         request: &PdfCompressRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfCompressResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -1707,7 +3270,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -1730,11 +3293,48 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_extract_pages(
+    ///             &PdfExtractPagesRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 pages: "pages".to_string(),
+    ///                 file: b"test file content".to_vec(),
+    ///                 format: None,
+    ///                 file_id: None,
+    ///                 destroy: None,
+    ///                 output: None,
+    ///                 separated: None,
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_extract_pages(
         &self,
         request: &PdfExtractPagesRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfExtractPagesResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -1754,7 +3354,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -1775,11 +3375,46 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_linearize(
+    ///             &PdfLinearizeRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 file: b"test file content".to_vec(),
+    ///                 format: None,
+    ///                 file_id: None,
+    ///                 destroy: None,
+    ///                 output: None,
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_linearize(
         &self,
         request: &PdfLinearizeRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfLinearizeResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -1797,7 +3432,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -1821,11 +3456,49 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_encrypt(
+    ///             &PdfEncryptRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 user_password: "user_password".to_string(),
+    ///                 file: b"test file content".to_vec(),
+    ///                 format: None,
+    ///                 file_id: None,
+    ///                 destroy: None,
+    ///                 output: None,
+    ///                 file_password: None,
+    ///                 owner_password: None,
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_encrypt(
         &self,
         request: &PdfEncryptRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfEncryptResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -1846,7 +3519,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -1868,11 +3541,47 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_decrypt(
+    ///             &PdfDecryptRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 file_password: "file_password".to_string(),
+    ///                 file: b"test file content".to_vec(),
+    ///                 format: None,
+    ///                 file_id: None,
+    ///                 destroy: None,
+    ///                 output: None,
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_decrypt(
         &self,
         request: &PdfDecryptRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfDecryptResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -1891,7 +3600,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -1926,11 +3635,50 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_restrict(
+    ///             &PdfRestrictRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 user_password: "user_password".to_string(),
+    ///                 restrictions: vec![Some(PdfRestrictRequestRestrictionsItem::PrintHigh)],
+    ///                 file: b"test file content".to_vec(),
+    ///                 format: None,
+    ///                 file_id: None,
+    ///                 destroy: None,
+    ///                 output: None,
+    ///                 file_password: None,
+    ///                 owner_password: None,
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_restrict(
         &self,
         request: &PdfRestrictRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfRestrictResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -1952,7 +3700,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -1976,11 +3724,49 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_unrestrict(
+    ///             &PdfUnrestrictRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 file_password: "file_password".to_string(),
+    ///                 user_password: "user_password".to_string(),
+    ///                 file: b"test file content".to_vec(),
+    ///                 format: None,
+    ///                 file_id: None,
+    ///                 destroy: None,
+    ///                 output: None,
+    ///                 owner_password: None,
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_unrestrict(
         &self,
         request: &PdfUnrestrictRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfUnrestrictResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -2001,7 +3787,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -2026,11 +3812,50 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_convert_to_png(
+    ///             &PdfConvertToPngRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 file: b"test file content".to_vec(),
+    ///                 format: None,
+    ///                 file_id: None,
+    ///                 destroy: None,
+    ///                 output: None,
+    ///                 pages: None,
+    ///                 resolution: None,
+    ///                 image_smoothing: None,
+    ///                 profile: None,
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_convert_to_png(
         &self,
         request: &PdfConvertToPngRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfConvertToPngResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -2052,7 +3877,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -2078,11 +3903,51 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_convert_to_jpg(
+    ///             &PdfConvertToJpgRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 file: b"test file content".to_vec(),
+    ///                 format: None,
+    ///                 file_id: None,
+    ///                 destroy: None,
+    ///                 output: None,
+    ///                 quality: None,
+    ///                 pages: None,
+    ///                 resolution: None,
+    ///                 image_smoothing: None,
+    ///                 profile: None,
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_convert_to_jpg(
         &self,
         request: &PdfConvertToJpgRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfConvertToJpgResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -2105,7 +3970,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -2130,11 +3995,50 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_convert_to_tiff(
+    ///             &PdfConvertToTiffRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 file: b"test file content".to_vec(),
+    ///                 format: None,
+    ///                 file_id: None,
+    ///                 destroy: None,
+    ///                 output: None,
+    ///                 pages: None,
+    ///                 resolution: None,
+    ///                 image_smoothing: None,
+    ///                 profile: None,
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_convert_to_tiff(
         &self,
         request: &PdfConvertToTiffRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfConvertToTiffResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -2156,7 +4060,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -2181,11 +4085,50 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_convert_to_bmp(
+    ///             &PdfConvertToBmpRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 file: b"test file content".to_vec(),
+    ///                 format: None,
+    ///                 file_id: None,
+    ///                 destroy: None,
+    ///                 output: None,
+    ///                 pages: None,
+    ///                 resolution: None,
+    ///                 image_smoothing: None,
+    ///                 profile: None,
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_convert_to_bmp(
         &self,
         request: &PdfConvertToBmpRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfConvertToBmpResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -2207,7 +4150,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -2232,11 +4175,50 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_convert_to_gif(
+    ///             &PdfConvertToGifRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 file: b"test file content".to_vec(),
+    ///                 format: None,
+    ///                 file_id: None,
+    ///                 destroy: None,
+    ///                 output: None,
+    ///                 pages: None,
+    ///                 resolution: None,
+    ///                 image_smoothing: None,
+    ///                 profile: None,
+    ///                 webhook_url: None,
+    ///                 webhook_failure_notification: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_convert_to_gif(
         &self,
         request: &PdfConvertToGifRequest,
         options: Option<RequestOptions>,
     ) -> Result<PdfConvertToGifResponse, ApiError> {
+        let mut options = options.unwrap_or_default();
+        if let Some(value) = &request.webhook_authorization {
+            options
+                .additional_headers
+                .insert("X-Webhook-Authorization".to_string(), value.clone());
+        }
         self.http_client
             .execute_multipart_request(
                 Method::POST,
@@ -2258,7 +4240,7 @@ impl ApiFreaks {
                         request.webhook_failure_notification.clone(),
                     )
                     .build(),
-                options,
+                Some(options),
             )
             .await
     }
@@ -2274,6 +4256,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_upload_resources(
+    ///             &PdfUploadResourcesRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 file: vec![b"test file 1".to_vec(), b"test file 2".to_vec()],
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_upload_resources(
         &self,
         request: &PdfUploadResourcesRequest,
@@ -2323,6 +4329,7 @@ impl ApiFreaks {
                     .serialize("format", request.format.clone())
                     .string("file_name", request.file_name.clone())
                     .build(),
+                "application/octet-stream",
                 options,
             )
             .await
@@ -2339,6 +4346,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// Streaming file download (use .into_bytes() to collect or stream chunks)
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_download_resource(
+    ///             &PdfDownloadResourceQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 resource_id: "resource_id".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_download_resource(
         &self,
         request: &PdfDownloadResourceQueryRequest,
@@ -2371,6 +4402,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_get_task_status(
+    ///             &PdfGetTaskStatusQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 task_id: "task_id".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_get_task_status(
         &self,
         request: &PdfGetTaskStatusQueryRequest,
@@ -2403,6 +4458,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_get_file_status(
+    ///             &PdfGetFileStatusQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 file_id: "file_id".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_get_file_status(
         &self,
         request: &PdfGetFileStatusQueryRequest,
@@ -2434,6 +4513,29 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_list_files(
+    ///             &PdfListFilesQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_list_files(
         &self,
         request: &PdfListFilesQueryRequest,
@@ -2465,6 +4567,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .pdf_delete_file(
+    ///             &PdfDeleteFileQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 file_id: "file_id".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn pdf_delete_file(
         &self,
         request: &PdfDeleteFileQueryRequest,
@@ -2485,13 +4611,127 @@ impl ApiFreaks {
             .await
     }
 
+    /// Renders the template identified by template_id with the JSON data supplied in the request body (or fetched from data_url). Returns a hosted URL for the generated PDF. Provide either a request body or a data_url; one of the two is required. The keys of the data object are the fields you bound when you designed the template in the APIFreaks PDF Template Builder, so the exact shape is up to you. Pin the version parameter to a specific template version (e.g. version=v2) so later design changes never touch what is already live; omit it to use the latest version.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `template_id` - The template to render, from the APIFreaks PDF Template Builder. Copy it from your dashboard when you save the template.
+    /// * `version` - Template version to render, e.g. v2. Must start with v. Omit this parameter entirely to use the latest version; the literal value 'latest' is not accepted by the API.
+    /// * `data_url` - A URL the API fetches your JSON data from, instead of the request body. Provide this when you are not sending a request body.
+    /// * `request` - Free-form JSON object whose keys map to the fields bound in the template.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client.pdf_generate_from_template(&PdfGenerateFromTemplateRequest {
+    ///         api_key: "apiKey".to_string(),
+    ///         template_id: "template_id".to_string(),
+    ///         body: HashMap::from([("candidate_name".to_string(), serde_json::json!("Ava Thompson")), ("candidate_title".to_string(), serde_json::json!("Senior Operations Analyst")), ("email".to_string(), serde_json::json!("ava.thompson@example.com")), ("phone".to_string(), serde_json::json!("+1 (555) 381-2048")), ("city".to_string(), serde_json::json!("Austin, TX")), ("portfolio_url".to_string(), serde_json::json!("portfolio.example.com")), ("profile_summary".to_string(), serde_json::json!("Analytical operations professional with 8+ years of experience improving reporting pipelines, streamlining process documentation, and coordinating cross-functional delivery for distributed teams across multiple time zones.")), ("company_name".to_string(), serde_json::json!("Northwind Logistics")), ("job_title".to_string(), serde_json::json!("Operations Analyst")), ("employment_period".to_string(), serde_json::json!("2021 - Present")), ("job_achievement_1".to_string(), serde_json::json!("Led weekly KPI reporting for finance, fulfillment, and customer success stakeholders across three business units.")), ("job_achievement_2".to_string(), serde_json::json!("Reduced manual reconciliation work by 35% through workflow redesign and documentation automation.")), ("job_achievement_3".to_string(), serde_json::json!("Spearheaded a cross-team initiative that improved on-time delivery metrics by 18% within six months.")), ("skills".to_string(), serde_json::json!([{"skill":"Process Improvement","level":"Advanced","years":"7"},{"skill":"Stakeholder Reporting","level":"Expert","years":"8"},{"skill":"Cross-functional Coordination","level":"Advanced","years":"5"},{"skill":"Workflow Documentation","level":"Advanced","years":"6"}])), ("degree".to_string(), serde_json::json!("B.S. in Information Systems")), ("institution".to_string(), serde_json::json!("University of Texas")), ("graduation_year".to_string(), serde_json::json!("2018")), ("certification_1".to_string(), serde_json::json!("Certified Business Analysis Professional (CBAP)")), ("certification_2".to_string(), serde_json::json!("Six Sigma Green Belt")), ("languages".to_string(), serde_json::json!("English (Native), Spanish (Professional)"))]),
+    ///         version: None,
+    ///         data_url: None
+    ///     }, None).await;
+    /// }
+    /// ```
+    pub async fn pdf_generate_from_template(
+        &self,
+        request: &PdfGenerateFromTemplateRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<PdfGenerateFromTemplateResponse, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::POST,
+                "v1.0/pdf/template/generate",
+                Some(serde_json::to_value(&request.body).map_err(ApiError::Serialization)?),
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .string("template_id", request.template_id.clone())
+                    .string("version", request.version.clone())
+                    .string("data_url", request.data_url.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Upload a CSV file where each row is one record. The API generates one PDF per row and returns an array of results, each with its own pdf_url. Rows are processed independently, so a failure in one row does not block the rest of the batch. The response gives a row-by-row breakdown of which PDFs succeeded and which failed.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `template_id` - The template to render, from the APIFreaks PDF Template Builder. Copy it from your dashboard when you save the template.
+    /// * `version` - Template version to render, e.g. v2. Must start with v. Omit this parameter entirely to use the latest version; the literal value 'latest' is not accepted by the API.
+    /// * `request` - Multipart form-data request body containing the CSV file to render in bulk.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_pdf_generate_from_template(
+    ///             &BulkPdfGenerateFromTemplateRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 template_id: "template_id".to_string(),
+    ///                 file: b"test file content".to_vec(),
+    ///                 version: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
+    pub async fn bulk_pdf_generate_from_template(
+        &self,
+        request: &BulkPdfGenerateFromTemplateRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<Vec<BulkPdfGenerateFromTemplateResponseItem>, ApiError> {
+        self.http_client
+            .execute_multipart_request(
+                Method::POST,
+                "v1.0/pdf/template/generate/bulk",
+                request.clone().to_multipart(),
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .string("template_id", request.template_id.clone())
+                    .string("version", request.version.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
     /// Capture full-page screenshots and videos of websites with advanced options like device simulation, custom code injection, cookie banner blocking, and scrollable content recording.
     /// Supports multiple output formats including JSON, image, GIF, MP4, and WebM.
     ///
     /// # Arguments
     ///
     /// * `api_key` - Your API key
-    /// * `output` - Output format for screenshot results
+    /// * `output` - Output format for screenshot results. The SDKs support only `json`, which returns metadata with the captured file's URL in `screenshot`; download the file from that URL. (The API's `output=image`, which returns the raw file, is not supported by the SDK methods.)
     /// * `file_type` - File type for screenshot output
     /// * `url` - URLs to capture screenshots of
     /// * `width` - Browser viewport width in pixels
@@ -2551,18 +4791,163 @@ impl ApiFreaks {
     /// * `multiple_scrolling` - If true, multiple scrolling screenshots will be taken at different viewport sizes.
     /// * `sizes` - Comma-separated list of viewport sizes in the format index:XXw:YYh. Example: sizes=0:120w:300h,1:240w:500h
     /// * `duration` - Duration in seconds for the scrolling capture. Acceptable range: 0 to 100 seconds.
+    /// * `captcha_error` - CSS selector of the message shown for a wrong answer. While it is visible, the solver tries again.
+    /// * `captcha_image` - CSS selector of the captcha picture. Required when solve_captcha is true.
+    /// * `captcha_input` - CSS selector of the box the answer is typed into. Required when solve_captcha is true.
+    /// * `captcha_refresh` - CSS selector of the control that loads a new captcha picture before the next try.
+    /// * `captcha_retries` - Number of guesses the solver makes, from 1 to 5.
+    /// * `captcha_submit` - CSS selector of the button to click after the answer is typed.
+    /// * `classic_proxy` - Loads the page through a datacenter proxy. Adds 20 credits per request. Ignored when premium_proxy is true or a custom proxy is set.
+    /// * `click_recursion` - Number of times to click the selector (when set via `selector_to_click`).
+    /// * `country` - Two-letter country code, such as US or DE, for the exit address of classic_proxy or premium_proxy. Ignored when you send your own proxy. Any two-letter code is sent, including one that is not listed. Classic proxy countries: BG, GE, DE, HN, MD, UA, GB, US. Premium proxy countries: AF, AL, DZ, AO, AG, AR, AM, AW, AU, AT, AZ, BS, BH, BD, BB, BY, BE, BZ, BJ, BT, BO, BQ, BA, BW, BR, BN, BG, BF, BI, CV, KH, CM, CA, KY, CF, TD, CL, CN, CO, KM, CG, CR, CI, HR, CU, CW, CY, CZ, CD, DK, DJ, DM, DO, EC, EG, SV, GQ, EE, SZ, ET, FO, FJ, FI, FR, GF, PF, GA, GM, GE, DE, GH, GI, GR, GL, GD, GP, GU, GT, GG, GN, GW, GY, HT, HN, HK, HU, IS, IN, ID, IR, IQ, IE, IL, IT, JM, JP, JE, JO, KZ, KE, XK, KW, KG, LA, LV, LB, LS, LR, LY, LT, MO, MG, MW, MY, MV, ML, MT, MQ, MR, MU, YT, MX, MD, MN, ME, MA, MZ, MM, NA, NP, NL, NC, NZ, NI, NE, NG, MK, NO, OM, PK, PS, PA, PG, PY, PE, PH, PL, PT, PR, QA, RE, RO, RU, RW, KN, LC, VC, WS, SA, SN, RS, SC, SL, SG, SK, SI, SB, SO, ZA, KR, SS, ES, LK, SD, SR, SE, CH, SY, TW, TJ, TZ, TH, TL, TG, TO, TT, TN, TR, TM, UG, UA, AE, GB, US, UY, UZ, VE, VN, YE, ZM, ZW.
+    /// * `extract_markdown` - Extracts rendered page content as a structured .md (Markdown) file. Preserves headings, lists, links. Only with output=json.
+    /// * `format` - Response format: json (default).
+    /// * `get_image_urls` - Extracts all image URLs from the rendered DOM and returns them in structured format. Only with output=json.
+    /// * `gpu` - Renders the page with a GPU, including WebGL and canvas content. Adds 20 credits per request.
+    /// * `markdown` - Markdown to render instead of loading a URL. Works like custom_html, so you can capture a README or notes without hosting a page.
+    /// * `ocr_model` - Recognition model used by the captcha solver: mini-ocr-v1 (default) or ocr-v1.
+    /// * `pdf_options_format` - Paper size of the PDF. Applies when file_type is PDF. Without it, width and height are used if set, otherwise the page renders as one long page: A0, A1, A2, A3, A4, A5, A6, Letter, Legal, Tabloid, or Ledger.
+    /// * `pdf_options_landscape` - Renders the PDF in landscape orientation, swapping the width and height of the paper size. Applies when file_type is PDF.
+    /// * `pdf_options_media` - CSS media type used to render the PDF: print or screen.
+    /// * `pdf_options_page_range` - Pages to keep in the PDF, as start-end, for example 1-3 or 5-5. Pages are rendered first and then trimmed. Has no effect on a single-page PDF. Applies when file_type is PDF.
+    /// * `pdf_options_print_background` - Includes background colors and images in the PDF. Applies when file_type is PDF.
+    /// * `premium_proxy` - Loads the page through a residential proxy. Adds 200 credits per request. Used instead of classic_proxy.
+    /// * `scroll_delay` - Delay in milliseconds between scroll steps when `lazy_load` is enabled. Use higher values for heavy pages.
+    /// * `selector_to_click` - CSS selector for an element to click before capturing the screenshot. Useful for opening dropdowns, modals, or triggering content.
+    /// * `solve_captcha` - Solves a captcha made of text drawn in a picture, then takes the screenshot. Requires captcha_image and captcha_input. Adds 20 credits per request.
+    /// * `stealth` - Makes the browser look like a regular visitor for pages that block automated traffic. No extra credits.
+    /// * `timezone` - IANA timezone the browser uses while rendering, such as Asia/Karachi or Europe/London. Useful for clocks and localized dates.
+    /// * `video` - Records visible viewport only for a specified duration. Use with `duration` parameter. Ideal for dashboards and animations.
     /// * `options` - Additional request options such as headers, timeout, etc.
     ///
     /// # Returns
     ///
-    /// Streaming file download (use .into_bytes() to collect or stream chunks)
+    /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .screenshot_capture(
+    ///             &ScreenshotCaptureQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 url: "url".to_string(),
+    ///                 output: None,
+    ///                 file_type: None,
+    ///                 width: None,
+    ///                 height: None,
+    ///                 full_page: None,
+    ///                 fresh: None,
+    ///                 no_cookie_banners: None,
+    ///                 enable_caching: None,
+    ///                 block_ads: None,
+    ///                 block_chat_widgets: None,
+    ///                 extract_text: None,
+    ///                 extract_html: None,
+    ///                 destroy_screenshot: None,
+    ///                 lazy_load: None,
+    ///                 retina: None,
+    ///                 dark_mode: None,
+    ///                 block_tracking: None,
+    ///                 enable_incognito: None,
+    ///                 omit_background: None,
+    ///                 thumbnail_width: None,
+    ///                 adjust_top: None,
+    ///                 wait_for_event: None,
+    ///                 grayscale: None,
+    ///                 delay: None,
+    ///                 timeout: None,
+    ///                 ttl: None,
+    ///                 clip_x: None,
+    ///                 clip_y: None,
+    ///                 clip_width: None,
+    ///                 clip_height: None,
+    ///                 css_url: None,
+    ///                 css: None,
+    ///                 js_url: None,
+    ///                 js: None,
+    ///                 block_js: None,
+    ///                 block_stylesheets: None,
+    ///                 block_images: None,
+    ///                 block_media: None,
+    ///                 block_font: None,
+    ///                 block_text_track: None,
+    ///                 block_xhr: None,
+    ///                 block_fetch: None,
+    ///                 block_event_source: None,
+    ///                 block_web_socket: None,
+    ///                 block_manifest: None,
+    ///                 block_specific_requests: None,
+    ///                 blur_selector: None,
+    ///                 remove_selector: None,
+    ///                 result_file_name: None,
+    ///                 scrolling_screenshot: None,
+    ///                 scroll_speed: None,
+    ///                 scroll_back: None,
+    ///                 start_immediately: None,
+    ///                 multiple_scrolling: None,
+    ///                 sizes: vec![],
+    ///                 duration: None,
+    ///                 fail_on_error: None,
+    ///                 longitude: None,
+    ///                 latitude: None,
+    ///                 proxy: None,
+    ///                 headers: None,
+    ///                 cookies: None,
+    ///                 scroll_to_element: None,
+    ///                 selector: None,
+    ///                 user_agent: None,
+    ///                 accept_languages: None,
+    ///                 custom_html: None,
+    ///                 image_quality: None,
+    ///                 captcha_error: None,
+    ///                 captcha_image: None,
+    ///                 captcha_input: None,
+    ///                 captcha_refresh: None,
+    ///                 captcha_retries: None,
+    ///                 captcha_submit: None,
+    ///                 classic_proxy: None,
+    ///                 click_recursion: None,
+    ///                 country: None,
+    ///                 extract_markdown: None,
+    ///                 format: None,
+    ///                 get_image_urls: None,
+    ///                 gpu: None,
+    ///                 markdown: None,
+    ///                 ocr_model: None,
+    ///                 pdf_options_format: None,
+    ///                 pdf_options_landscape: None,
+    ///                 pdf_options_media: None,
+    ///                 pdf_options_page_range: None,
+    ///                 pdf_options_print_background: None,
+    ///                 premium_proxy: None,
+    ///                 scroll_delay: None,
+    ///                 selector_to_click: None,
+    ///                 solve_captcha: None,
+    ///                 stealth: None,
+    ///                 timezone: None,
+    ///                 video: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn screenshot_capture(
         &self,
         request: &ScreenshotCaptureQueryRequest,
         options: Option<RequestOptions>,
-    ) -> Result<ByteStream, ApiError> {
+    ) -> Result<ScreenshotCaptureResponse, ApiError> {
         self.http_client
-            .execute_stream_request(
+            .execute_request(
                 Method::GET,
                 "v1.0/screenshot",
                 None,
@@ -2626,7 +5011,20 @@ impl ApiFreaks {
                     .bool("scroll_back", request.scroll_back.clone())
                     .bool("start_immediately", request.start_immediately.clone())
                     .bool("multiple_scrolling", request.multiple_scrolling.clone())
-                    .string_array("sizes", request.sizes.clone())
+                    .string("sizes", {
+                        let joined = request
+                            .sizes
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .float("duration", request.duration.clone())
                     .bool("fail_on_error", request.fail_on_error.clone())
                     .float("longitude", request.longitude.clone())
@@ -2640,6 +5038,42 @@ impl ApiFreaks {
                     .string("accept_languages", request.accept_languages.clone())
                     .string("custom_html", request.custom_html.clone())
                     .float("image_quality", request.image_quality.clone())
+                    .string("captcha_error", request.captcha_error.clone())
+                    .string("captcha_image", request.captcha_image.clone())
+                    .string("captcha_input", request.captcha_input.clone())
+                    .string("captcha_refresh", request.captcha_refresh.clone())
+                    .int("captcha_retries", request.captcha_retries.clone())
+                    .string("captcha_submit", request.captcha_submit.clone())
+                    .bool("classic_proxy", request.classic_proxy.clone())
+                    .int("click_recursion", request.click_recursion.clone())
+                    .string("country", request.country.clone())
+                    .bool("extract_markdown", request.extract_markdown.clone())
+                    .serialize("format", request.format.clone())
+                    .bool("get_image_urls", request.get_image_urls.clone())
+                    .bool("gpu", request.gpu.clone())
+                    .string("markdown", request.markdown.clone())
+                    .serialize("ocr_model", request.ocr_model.clone())
+                    .serialize("pdf_options[format]", request.pdf_options_format.clone())
+                    .bool(
+                        "pdf_options[landscape]",
+                        request.pdf_options_landscape.clone(),
+                    )
+                    .serialize("pdf_options[media]", request.pdf_options_media.clone())
+                    .string(
+                        "pdf_options[page_range]",
+                        request.pdf_options_page_range.clone(),
+                    )
+                    .bool(
+                        "pdf_options[print_background]",
+                        request.pdf_options_print_background.clone(),
+                    )
+                    .bool("premium_proxy", request.premium_proxy.clone())
+                    .int("scroll_delay", request.scroll_delay.clone())
+                    .string("selector_to_click", request.selector_to_click.clone())
+                    .bool("solve_captcha", request.solve_captcha.clone())
+                    .bool("stealth", request.stealth.clone())
+                    .string("timezone", request.timezone.clone())
+                    .bool("video", request.video.clone())
                     .build(),
                 options,
             )
@@ -2657,6 +5091,33 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_screenshot_capture(
+    ///             &BulkScreenshotCaptureRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 urls: vec![BulkScreenshotCaptureRequestUrlsItem {
+    ///                     url: "url".to_string(),
+    ///                     ..Default::default()
+    ///                 }],
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn bulk_screenshot_capture(
         &self,
         request: &BulkScreenshotCaptureRequest,
@@ -2690,6 +5151,32 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .currency_latest_rates(
+    ///             &CurrencyLatestRatesQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 base: None,
+    ///                 symbols: vec![],
+    ///                 updates: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn currency_latest_rates(
         &self,
         request: &CurrencyLatestRatesQueryRequest,
@@ -2704,7 +5191,20 @@ impl ApiFreaks {
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
                     .string("base", request.base.clone())
-                    .string_array("symbols", request.symbols.clone())
+                    .string("symbols", {
+                        let joined = request
+                            .symbols
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .serialize("updates", request.updates.clone())
                     .build(),
                 options,
@@ -2726,6 +5226,32 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .currency_historical_rates(
+    ///             &CurrencyHistoricalRatesQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 format: None,
+    ///                 base: None,
+    ///                 symbols: vec![],
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn currency_historical_rates(
         &self,
         request: &CurrencyHistoricalRatesQueryRequest,
@@ -2740,7 +5266,20 @@ impl ApiFreaks {
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
                     .string("base", request.base.clone())
-                    .string_array("symbols", request.symbols.clone())
+                    .string("symbols", {
+                        let joined = request
+                            .symbols
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .date("date", request.date.clone())
                     .build(),
                 options,
@@ -2763,6 +5302,33 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .currency_convert_latest(
+    ///             &CurrencyConvertLatestQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 from: "from".to_string(),
+    ///                 to: "to".to_string(),
+    ///                 format: None,
+    ///                 amount: None,
+    ///                 updates: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn currency_convert_latest(
         &self,
         request: &CurrencyConvertLatestQueryRequest,
@@ -2801,6 +5367,33 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .currency_convert_historical(
+    ///             &CurrencyConvertHistoricalQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 from: "from".to_string(),
+    ///                 to: "to".to_string(),
+    ///                 date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 format: None,
+    ///                 amount: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn currency_convert_historical(
         &self,
         request: &CurrencyConvertHistoricalQueryRequest,
@@ -2839,6 +5432,33 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .currency_time_series(
+    ///             &CurrencyTimeSeriesQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 start_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 format: None,
+    ///                 end_date: None,
+    ///                 base: None,
+    ///                 symbols: vec![],
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn currency_time_series(
         &self,
         request: &CurrencyTimeSeriesQueryRequest,
@@ -2855,7 +5475,20 @@ impl ApiFreaks {
                     .date("startDate", request.start_date.clone())
                     .date("endDate", request.end_date.clone())
                     .string("base", request.base.clone())
-                    .string_array("symbols", request.symbols.clone())
+                    .string("symbols", {
+                        let joined = request
+                            .symbols
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .build(),
                 options,
             )
@@ -2877,6 +5510,33 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .currency_fluctuation(
+    ///             &CurrencyFluctuationQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 start_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 base: Some("USD".to_string()),
+    ///                 format: None,
+    ///                 end_date: None,
+    ///                 symbols: vec![],
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn currency_fluctuation(
         &self,
         request: &CurrencyFluctuationQueryRequest,
@@ -2893,7 +5553,20 @@ impl ApiFreaks {
                     .date("startDate", request.start_date.clone())
                     .date("endDate", request.end_date.clone())
                     .string("base", request.base.clone())
-                    .string_array("symbols", request.symbols.clone())
+                    .string("symbols", {
+                        let joined = request
+                            .symbols
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .build(),
                 options,
             )
@@ -2915,6 +5588,33 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .currency_convert_by_ip(
+    ///             &CurrencyConvertByIpQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 from: "from".to_string(),
+    ///                 format: None,
+    ///                 updates: None,
+    ///                 ip: None,
+    ///                 amount: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn currency_convert_by_ip(
         &self,
         request: &CurrencyConvertByIpQueryRequest,
@@ -2949,6 +5649,29 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .currency_supported(
+    ///             &CurrencySupportedQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn currency_supported(
         &self,
         request: &CurrencySupportedQueryRequest,
@@ -2979,6 +5702,29 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .currency_symbols(
+    ///             &CurrencySymbolsQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn currency_symbols(
         &self,
         request: &CurrencySymbolsQueryRequest,
@@ -3009,6 +5755,29 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .currency_historical_limits(
+    ///             &CurrencyHistoricalLimitsQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn currency_historical_limits(
         &self,
         request: &CurrencyHistoricalLimitsQueryRequest,
@@ -3042,6 +5811,32 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .commodity_latest_rates(
+    ///             &CommodityLatestRatesQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 symbols: vec![Some("symbols".to_string())],
+    ///                 updates: CommodityLatestRatesRequestUpdates::TenM,
+    ///                 format: None,
+    ///                 quote: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn commodity_latest_rates(
         &self,
         request: &CommodityLatestRatesQueryRequest,
@@ -3055,7 +5850,20 @@ impl ApiFreaks {
                 QueryBuilder::new()
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
-                    .string_array("symbols", request.symbols.clone())
+                    .string("symbols", {
+                        let joined = request
+                            .symbols
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .serialize("updates", Some(request.updates.clone()))
                     .string("quote", request.quote.clone())
                     .build(),
@@ -3077,6 +5885,31 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .commodity_historical_rates(
+    ///             &CommodityHistoricalRatesQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 symbols: vec![Some("symbols".to_string())],
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn commodity_historical_rates(
         &self,
         request: &CommodityHistoricalRatesQueryRequest,
@@ -3091,7 +5924,20 @@ impl ApiFreaks {
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
                     .date("date", request.date.clone())
-                    .string_array("symbols", request.symbols.clone())
+                    .string("symbols", {
+                        let joined = request
+                            .symbols
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .build(),
                 options,
             )
@@ -3112,6 +5958,32 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .commodity_fluctuation(
+    ///             &CommodityFluctuationQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 symbols: vec![Some("symbols".to_string())],
+    ///                 start_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 end_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn commodity_fluctuation(
         &self,
         request: &CommodityFluctuationQueryRequest,
@@ -3125,7 +5997,20 @@ impl ApiFreaks {
                 QueryBuilder::new()
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
-                    .string_array("symbols", request.symbols.clone())
+                    .string("symbols", {
+                        let joined = request
+                            .symbols
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .date("startDate", request.start_date.clone())
                     .date("endDate", request.end_date.clone())
                     .build(),
@@ -3148,6 +6033,32 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .commodity_time_series(
+    ///             &CommodityTimeSeriesQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 symbols: vec![Some("symbols".to_string())],
+    ///                 start_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 end_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn commodity_time_series(
         &self,
         request: &CommodityTimeSeriesQueryRequest,
@@ -3161,7 +6072,20 @@ impl ApiFreaks {
                 QueryBuilder::new()
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
-                    .string_array("symbols", request.symbols.clone())
+                    .string("symbols", {
+                        let joined = request
+                            .symbols
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .date("startDate", request.start_date.clone())
                     .date("endDate", request.end_date.clone())
                     .build(),
@@ -3181,6 +6105,29 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .commodity_symbols(
+    ///             &CommoditySymbolsQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn commodity_symbols(
         &self,
         request: &CommoditySymbolsQueryRequest,
@@ -3206,12 +6153,36 @@ impl ApiFreaks {
     ///
     /// * `api_key` - Your API key
     /// * `format` - Format of the response. Default is JSON.
-    /// * `type_` - Type of supported country. Supported values: IBAN, SWIFT, VAT. By default, it returns all supported countries for all types.
+    /// * `type_` - Which list to return: VAT (`VAT_Supported_Countries_And_States`), IBAN (`IBAN_Supported_Countries`) or SWIFT (`SWIFT_Supported_Countries`). Each value returns only its own list. If omitted (or unknown), all three lists are returned.
     /// * `options` - Additional request options such as headers, timeout, etc.
     ///
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .vat_supported_countries(
+    ///             &VatSupportedCountriesQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 r#type: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn vat_supported_countries(
         &self,
         request: &VatSupportedCountriesQueryRequest,
@@ -3244,6 +6215,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .vat_rate_by_ip(
+    ///             &VatRateByIpQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 ip_address: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn vat_rate_by_ip(
         &self,
         request: &VatRateByIpQueryRequest,
@@ -3277,6 +6272,31 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .vat_rate_by_country(
+    ///             &VatRateByCountryQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 country: "country".to_string(),
+    ///                 format: None,
+    ///                 state: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn vat_rate_by_country(
         &self,
         request: &VatRateByCountryQueryRequest,
@@ -3309,11 +6329,45 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_vat_rate_by_country(
+    ///             &BulkVatRateByCountryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 countries: vec![
+    ///                     BulkVatRateByCountryRequestCountriesItem {
+    ///                         country: "PAK".to_string(),
+    ///                         ..Default::default()
+    ///                     },
+    ///                     BulkVatRateByCountryRequestCountriesItem {
+    ///                         country: "United_States".to_string(),
+    ///                         state: Some("New_York".to_string()),
+    ///                         ..Default::default()
+    ///                     },
+    ///                 ],
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn bulk_vat_rate_by_country(
         &self,
         request: &BulkVatRateByCountryRequest,
         options: Option<RequestOptions>,
-    ) -> Result<BulkVatRateByCountryResponse, ApiError> {
+    ) -> Result<Vec<BulkVatRateByCountryResponseItem>, ApiError> {
         self.http_client
             .execute_request(
                 Method::POST,
@@ -3341,6 +6395,31 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .vat_validate(
+    ///             &VatValidateQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 vat_number: "vatNumber".to_string(),
+    ///                 format: None,
+    ///                 requester_vat_number: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn vat_validate(
         &self,
         request: &VatValidateQueryRequest,
@@ -3374,6 +6453,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .iban_validate(
+    ///             &IbanValidateQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 iban: "iban".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn iban_validate(
         &self,
         request: &IbanValidateQueryRequest,
@@ -3408,6 +6511,32 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .swift_code_find(
+    ///             &SwiftCodeFindQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 country: None,
+    ///                 bank: None,
+    ///                 city: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn swift_code_find(
         &self,
         request: &SwiftCodeFindQueryRequest,
@@ -3442,6 +6571,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .swift_code_lookup(
+    ///             &SwiftCodeLookupQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 swift_code: "swiftCode".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn swift_code_lookup(
         &self,
         request: &SwiftCodeLookupQueryRequest,
@@ -3462,6 +6615,30 @@ impl ApiFreaks {
             .await
     }
 
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .zipcode_lookup(
+    ///             &ZipcodeLookupQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 code: "code".to_string(),
+    ///                 format: None,
+    ///                 country: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn zipcode_lookup(
         &self,
         request: &ZipcodeLookupQueryRequest,
@@ -3494,6 +6671,31 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_zipcode_lookup(
+    ///             &BulkZipcodeLookupRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 codes: vec!["codes".to_string()],
+    ///                 format: None,
+    ///                 country: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn bulk_zipcode_lookup(
         &self,
         request: &BulkZipcodeLookupRequest,
@@ -3513,6 +6715,32 @@ impl ApiFreaks {
             .await
     }
 
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .zipcode_search_by_city(
+    ///             &ZipcodeSearchByCityQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 city: "city".to_string(),
+    ///                 country: "country".to_string(),
+    ///                 format: None,
+    ///                 state_name: None,
+    ///                 page: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn zipcode_search_by_city(
         &self,
         request: &ZipcodeSearchByCityQueryRequest,
@@ -3536,6 +6764,32 @@ impl ApiFreaks {
             .await
     }
 
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .zipcode_search_by_region(
+    ///             &ZipcodeSearchByRegionQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 country: "country".to_string(),
+    ///                 format: None,
+    ///                 region: None,
+    ///                 page: None,
+    ///                 region_code: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn zipcode_search_by_region(
         &self,
         request: &ZipcodeSearchByRegionQueryRequest,
@@ -3552,12 +6806,42 @@ impl ApiFreaks {
                     .string("country", request.country.clone())
                     .string("region", request.region.clone())
                     .int("page", request.page.clone())
+                    .string("region_code", request.region_code.clone())
                     .build(),
                 options,
             )
             .await
     }
 
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .zipcode_search_by_radius(
+    ///             &ZipcodeSearchByRadiusQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 radius: 1.1,
+    ///                 format: None,
+    ///                 code: None,
+    ///                 lat: None,
+    ///                 long: None,
+    ///                 country: None,
+    ///                 unit: None,
+    ///                 page: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn zipcode_search_by_radius(
         &self,
         request: &ZipcodeSearchByRadiusQueryRequest,
@@ -3595,6 +6879,35 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .zipcode_distance(
+    ///             &ZipcodeDistanceRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 compare: vec!["compare".to_string()],
+    ///                 country: "country".to_string(),
+    ///                 format: None,
+    ///                 code: None,
+    ///                 lat: None,
+    ///                 long: None,
+    ///                 unit: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn zipcode_distance(
         &self,
         request: &ZipcodeDistanceRequest,
@@ -3625,6 +6938,33 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .zipcode_distance_match(
+    ///             &ZipcodeDistanceMatchRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 codes: vec!["codes".to_string()],
+    ///                 country: "country".to_string(),
+    ///                 format: None,
+    ///                 distance: None,
+    ///                 unit: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn zipcode_distance_match(
         &self,
         request: &ZipcodeDistanceMatchRequest,
@@ -3649,7 +6989,7 @@ impl ApiFreaks {
     /// # Arguments
     ///
     /// * `api_key` - Your API key
-    /// * `format` - Response format returned by the API.
+    /// * `format` - Response format returned by the API. Only JSON is supported.
     /// * `location` - City name, place name, or full address.
     /// * `lat` - Latitude of the location.
     /// * `long` - Longitude of the location.
@@ -3660,6 +7000,34 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .current_weather(
+    ///             &CurrentWeatherQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 location: None,
+    ///                 lat: None,
+    ///                 long: None,
+    ///                 ip: None,
+    ///                 timezone: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn current_weather(
         &self,
         request: &CurrentWeatherQueryRequest,
@@ -3689,13 +7057,56 @@ impl ApiFreaks {
     /// # Arguments
     ///
     /// * `api_key` - Your API key
-    /// * `format` - Response format returned by the API.
+    /// * `format` - Response format returned by the API. Only JSON is supported.
     /// * `timezone` - Timezone for the results.
     /// * `options` - Additional request options such as headers, timeout, etc.
     ///
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_current_weather(
+    ///             &BulkCurrentWeatherRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 locations: vec![
+    ///                     BulkCurrentWeatherRequestLocationsItem {
+    ///                         location: Some("lahore".to_string()),
+    ///                         ..Default::default()
+    ///                     },
+    ///                     BulkCurrentWeatherRequestLocationsItem {
+    ///                         lat: Some(32.5),
+    ///                         long: Some(74.5),
+    ///                         ..Default::default()
+    ///                     },
+    ///                     BulkCurrentWeatherRequestLocationsItem {
+    ///                         ip: Some("8.8.8.8".to_string()),
+    ///                         ..Default::default()
+    ///                     },
+    ///                     BulkCurrentWeatherRequestLocationsItem {
+    ///                         location: Some("seoul".to_string()),
+    ///                         ..Default::default()
+    ///                     },
+    ///                 ],
+    ///                 format: None,
+    ///                 timezone: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn bulk_current_weather(
         &self,
         request: &BulkCurrentWeatherRequest,
@@ -3721,7 +7132,7 @@ impl ApiFreaks {
     /// # Arguments
     ///
     /// * `api_key` - Your API key
-    /// * `format` - Response format returned by the API.
+    /// * `format` - Response format returned by the API. Only JSON is supported.
     /// * `start_date` - Start date for the forecast in YYYY-MM-DD format. Forecast dates must be current or future dates only. Past dates are not allowed for forecast data. The difference between startDate and endDate must not exceed 16 days.
     /// * `end_date` - End date for the forecast in YYYY-MM-DD format. Forecast dates must be current or future dates only. Past dates are not allowed for forecast data. The difference between startDate and endDate must not exceed 16 days.
     /// * `forecast_days` - Number of days for the forecast, from 1 to 16. Default is 7. Maximum value is 16.
@@ -3736,6 +7147,38 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .weather_forecast(
+    ///             &WeatherForecastQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 start_date: None,
+    ///                 end_date: None,
+    ///                 forecast_days: None,
+    ///                 location: None,
+    ///                 lat: None,
+    ///                 long: None,
+    ///                 ip: None,
+    ///                 precision: None,
+    ///                 timezone: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn weather_forecast(
         &self,
         request: &WeatherForecastQueryRequest,
@@ -3769,7 +7212,7 @@ impl ApiFreaks {
     /// # Arguments
     ///
     /// * `api_key` - Your API key
-    /// * `format` - Response format returned by the API.
+    /// * `format` - Response format returned by the API. Only JSON is supported.
     /// * `date` - Specific date for which to fetch weather data in YYYY-MM-DD format. Historical dates must be past dates only. Current or future dates are not allowed for historical data. Data available from 1940 onwards.
     /// * `location` - City name, place name, or full address.
     /// * `lat` - Latitude of the location.
@@ -3782,6 +7225,36 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .historical_weather(
+    ///             &HistoricalWeatherQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 format: None,
+    ///                 location: None,
+    ///                 lat: None,
+    ///                 long: None,
+    ///                 ip: None,
+    ///                 precision: None,
+    ///                 timezone: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn historical_weather(
         &self,
         request: &HistoricalWeatherQueryRequest,
@@ -3813,7 +7286,7 @@ impl ApiFreaks {
     /// # Arguments
     ///
     /// * `api_key` - Your API key
-    /// * `format` - Response format returned by the API.
+    /// * `format` - Response format returned by the API. Only JSON is supported.
     /// * `start_date` - Starting date for the data in YYYY-MM-DD format. Historical dates must be past dates only. Current or future dates are not allowed for historical data. Data available from 1940 onwards. For precision=daily, the difference between endDate and startDate must not exceed 90 days. For precision=hourly, the difference must not exceed 7 days.
     /// * `end_date` - End date for the data in YYYY-MM-DD format. Historical dates must be past dates only. Current or future dates are not allowed for historical data. Data available from 1940 onwards. For precision=daily, the difference between endDate and startDate must not exceed 90 days. For precision=hourly, the difference must not exceed 7 days.
     /// * `location` - City name, place name, or full address.
@@ -3827,6 +7300,37 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .weather_time_series(
+    ///             &WeatherTimeSeriesQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 start_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 end_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 format: None,
+    ///                 location: None,
+    ///                 lat: None,
+    ///                 long: None,
+    ///                 ip: None,
+    ///                 precision: None,
+    ///                 timezone: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn weather_time_series(
         &self,
         request: &WeatherTimeSeriesQueryRequest,
@@ -3859,7 +7363,7 @@ impl ApiFreaks {
     /// # Arguments
     ///
     /// * `api_key` - Your API key
-    /// * `format` - Response format returned by the API.
+    /// * `format` - Response format returned by the API. Only JSON is supported.
     /// * `start_date` - Starting date for marine forecast data in YYYY-MM-DD format. Forecast dates must be current or future dates only. Past dates are not allowed for forecast data. The difference between endDate and startDate must not exceed 16 days.
     /// * `end_date` - End date for marine forecast data in YYYY-MM-DD format. Forecast dates must be current or future dates only. Past dates are not allowed for forecast data. The difference between endDate and startDate must not exceed 16 days.
     /// * `location` - City name, place name, or full address.
@@ -3873,6 +7377,37 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .marine_weather(
+    ///             &MarineWeatherQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 start_date: None,
+    ///                 end_date: None,
+    ///                 location: None,
+    ///                 lat: None,
+    ///                 long: None,
+    ///                 ip: None,
+    ///                 precision: None,
+    ///                 timezone: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn marine_weather(
         &self,
         request: &MarineWeatherQueryRequest,
@@ -3905,7 +7440,7 @@ impl ApiFreaks {
     /// # Arguments
     ///
     /// * `api_key` - Your API key
-    /// * `format` - Response format returned by the API.
+    /// * `format` - Response format returned by the API. Only JSON is supported.
     /// * `start_date` - Starting date for AQI forecast data in YYYY-MM-DD format. Forecast dates must be current or future dates only. Past dates are not allowed for forecast data. The difference between endDate and startDate must not exceed 5 days.
     /// * `end_date` - End date for AQI forecast data in YYYY-MM-DD format. Forecast dates must be current or future dates only. Past dates are not allowed for forecast data. The difference between endDate and startDate must not exceed 5 days.
     /// * `location` - City name, place name, or full address.
@@ -3919,6 +7454,37 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .air_quality(
+    ///             &AirQualityQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 start_date: None,
+    ///                 end_date: None,
+    ///                 location: None,
+    ///                 lat: None,
+    ///                 long: None,
+    ///                 ip: None,
+    ///                 precision: None,
+    ///                 timezone: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn air_quality(
         &self,
         request: &AirQualityQueryRequest,
@@ -3951,7 +7517,7 @@ impl ApiFreaks {
     /// # Arguments
     ///
     /// * `api_key` - Your API key
-    /// * `format` - Response format returned by the API.
+    /// * `format` - Response format returned by the API. Only JSON is supported.
     /// * `start_date` - Starting date for flood forecast data in YYYY-MM-DD format. Forecast dates must be current or future dates only. Past dates are not allowed for forecast data. The difference between endDate and startDate must not exceed 16 days.
     /// * `end_date` - End date for flood forecast data in YYYY-MM-DD format. Forecast dates must be current or future dates only. Past dates are not allowed for forecast data. The difference between endDate and startDate must not exceed 16 days.
     /// * `location` - City name, place name, or full address.
@@ -3965,6 +7531,37 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .flood_forecast(
+    ///             &FloodForecastQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 start_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 end_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+    ///                 format: None,
+    ///                 location: None,
+    ///                 lat: None,
+    ///                 long: None,
+    ///                 ip: None,
+    ///                 precision: None,
+    ///                 timezone: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn flood_forecast(
         &self,
         request: &FloodForecastQueryRequest,
@@ -4005,6 +7602,31 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .get_countries(
+    ///             &GetCountriesQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 region: None,
+    ///                 subregion: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn get_countries(
         &self,
         request: &GetCountriesQueryRequest,
@@ -4026,6 +7648,29 @@ impl ApiFreaks {
             .await
     }
 
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .get_country_details(
+    ///             &GetCountryDetailsQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 country: "country".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn get_country_details(
         &self,
         request: &GetCountryDetailsQueryRequest,
@@ -4046,6 +7691,28 @@ impl ApiFreaks {
             .await
     }
 
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .get_regions(
+    ///             &GetRegionsQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn get_regions(
         &self,
         request: &GetRegionsQueryRequest,
@@ -4065,6 +7732,29 @@ impl ApiFreaks {
             .await
     }
 
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .get_subregions(
+    ///             &GetSubregionsQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 region: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn get_subregions(
         &self,
         request: &GetSubregionsQueryRequest,
@@ -4097,6 +7787,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .get_admin_levels(
+    ///             &GetAdminLevelsQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 country: "country".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn get_admin_levels(
         &self,
         request: &GetAdminLevelsQueryRequest,
@@ -4124,12 +7838,37 @@ impl ApiFreaks {
     /// * `api_key` - Your API key
     /// * `format` - Format of the response.
     /// * `country` - Country code in ISO 3166-1 alpha-2 format.
-    /// * `admin_levels` - Comma-separated list to filter results by one or more administrative levels.
+    /// * `admin_level` - Filter results by one or more administrative level names (e.g. `land`, `state`, `province`), sent as a comma-separated list. Use the admin levels endpoint to list the levels a country has.
     /// * `options` - Additional request options such as headers, timeout, etc.
     ///
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .get_admin_units(
+    ///             &GetAdminUnitsQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 country: "country".to_string(),
+    ///                 format: None,
+    ///                 admin_level: vec![],
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn get_admin_units(
         &self,
         request: &GetAdminUnitsQueryRequest,
@@ -4144,7 +7883,20 @@ impl ApiFreaks {
                     .string("apiKey", request.api_key.clone())
                     .serialize("format", request.format.clone())
                     .string("country", request.country.clone())
-                    .string_array("adminLevels", request.admin_levels.clone())
+                    .string("admin_level", {
+                        let joined = request
+                            .admin_level
+                            .iter()
+                            .flatten()
+                            .map(|value| value.to_string())
+                            .collect::<Vec<_>>()
+                            .join(",");
+                        if joined.is_empty() {
+                            None
+                        } else {
+                            Some(joined)
+                        }
+                    })
                     .build(),
                 options,
             )
@@ -4164,6 +7916,31 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .get_admin_unit_details(
+    ///             &GetAdminUnitDetailsQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 country: "country".to_string(),
+    ///                 admin_unit: "admin_unit".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn get_admin_unit_details(
         &self,
         request: &GetAdminUnitDetailsQueryRequest,
@@ -4198,6 +7975,31 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .get_cities(
+    ///             &GetCitiesQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 country: "country".to_string(),
+    ///                 format: None,
+    ///                 admin_unit: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn get_cities(
         &self,
         request: &GetCitiesQueryRequest,
@@ -4229,11 +8031,33 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .get_supported_flags(
+    ///             &GetSupportedFlagsQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn get_supported_flags(
         &self,
         request: &GetSupportedFlagsQueryRequest,
         options: Option<RequestOptions>,
-    ) -> Result<Vec<GetSupportedFlagsResponseItem>, ApiError> {
+    ) -> Result<GetSupportedFlagsResponse, ApiError> {
         self.http_client
             .execute_request(
                 Method::GET,
@@ -4262,6 +8086,33 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// Streaming file download (use .into_bytes() to collect or stream chunks)
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .get_flags(
+    ///             &GetFlagsQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 name: "name".to_string(),
+    ///                 shape: GetFlagsRequestShape::Flat,
+    ///                 r#type: GetFlagsRequestType::Country,
+    ///                 format: None,
+    ///                 size: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn get_flags(
         &self,
         request: &GetFlagsQueryRequest,
@@ -4305,6 +8156,38 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .timezone_lookup(
+    ///             &TimezoneLookupQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 ip: None,
+    ///                 tz: None,
+    ///                 location: None,
+    ///                 lat: None,
+    ///                 long: None,
+    ///                 lang: None,
+    ///                 iata_code: None,
+    ///                 icao_code: None,
+    ///                 lo_code: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn timezone_lookup(
         &self,
         request: &TimezoneLookupQueryRequest,
@@ -4359,6 +8242,44 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .timezone_convert(
+    ///             &TimezoneConvertQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 time: None,
+    ///                 tz_from: None,
+    ///                 tz_to: None,
+    ///                 lat_from: None,
+    ///                 long_from: None,
+    ///                 lat_to: None,
+    ///                 long_to: None,
+    ///                 location_from: None,
+    ///                 location_to: None,
+    ///                 iata_from: None,
+    ///                 iata_to: None,
+    ///                 icao_from: None,
+    ///                 icao_to: None,
+    ///                 locode_from: None,
+    ///                 locode_to: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn timezone_convert(
         &self,
         request: &TimezoneConvertQueryRequest,
@@ -4404,6 +8325,29 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .user_agent_lookup(
+    ///             &UserAgentLookupQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn user_agent_lookup(
         &self,
         request: &UserAgentLookupQueryRequest,
@@ -4438,6 +8382,30 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .bulk_user_agent_lookup(
+    ///             &BulkUserAgentLookupRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 ua_strings: vec!["uaStrings".to_string()],
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn bulk_user_agent_lookup(
         &self,
         request: &BulkUserAgentLookupRequest,
@@ -4470,23 +8438,61 @@ impl ApiFreaks {
     /// # Arguments
     ///
     /// * `api_key` - Your API key
+    /// * `model` - OCR model to use. `mini-ocr-v1` for CAPTCHA OCR, `ocr-v1` for general OCR.
+    /// * `url` - URL of the image or PDF (required if `file` is not uploaded).
+    /// * `page_range` - Specify page range for multi-page PDFs (e.g., '1,3,5-10' or 'allpages'). **Note:** This parameter can only be used with .pdf file types.
+    /// * `zone` - Define OCR zones using coordinates (top:left:height:width). Multiple zones can be defined using commas. Only available for model 'ocr-v1'. **Note:** This parameter cannot be used with .pdf and .zip file types as it can only be applied to single image queries.
+    /// * `new_line` - Set to 1 to split output text into individual lines (default: 0). This changes the shape of `OCRText` (see the response).
     /// * `options` - Additional request options such as headers, timeout, etc.
     ///
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .ocr_predict(
+    ///             &OcrPredictRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 model: OcrPredictRequestModel::MiniOcrV1,
+    ///                 file: b"test file content".to_vec(),
+    ///                 url: None,
+    ///                 page_range: None,
+    ///                 zone: None,
+    ///                 new_line: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn ocr_predict(
         &self,
         request: &OcrPredictRequest,
         options: Option<RequestOptions>,
     ) -> Result<OcrPredictResponse, ApiError> {
         self.http_client
-            .execute_request(
+            .execute_multipart_request(
                 Method::POST,
                 "v1.0/ocr/predict",
-                Some(serde_json::to_value(request).map_err(ApiError::Serialization)?),
+                request.clone().to_multipart(),
                 QueryBuilder::new()
                     .string("apiKey", request.api_key.clone())
+                    .serialize("model", Some(request.model.clone()))
+                    .string("url", request.url.clone())
+                    .string("page_range", request.page_range.clone())
+                    .string("zone", request.zone.clone())
+                    .int("new_line", request.new_line.clone())
                     .build(),
                 options,
             )
@@ -4503,6 +8509,24 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client.grammar_detect(&GrammarDetectRequest {
+    ///         api_key: "apiKey".to_string(),
+    ///         text: "The global mental is health crisis is now a serious and compelex problem. It need quick and ongoing action from policymakers, healthcare workers, and the whole society.".to_string()
+    ///     }, None).await;
+    /// }
+    /// ```
     pub async fn grammar_detect(
         &self,
         request: &GrammarDetectRequest,
@@ -4531,6 +8555,24 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client.grammar_correct(&GrammarCorrectRequest {
+    ///         api_key: "apiKey".to_string(),
+    ///         text: "The global mental is health crisis is now a serious and compelex problem. It need quick and ongoing action from policymakers, healthcare workers, and the whole society.".to_string()
+    ///     }, None).await;
+    /// }
+    /// ```
     pub async fn grammar_correct(
         &self,
         request: &GrammarCorrectRequest,
@@ -4559,6 +8601,31 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .weak_words_detect(
+    ///             &WeakWordsDetectRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 text:
+    ///                     "Many people cannot get the support they need to handle their conditions well."
+    ///                         .to_string(),
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn weak_words_detect(
         &self,
         request: &WeakWordsDetectRequest,
@@ -4589,6 +8656,26 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client.readability_score(&ReadabilityScoreRequest {
+    ///         api_key: "apiKey".to_string(),
+    ///         text: "The global mental is health crisis is now a serious and compelex problem. It needs quick and ongoing action from policymakers, healthcare workers, and the whole society.".to_string(),
+    ///         target: None,
+    ///         exclude: None
+    ///     }, None).await;
+    /// }
+    /// ```
     pub async fn readability_score(
         &self,
         request: &ReadabilityScoreRequest,
@@ -4626,6 +8713,37 @@ impl ApiFreaks {
     /// # Returns
     ///
     /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .astronomy_lookup(
+    ///             &AstronomyLookupQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///                 location: None,
+    ///                 lat: None,
+    ///                 long: None,
+    ///                 ip: None,
+    ///                 lang: None,
+    ///                 date: None,
+    ///                 elevation: None,
+    ///                 time_zone: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
     pub async fn astronomy_lookup(
         &self,
         request: &AstronomyLookupQueryRequest,
@@ -4647,6 +8765,59 @@ impl ApiFreaks {
                     .date("date", request.date.clone())
                     .float("elevation", request.elevation.clone())
                     .string("time_zone", request.time_zone.clone())
+                    .build(),
+                options,
+            )
+            .await
+    }
+
+    /// Returns subscription, subscription-surcharge, and one-off credit balances for the authenticated organization's account.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - Your API key
+    /// * `format` - Format of the response. Possible values: json, xml.
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use apifreaks_api::prelude::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let config = ClientConfig {
+    ///         ..Default::default()
+    ///     };
+    ///     let client = ApiFreaks::new(config).expect("Failed to build client");
+    ///     client
+    ///         .get_credits_usage(
+    ///             &GetCreditsUsageQueryRequest {
+    ///                 api_key: "apiKey".to_string(),
+    ///                 format: None,
+    ///             },
+    ///             None,
+    ///         )
+    ///         .await;
+    /// }
+    /// ```
+    pub async fn get_credits_usage(
+        &self,
+        request: &GetCreditsUsageQueryRequest,
+        options: Option<RequestOptions>,
+    ) -> Result<GetCreditsUsageResponse, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "v1.0/credits/usage/info",
+                None,
+                QueryBuilder::new()
+                    .string("apiKey", request.api_key.clone())
+                    .serialize("format", request.format.clone())
                     .build(),
                 options,
             )

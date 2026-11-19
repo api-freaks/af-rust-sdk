@@ -2,9 +2,13 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct BulkDomainAvailabilityCheckResponse {
+    /// Deprecated: the API returns this field as `bulk_domain_availability_response`; read `bulk_domain_availability_response` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bulk_domain_available_response:
         Option<Vec<BulkDomainAvailabilityCheckResponseBulkDomainAvailableResponseItem>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bulk_domain_availability_response:
+        Option<Vec<BulkDomainAvailabilityCheckResponseBulkDomainAvailabilityResponseItem>>,
 }
 
 impl BulkDomainAvailabilityCheckResponse {
@@ -18,6 +22,8 @@ impl BulkDomainAvailabilityCheckResponse {
 pub struct BulkDomainAvailabilityCheckResponseBuilder {
     bulk_domain_available_response:
         Option<Vec<BulkDomainAvailabilityCheckResponseBulkDomainAvailableResponseItem>>,
+    bulk_domain_availability_response:
+        Option<Vec<BulkDomainAvailabilityCheckResponseBulkDomainAvailabilityResponseItem>>,
 }
 
 impl BulkDomainAvailabilityCheckResponseBuilder {
@@ -29,10 +35,19 @@ impl BulkDomainAvailabilityCheckResponseBuilder {
         self
     }
 
+    pub fn bulk_domain_availability_response(
+        mut self,
+        value: Vec<BulkDomainAvailabilityCheckResponseBulkDomainAvailabilityResponseItem>,
+    ) -> Self {
+        self.bulk_domain_availability_response = Some(value);
+        self
+    }
+
     /// Consumes the builder and constructs a [`BulkDomainAvailabilityCheckResponse`].
     pub fn build(self) -> Result<BulkDomainAvailabilityCheckResponse, BuildError> {
         Ok(BulkDomainAvailabilityCheckResponse {
             bulk_domain_available_response: self.bulk_domain_available_response,
+            bulk_domain_availability_response: self.bulk_domain_availability_response,
         })
     }
 }

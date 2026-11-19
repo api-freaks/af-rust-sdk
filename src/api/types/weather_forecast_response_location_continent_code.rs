@@ -1,30 +1,24 @@
 pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
+// required fields kept strict for untagged-union matching (fix_rust_untagged_union_required.py)
 pub struct WeatherForecastResponseLocationContinentCode {
     /// Two-letter continent code (e.g., NA for North America, EU for Europe, AS for Asia).
-    #[serde(default)]
     pub continent_code: String,
     /// Full name of the continent where the IP address is registered.
-    #[serde(default)]
     pub continent_name: String,
     /// ISO 3166-1 alpha-2 two-letter country code (e.g., US, GB, FR).
-    #[serde(default)]
     pub country_code2: String,
     /// ISO 3166-1 alpha-3 three-letter country code (e.g., USA, GBR, FRA).
-    #[serde(default)]
     pub country_code3: String,
     /// Common name of the country associated with the IP address.
-    #[serde(default)]
     pub country_name: String,
     /// Official long-form country name as recognized internationally (e.g., United States of America).
-    #[serde(default)]
     pub country_name_official: String,
     /// Boolean flag indicating whether the country is a member state of the European Union.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_eu: Option<bool>,
     /// State, province, or primary administrative division associated with the IP location.
-    #[serde(default)]
     pub state_prov: String,
     /// ISO 3166-2 subdivision code for the state or province (e.g., CA for California).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -33,16 +27,13 @@ pub struct WeatherForecastResponseLocationContinentCode {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub district: Option<String>,
     /// City or urban area name where the IP address is geographically registered.
-    #[serde(default)]
     pub city: String,
     /// Postal code or ZIP code for the approximate location of the IP address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub zipcode: Option<String>,
     /// Geographic latitude in decimal degrees for the IP geolocation, ranging from -90 to +90.
-    #[serde(default)]
     pub latitude: String,
     /// Geographic longitude in decimal degrees for the IP geolocation, ranging from -180 to +180.
-    #[serde(default)]
     pub longitude: String,
     /// Specific locality, neighborhood, or small area designation within the city.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -51,10 +42,8 @@ pub struct WeatherForecastResponseLocationContinentCode {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub elevation: Option<String>,
     /// IANA timezone database identifier for the IP location (e.g., America/Chicago, Asia/Tokyo).
-    #[serde(default)]
     pub timezone: String,
     /// Current timezone abbreviation based on local offset (e.g., CST, JST, UTC).
-    #[serde(default)]
     pub timezone_abbreviation: String,
 }
 

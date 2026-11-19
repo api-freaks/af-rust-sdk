@@ -1,23 +1,18 @@
 pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
+// required fields kept strict for untagged-union matching (fix_rust_untagged_union_required.py)
 pub struct DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOne {
-    #[serde(default)]
     pub name: String,
-    #[serde(default)]
     pub r#type: i64,
     #[serde(rename = "dnsType")]
     pub dns_type: DomainDnsReverseResponseReverseDnsRecordsItemDnsRecordsItemOneDnsType,
-    #[serde(default)]
     pub ttl: i64,
     #[serde(rename = "rawText")]
-    #[serde(default)]
     pub raw_text: String,
     #[serde(rename = "rRsetType")]
-    #[serde(default)]
     pub r_rset_type: i64,
     /// Host to which this domain points
-    #[serde(default)]
     pub target: String,
 }
 

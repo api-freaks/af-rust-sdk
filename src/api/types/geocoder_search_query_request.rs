@@ -36,6 +36,9 @@ pub struct GeocoderSearchQueryRequest {
     #[serde(default)]
     #[serde(with = "crate::core::number_serializers::option")]
     pub max_lon: Option<f64>,
+    /// Preferred language(s) for the results, sent as the `Accept-Language` header (e.g. `de`, `fr-FR`).
+    #[serde(skip)]
+    pub accept_language: Option<String>,
 }
 
 impl GeocoderSearchQueryRequest {
@@ -55,6 +58,7 @@ pub struct GeocoderSearchQueryRequestBuilder {
     max_lat: Option<f64>,
     min_lon: Option<f64>,
     max_lon: Option<f64>,
+    accept_language: Option<String>,
 }
 
 impl GeocoderSearchQueryRequestBuilder {
@@ -98,6 +102,12 @@ impl GeocoderSearchQueryRequestBuilder {
         self
     }
 
+    /// Sets the `Accept-Language` header.
+    pub fn accept_language(mut self, value: impl Into<String>) -> Self {
+        self.accept_language = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`GeocoderSearchQueryRequest`].
     /// This method will fail if any of the following fields are not set:
     /// - [`api_key`](GeocoderSearchQueryRequestBuilder::api_key)
@@ -116,6 +126,7 @@ impl GeocoderSearchQueryRequestBuilder {
             max_lat: self.max_lat,
             min_lon: self.min_lon,
             max_lon: self.max_lon,
+            accept_language: self.accept_language,
         })
     }
 }

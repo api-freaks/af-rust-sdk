@@ -1,9 +1,9 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
-#[serde(transparent)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+// required fields kept strict for untagged-union matching (fix_rust_untagged_union_required.py)
 pub struct WebScrapeRequestBodyOne {
-    /// A list of sequential instructions to execute after receiving the static HTML response. Supported methods include `postForm`, `getForm`, and `extract`.
+    /// A list of sequential instructions to execute against the static HTML response. Each item is one StaticInstruction object, with exactly one action field set.
     pub instructions: Vec<WebScrapeRequestBodyOneInstructionsItem>,
 }
 

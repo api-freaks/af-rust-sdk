@@ -66,7 +66,6 @@ impl CurrencyLatestRatesQueryRequestBuilder {
     /// Consumes the builder and constructs a [`CurrencyLatestRatesQueryRequest`].
     /// This method will fail if any of the following fields are not set:
     /// - [`api_key`](CurrencyLatestRatesQueryRequestBuilder::api_key)
-    /// - [`symbols`](CurrencyLatestRatesQueryRequestBuilder::symbols)
     pub fn build(self) -> Result<CurrencyLatestRatesQueryRequest, BuildError> {
         Ok(CurrencyLatestRatesQueryRequest {
             api_key: self
@@ -74,9 +73,7 @@ impl CurrencyLatestRatesQueryRequestBuilder {
                 .ok_or_else(|| BuildError::missing_field("api_key"))?,
             format: self.format,
             base: self.base,
-            symbols: self
-                .symbols
-                .ok_or_else(|| BuildError::missing_field("symbols"))?,
+            symbols: self.symbols.unwrap_or_default(),
             updates: self.updates,
         })
     }

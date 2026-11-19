@@ -2,15 +2,13 @@ pub use crate::prelude::*;
 
 /// Current WHOIS registration record for one successfully resolved domain.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
+// required fields kept strict for untagged-union matching (fix_rust_untagged_union_required.py)
 pub struct BulkDomainWhoisLookupV2ResponseBulkWhoisResponseItemAbuseContact {
     /// true if this item was successfully processed.
-    #[serde(default)]
     pub status: bool,
     /// Domain name that was queried.
-    #[serde(default)]
     pub domain_name: String,
     /// Timestamp when the WHOIS query was executed.
-    #[serde(default)]
     pub query_time: String,
     /// WHOIS or RDAP server that provided this record.
     #[serde(skip_serializing_if = "Option::is_none")]

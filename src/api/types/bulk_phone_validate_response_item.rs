@@ -44,6 +44,12 @@ pub struct BulkPhoneValidateResponseItem {
     /// Whether the number can be dialled internationally.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_be_internationally_dialled: Option<bool>,
+    /// Short error category. Present only when this item failed validation (e.g. malformed number, conflicting region parameters).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error: Option<String>,
+    /// Human-readable reason for failure. Present only when this item failed validation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
 }
 
 impl BulkPhoneValidateResponseItem {
@@ -69,6 +75,8 @@ pub struct BulkPhoneValidateResponseItemBuilder {
     area_code_length: Option<i64>,
     ndc_length: Option<i64>,
     can_be_internationally_dialled: Option<bool>,
+    error: Option<String>,
+    message: Option<String>,
 }
 
 impl BulkPhoneValidateResponseItemBuilder {
@@ -142,6 +150,16 @@ impl BulkPhoneValidateResponseItemBuilder {
         self
     }
 
+    pub fn error(mut self, value: impl Into<String>) -> Self {
+        self.error = Some(value.into());
+        self
+    }
+
+    pub fn message(mut self, value: impl Into<String>) -> Self {
+        self.message = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`BulkPhoneValidateResponseItem`].
     pub fn build(self) -> Result<BulkPhoneValidateResponseItem, BuildError> {
         Ok(BulkPhoneValidateResponseItem {
@@ -159,6 +177,8 @@ impl BulkPhoneValidateResponseItemBuilder {
             area_code_length: self.area_code_length,
             ndc_length: self.ndc_length,
             can_be_internationally_dialled: self.can_be_internationally_dialled,
+            error: self.error,
+            message: self.message,
         })
     }
 }

@@ -1,6 +1,7 @@
 pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+// required fields kept strict for untagged-union matching (fix_rust_untagged_union_required.py)
 pub struct WebScrapeRequestBodyBlockUrl {
     /// List of script or URL patterns to block during network requests.
     #[serde(rename = "blockUrl")]
@@ -9,8 +10,7 @@ pub struct WebScrapeRequestBodyBlockUrl {
     /// List of cookies to be set in the browser session.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cookies: Option<Vec<WebScrapeRequestBodyBlockUrlCookiesItem>>,
-    /// An ordered list of step-by-step scraping instructions to be executed in the browser.
-    #[serde(default)]
+    /// An ordered list of step-by-step scraping instructions to be executed in the browser. Each item is one Instruction object, with exactly one action field set.
     pub instructions: Vec<WebScrapeRequestBodyBlockUrlInstructionsItem>,
 }
 
