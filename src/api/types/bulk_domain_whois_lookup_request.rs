@@ -8,11 +8,11 @@ pub struct BulkDomainWhoisLookupRequest {
     pub domain_names: Vec<String>,
     /// Your API key
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
     /// Format of the response.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub format: Option<BulkDomainWhoisLookupRequestFormat>,
 }
 

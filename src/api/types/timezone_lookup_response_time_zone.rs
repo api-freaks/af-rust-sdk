@@ -59,6 +59,12 @@ pub struct TimezoneLookupResponseTimeZone {
     pub dst_start: Option<TimezoneLookupResponseTimeZoneDstStart>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dst_end: Option<TimezoneLookupResponseTimeZoneDstEnd>,
+    /// Abbreviation of the DST time zone. Always present as a key; holds an empty string when dst_exists is false.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dst_tz_abbreviation: Option<String>,
+    /// Full name of the DST time zone. Always present as a key; holds an empty string when dst_exists is false.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dst_tz_full_name: Option<String>,
     /// Additional properties that are not part of the defined schema.
     #[serde(flatten)]
     pub extra: std::collections::HashMap<String, serde_json::Value>,
@@ -97,6 +103,8 @@ pub struct TimezoneLookupResponseTimeZoneBuilder {
     dst_exists: Option<bool>,
     dst_start: Option<TimezoneLookupResponseTimeZoneDstStart>,
     dst_end: Option<TimezoneLookupResponseTimeZoneDstEnd>,
+    dst_tz_abbreviation: Option<String>,
+    dst_tz_full_name: Option<String>,
 }
 
 impl TimezoneLookupResponseTimeZoneBuilder {
@@ -220,6 +228,16 @@ impl TimezoneLookupResponseTimeZoneBuilder {
         self
     }
 
+    pub fn dst_tz_abbreviation(mut self, value: impl Into<String>) -> Self {
+        self.dst_tz_abbreviation = Some(value.into());
+        self
+    }
+
+    pub fn dst_tz_full_name(mut self, value: impl Into<String>) -> Self {
+        self.dst_tz_full_name = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`TimezoneLookupResponseTimeZone`].
     /// This method will fail if any of the following fields are not set:
     /// - [`name`](TimezoneLookupResponseTimeZoneBuilder::name)
@@ -306,6 +324,8 @@ impl TimezoneLookupResponseTimeZoneBuilder {
                 .ok_or_else(|| BuildError::missing_field("dst_exists"))?,
             dst_start: self.dst_start,
             dst_end: self.dst_end,
+            dst_tz_abbreviation: self.dst_tz_abbreviation,
+            dst_tz_full_name: self.dst_tz_full_name,
             extra: Default::default(),
         })
     }

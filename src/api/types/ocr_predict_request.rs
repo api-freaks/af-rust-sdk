@@ -2,25 +2,41 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub struct OcrPredictRequest {
-    /// URL of the image or PDF (required if `file` not provided)
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<String>,
-    /// OCR model to use. `mini-ocr-v1` for CAPTCHA OCR, `ocr-v1` for general OCR
-    pub model: OcrPredictRequestModel,
-    /// Specify page range for multi-page PDFs (e.g., '1,3,5-10' or 'allpages'). **Note:** This parameter can only be used with .pdf file types.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub page_range: Option<String>,
-    /// Define OCR zones using coordinates (top:left:height:width). Multiple zones can be defined using commas. Only available for model 'ocr-v1'. **Note:** This parameter cannot be used with .pdf and .zip file types as it can only be applied to single image queries.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub zone: Option<String>,
-    /// Set to 1 to split output text into individual lines (default: 0)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub new_line: Option<i64>,
-    /// Your API key
+    #[serde(default)]
+    #[serde(with = "crate::core::base64_bytes::option")]
+    pub file: Option<Vec<u8>>,
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
+    #[serde(skip_serializing)]
+    pub model: OcrPredictRequestModel,
+    #[serde(skip)]
+    pub url: Option<String>,
+    #[serde(skip)]
+    pub page_range: Option<String>,
+    #[serde(skip)]
+    pub zone: Option<String>,
+    #[serde(skip)]
+    pub new_line: Option<i64>,
+}
+impl OcrPredictRequest {
+    pub fn to_multipart(self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+
+        if let Some(ref file_data) = self.file {
+            form = form.part(
+                "file",
+                reqwest::multipart::Part::bytes(file_data.clone())
+                    .file_name(crate::core::upload_file_name(&file_data))
+                    .mime_str(crate::core::upload_mime_type(&file_data))
+                    .unwrap(),
+            );
+        }
+
+        form
+    }
 }
 
 impl OcrPredictRequest {
@@ -32,22 +48,33 @@ impl OcrPredictRequest {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct OcrPredictRequestBuilder {
-    url: Option<String>,
+    file: Option<Vec<u8>>,
+    api_key: Option<String>,
     model: Option<OcrPredictRequestModel>,
+    url: Option<String>,
     page_range: Option<String>,
     zone: Option<String>,
     new_line: Option<i64>,
-    api_key: Option<String>,
 }
 
 impl OcrPredictRequestBuilder {
-    pub fn url(mut self, value: impl Into<String>) -> Self {
-        self.url = Some(value.into());
+    pub fn file(mut self, value: Vec<u8>) -> Self {
+        self.file = Some(value);
+        self
+    }
+
+    pub fn api_key(mut self, value: impl Into<String>) -> Self {
+        self.api_key = Some(value.into());
         self
     }
 
     pub fn model(mut self, value: OcrPredictRequestModel) -> Self {
         self.model = Some(value);
+        self
+    }
+
+    pub fn url(mut self, value: impl Into<String>) -> Self {
+        self.url = Some(value.into());
         self
     }
 
@@ -66,27 +93,23 @@ impl OcrPredictRequestBuilder {
         self
     }
 
-    pub fn api_key(mut self, value: impl Into<String>) -> Self {
-        self.api_key = Some(value.into());
-        self
-    }
-
     /// Consumes the builder and constructs a [`OcrPredictRequest`].
     /// This method will fail if any of the following fields are not set:
-    /// - [`model`](OcrPredictRequestBuilder::model)
     /// - [`api_key`](OcrPredictRequestBuilder::api_key)
+    /// - [`model`](OcrPredictRequestBuilder::model)
     pub fn build(self) -> Result<OcrPredictRequest, BuildError> {
         Ok(OcrPredictRequest {
-            url: self.url,
-            model: self
-                .model
-                .ok_or_else(|| BuildError::missing_field("model"))?,
-            page_range: self.page_range,
-            zone: self.zone,
-            new_line: self.new_line,
+            file: self.file,
             api_key: self
                 .api_key
                 .ok_or_else(|| BuildError::missing_field("api_key"))?,
+            model: self
+                .model
+                .ok_or_else(|| BuildError::missing_field("model"))?,
+            url: self.url,
+            page_range: self.page_range,
+            zone: self.zone,
+            new_line: self.new_line,
         })
     }
 }

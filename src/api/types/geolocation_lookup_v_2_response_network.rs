@@ -12,6 +12,12 @@ pub struct GeolocationLookupV2ResponseNetwork {
     /// true if the IP is anycast (same IP announced from multiple locations).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_anycast: Option<bool>,
+    /// CDN provider name (e.g. Cloudflare) when is_cdn is true; empty otherwise.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cdn_provider_name: Option<String>,
+    /// true if the IP belongs to a content delivery network (CDN) or a cloud provider's network.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_cdn: Option<bool>,
 }
 
 impl GeolocationLookupV2ResponseNetwork {
@@ -26,6 +32,8 @@ pub struct GeolocationLookupV2ResponseNetworkBuilder {
     connection_type: Option<String>,
     route: Option<String>,
     is_anycast: Option<bool>,
+    cdn_provider_name: Option<String>,
+    is_cdn: Option<bool>,
 }
 
 impl GeolocationLookupV2ResponseNetworkBuilder {
@@ -44,12 +52,24 @@ impl GeolocationLookupV2ResponseNetworkBuilder {
         self
     }
 
+    pub fn cdn_provider_name(mut self, value: impl Into<String>) -> Self {
+        self.cdn_provider_name = Some(value.into());
+        self
+    }
+
+    pub fn is_cdn(mut self, value: bool) -> Self {
+        self.is_cdn = Some(value);
+        self
+    }
+
     /// Consumes the builder and constructs a [`GeolocationLookupV2ResponseNetwork`].
     pub fn build(self) -> Result<GeolocationLookupV2ResponseNetwork, BuildError> {
         Ok(GeolocationLookupV2ResponseNetwork {
             connection_type: self.connection_type,
             route: self.route,
             is_anycast: self.is_anycast,
+            cdn_provider_name: self.cdn_provider_name,
+            is_cdn: self.is_cdn,
         })
     }
 }

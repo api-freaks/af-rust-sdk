@@ -11,8 +11,8 @@ pub struct VatRateByIpResponseItem {
     #[serde(default)]
     #[serde(with = "crate::core::number_serializers")]
     pub standard_rate: f64,
-    #[serde(default)]
-    pub reduced_rate: Vec<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reduced_rate: Option<Vec<f64>>,
     /// Optional super-reduced VAT rates applicable in specific categories.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub super_reduced_rate: Option<Vec<f64>>,
@@ -20,8 +20,11 @@ pub struct VatRateByIpResponseItem {
     #[serde(default)]
     #[serde(with = "crate::core::number_serializers::option")]
     pub parking_rate: Option<f64>,
-    #[serde(default)]
-    pub categories: HashMap<String, f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub categories: Option<HashMap<String, f64>>,
+    /// State or region resolved from the IP address, for countries with sub-national tax rates (e.g. US). Only present when applicable.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
 }
 
 impl VatRateByIpResponseItem {
@@ -41,6 +44,7 @@ pub struct VatRateByIpResponseItemBuilder {
     super_reduced_rate: Option<Vec<f64>>,
     parking_rate: Option<f64>,
     categories: Option<HashMap<String, f64>>,
+    state: Option<String>,
 }
 
 impl VatRateByIpResponseItemBuilder {
@@ -84,14 +88,17 @@ impl VatRateByIpResponseItemBuilder {
         self
     }
 
+    pub fn state(mut self, value: impl Into<String>) -> Self {
+        self.state = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`VatRateByIpResponseItem`].
     /// This method will fail if any of the following fields are not set:
     /// - [`country`](VatRateByIpResponseItemBuilder::country)
     /// - [`r#type`](VatRateByIpResponseItemBuilder::r#type)
     /// - [`currency`](VatRateByIpResponseItemBuilder::currency)
     /// - [`standard_rate`](VatRateByIpResponseItemBuilder::standard_rate)
-    /// - [`reduced_rate`](VatRateByIpResponseItemBuilder::reduced_rate)
-    /// - [`categories`](VatRateByIpResponseItemBuilder::categories)
     pub fn build(self) -> Result<VatRateByIpResponseItem, BuildError> {
         Ok(VatRateByIpResponseItem {
             country: self
@@ -106,14 +113,11 @@ impl VatRateByIpResponseItemBuilder {
             standard_rate: self
                 .standard_rate
                 .ok_or_else(|| BuildError::missing_field("standard_rate"))?,
-            reduced_rate: self
-                .reduced_rate
-                .ok_or_else(|| BuildError::missing_field("reduced_rate"))?,
+            reduced_rate: self.reduced_rate,
             super_reduced_rate: self.super_reduced_rate,
             parking_rate: self.parking_rate,
-            categories: self
-                .categories
-                .ok_or_else(|| BuildError::missing_field("categories"))?,
+            categories: self.categories,
+            state: self.state,
         })
     }
 }

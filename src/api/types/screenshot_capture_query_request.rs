@@ -7,7 +7,7 @@ pub struct ScreenshotCaptureQueryRequest {
     #[serde(rename = "apiKey")]
     #[serde(default)]
     pub api_key: String,
-    /// Output format for screenshot results
+    /// Output format for screenshot results. The SDKs support only `json`, which returns metadata with the captured file's URL in `screenshot`; download the file from that URL. (The API's `output=image`, which returns the raw file, is not supported by the SDK methods.)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub output: Option<ScreenshotCaptureRequestOutput>,
     /// File type for screenshot output
@@ -217,6 +217,92 @@ pub struct ScreenshotCaptureQueryRequest {
     #[serde(default)]
     #[serde(with = "crate::core::number_serializers::option")]
     pub image_quality: Option<f64>,
+    /// CSS selector of the message shown for a wrong answer. While it is visible, the solver tries again.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub captcha_error: Option<String>,
+    /// CSS selector of the captcha picture. Required when solve_captcha is true.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub captcha_image: Option<String>,
+    /// CSS selector of the box the answer is typed into. Required when solve_captcha is true.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub captcha_input: Option<String>,
+    /// CSS selector of the control that loads a new captcha picture before the next try.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub captcha_refresh: Option<String>,
+    /// Number of guesses the solver makes, from 1 to 5.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub captcha_retries: Option<i64>,
+    /// CSS selector of the button to click after the answer is typed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub captcha_submit: Option<String>,
+    /// Loads the page through a datacenter proxy. Adds 20 credits per request. Ignored when premium_proxy is true or a custom proxy is set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classic_proxy: Option<bool>,
+    /// Number of times to click the selector (when set via `selector_to_click`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub click_recursion: Option<i64>,
+    /// Two-letter country code, such as US or DE, for the exit address of classic_proxy or premium_proxy. Ignored when you send your own proxy. Any two-letter code is sent, including one that is not listed. Classic proxy countries: BG, GE, DE, HN, MD, UA, GB, US. Premium proxy countries: AF, AL, DZ, AO, AG, AR, AM, AW, AU, AT, AZ, BS, BH, BD, BB, BY, BE, BZ, BJ, BT, BO, BQ, BA, BW, BR, BN, BG, BF, BI, CV, KH, CM, CA, KY, CF, TD, CL, CN, CO, KM, CG, CR, CI, HR, CU, CW, CY, CZ, CD, DK, DJ, DM, DO, EC, EG, SV, GQ, EE, SZ, ET, FO, FJ, FI, FR, GF, PF, GA, GM, GE, DE, GH, GI, GR, GL, GD, GP, GU, GT, GG, GN, GW, GY, HT, HN, HK, HU, IS, IN, ID, IR, IQ, IE, IL, IT, JM, JP, JE, JO, KZ, KE, XK, KW, KG, LA, LV, LB, LS, LR, LY, LT, MO, MG, MW, MY, MV, ML, MT, MQ, MR, MU, YT, MX, MD, MN, ME, MA, MZ, MM, NA, NP, NL, NC, NZ, NI, NE, NG, MK, NO, OM, PK, PS, PA, PG, PY, PE, PH, PL, PT, PR, QA, RE, RO, RU, RW, KN, LC, VC, WS, SA, SN, RS, SC, SL, SG, SK, SI, SB, SO, ZA, KR, SS, ES, LK, SD, SR, SE, CH, SY, TW, TJ, TZ, TH, TL, TG, TO, TT, TN, TR, TM, UG, UA, AE, GB, US, UY, UZ, VE, VN, YE, ZM, ZW.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Extracts rendered page content as a structured .md (Markdown) file. Preserves headings, lists, links. Only with output=json.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extract_markdown: Option<bool>,
+    /// Response format: json (default).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub format: Option<ScreenshotCaptureRequestFormat>,
+    /// Extracts all image URLs from the rendered DOM and returns them in structured format. Only with output=json.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub get_image_urls: Option<bool>,
+    /// Renders the page with a GPU, including WebGL and canvas content. Adds 20 credits per request.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gpu: Option<bool>,
+    /// Markdown to render instead of loading a URL. Works like custom_html, so you can capture a README or notes without hosting a page.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub markdown: Option<String>,
+    /// Recognition model used by the captcha solver: mini-ocr-v1 (default) or ocr-v1.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ocr_model: Option<ScreenshotCaptureRequestOcrModel>,
+    /// Paper size of the PDF. Applies when file_type is PDF. Without it, width and height are used if set, otherwise the page renders as one long page: A0, A1, A2, A3, A4, A5, A6, Letter, Legal, Tabloid, or Ledger.
+    #[serde(rename = "pdf_options[format]")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pdf_options_format: Option<ScreenshotCaptureRequestPdfOptionsFormat>,
+    /// Renders the PDF in landscape orientation, swapping the width and height of the paper size. Applies when file_type is PDF.
+    #[serde(rename = "pdf_options[landscape]")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pdf_options_landscape: Option<bool>,
+    /// CSS media type used to render the PDF: print or screen.
+    #[serde(rename = "pdf_options[media]")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pdf_options_media: Option<ScreenshotCaptureRequestPdfOptionsMedia>,
+    /// Pages to keep in the PDF, as start-end, for example 1-3 or 5-5. Pages are rendered first and then trimmed. Has no effect on a single-page PDF. Applies when file_type is PDF.
+    #[serde(rename = "pdf_options[page_range]")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pdf_options_page_range: Option<String>,
+    /// Includes background colors and images in the PDF. Applies when file_type is PDF.
+    #[serde(rename = "pdf_options[print_background]")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pdf_options_print_background: Option<bool>,
+    /// Loads the page through a residential proxy. Adds 200 credits per request. Used instead of classic_proxy.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub premium_proxy: Option<bool>,
+    /// Delay in milliseconds between scroll steps when `lazy_load` is enabled. Use higher values for heavy pages.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scroll_delay: Option<i64>,
+    /// CSS selector for an element to click before capturing the screenshot. Useful for opening dropdowns, modals, or triggering content.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selector_to_click: Option<String>,
+    /// Solves a captcha made of text drawn in a picture, then takes the screenshot. Requires captcha_image and captcha_input. Adds 20 credits per request.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub solve_captcha: Option<bool>,
+    /// Makes the browser look like a regular visitor for pages that block automated traffic. No extra credits.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stealth: Option<bool>,
+    /// IANA timezone the browser uses while rendering, such as Asia/Karachi or Europe/London. Useful for clocks and localized dates.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timezone: Option<String>,
+    /// Records visible viewport only for a specified duration. Use with `duration` parameter. Ideal for dashboards and animations.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub video: Option<bool>,
 }
 
 impl ScreenshotCaptureQueryRequest {
@@ -298,6 +384,33 @@ pub struct ScreenshotCaptureQueryRequestBuilder {
     accept_languages: Option<String>,
     custom_html: Option<String>,
     image_quality: Option<f64>,
+    captcha_error: Option<String>,
+    captcha_image: Option<String>,
+    captcha_input: Option<String>,
+    captcha_refresh: Option<String>,
+    captcha_retries: Option<i64>,
+    captcha_submit: Option<String>,
+    classic_proxy: Option<bool>,
+    click_recursion: Option<i64>,
+    country: Option<String>,
+    extract_markdown: Option<bool>,
+    format: Option<ScreenshotCaptureRequestFormat>,
+    get_image_urls: Option<bool>,
+    gpu: Option<bool>,
+    markdown: Option<String>,
+    ocr_model: Option<ScreenshotCaptureRequestOcrModel>,
+    pdf_options_format: Option<ScreenshotCaptureRequestPdfOptionsFormat>,
+    pdf_options_landscape: Option<bool>,
+    pdf_options_media: Option<ScreenshotCaptureRequestPdfOptionsMedia>,
+    pdf_options_page_range: Option<String>,
+    pdf_options_print_background: Option<bool>,
+    premium_proxy: Option<bool>,
+    scroll_delay: Option<i64>,
+    selector_to_click: Option<String>,
+    solve_captcha: Option<bool>,
+    stealth: Option<bool>,
+    timezone: Option<String>,
+    video: Option<bool>,
 }
 
 impl ScreenshotCaptureQueryRequestBuilder {
@@ -651,11 +764,145 @@ impl ScreenshotCaptureQueryRequestBuilder {
         self
     }
 
+    pub fn captcha_error(mut self, value: impl Into<String>) -> Self {
+        self.captcha_error = Some(value.into());
+        self
+    }
+
+    pub fn captcha_image(mut self, value: impl Into<String>) -> Self {
+        self.captcha_image = Some(value.into());
+        self
+    }
+
+    pub fn captcha_input(mut self, value: impl Into<String>) -> Self {
+        self.captcha_input = Some(value.into());
+        self
+    }
+
+    pub fn captcha_refresh(mut self, value: impl Into<String>) -> Self {
+        self.captcha_refresh = Some(value.into());
+        self
+    }
+
+    pub fn captcha_retries(mut self, value: i64) -> Self {
+        self.captcha_retries = Some(value);
+        self
+    }
+
+    pub fn captcha_submit(mut self, value: impl Into<String>) -> Self {
+        self.captcha_submit = Some(value.into());
+        self
+    }
+
+    pub fn classic_proxy(mut self, value: bool) -> Self {
+        self.classic_proxy = Some(value);
+        self
+    }
+
+    pub fn click_recursion(mut self, value: i64) -> Self {
+        self.click_recursion = Some(value);
+        self
+    }
+
+    pub fn country(mut self, value: impl Into<String>) -> Self {
+        self.country = Some(value.into());
+        self
+    }
+
+    pub fn extract_markdown(mut self, value: bool) -> Self {
+        self.extract_markdown = Some(value);
+        self
+    }
+
+    pub fn format(mut self, value: ScreenshotCaptureRequestFormat) -> Self {
+        self.format = Some(value);
+        self
+    }
+
+    pub fn get_image_urls(mut self, value: bool) -> Self {
+        self.get_image_urls = Some(value);
+        self
+    }
+
+    pub fn gpu(mut self, value: bool) -> Self {
+        self.gpu = Some(value);
+        self
+    }
+
+    pub fn markdown(mut self, value: impl Into<String>) -> Self {
+        self.markdown = Some(value.into());
+        self
+    }
+
+    pub fn ocr_model(mut self, value: ScreenshotCaptureRequestOcrModel) -> Self {
+        self.ocr_model = Some(value);
+        self
+    }
+
+    pub fn pdf_options_format(mut self, value: ScreenshotCaptureRequestPdfOptionsFormat) -> Self {
+        self.pdf_options_format = Some(value);
+        self
+    }
+
+    pub fn pdf_options_landscape(mut self, value: bool) -> Self {
+        self.pdf_options_landscape = Some(value);
+        self
+    }
+
+    pub fn pdf_options_media(mut self, value: ScreenshotCaptureRequestPdfOptionsMedia) -> Self {
+        self.pdf_options_media = Some(value);
+        self
+    }
+
+    pub fn pdf_options_page_range(mut self, value: impl Into<String>) -> Self {
+        self.pdf_options_page_range = Some(value.into());
+        self
+    }
+
+    pub fn pdf_options_print_background(mut self, value: bool) -> Self {
+        self.pdf_options_print_background = Some(value);
+        self
+    }
+
+    pub fn premium_proxy(mut self, value: bool) -> Self {
+        self.premium_proxy = Some(value);
+        self
+    }
+
+    pub fn scroll_delay(mut self, value: i64) -> Self {
+        self.scroll_delay = Some(value);
+        self
+    }
+
+    pub fn selector_to_click(mut self, value: impl Into<String>) -> Self {
+        self.selector_to_click = Some(value.into());
+        self
+    }
+
+    pub fn solve_captcha(mut self, value: bool) -> Self {
+        self.solve_captcha = Some(value);
+        self
+    }
+
+    pub fn stealth(mut self, value: bool) -> Self {
+        self.stealth = Some(value);
+        self
+    }
+
+    pub fn timezone(mut self, value: impl Into<String>) -> Self {
+        self.timezone = Some(value.into());
+        self
+    }
+
+    pub fn video(mut self, value: bool) -> Self {
+        self.video = Some(value);
+        self
+    }
+
     /// Consumes the builder and constructs a [`ScreenshotCaptureQueryRequest`].
     /// This method will fail if any of the following fields are not set:
     /// - [`api_key`](ScreenshotCaptureQueryRequestBuilder::api_key)
     /// - [`url`](ScreenshotCaptureQueryRequestBuilder::url)
-    /// - [`sizes`](ScreenshotCaptureQueryRequestBuilder::sizes)
     pub fn build(self) -> Result<ScreenshotCaptureQueryRequest, BuildError> {
         Ok(ScreenshotCaptureQueryRequest {
             api_key: self
@@ -716,9 +963,7 @@ impl ScreenshotCaptureQueryRequestBuilder {
             scroll_back: self.scroll_back,
             start_immediately: self.start_immediately,
             multiple_scrolling: self.multiple_scrolling,
-            sizes: self
-                .sizes
-                .ok_or_else(|| BuildError::missing_field("sizes"))?,
+            sizes: self.sizes.unwrap_or_default(),
             duration: self.duration,
             fail_on_error: self.fail_on_error,
             longitude: self.longitude,
@@ -732,6 +977,33 @@ impl ScreenshotCaptureQueryRequestBuilder {
             accept_languages: self.accept_languages,
             custom_html: self.custom_html,
             image_quality: self.image_quality,
+            captcha_error: self.captcha_error,
+            captcha_image: self.captcha_image,
+            captcha_input: self.captcha_input,
+            captcha_refresh: self.captcha_refresh,
+            captcha_retries: self.captcha_retries,
+            captcha_submit: self.captcha_submit,
+            classic_proxy: self.classic_proxy,
+            click_recursion: self.click_recursion,
+            country: self.country,
+            extract_markdown: self.extract_markdown,
+            format: self.format,
+            get_image_urls: self.get_image_urls,
+            gpu: self.gpu,
+            markdown: self.markdown,
+            ocr_model: self.ocr_model,
+            pdf_options_format: self.pdf_options_format,
+            pdf_options_landscape: self.pdf_options_landscape,
+            pdf_options_media: self.pdf_options_media,
+            pdf_options_page_range: self.pdf_options_page_range,
+            pdf_options_print_background: self.pdf_options_print_background,
+            premium_proxy: self.premium_proxy,
+            scroll_delay: self.scroll_delay,
+            selector_to_click: self.selector_to_click,
+            solve_captcha: self.solve_captcha,
+            stealth: self.stealth,
+            timezone: self.timezone,
+            video: self.video,
         })
     }
 }

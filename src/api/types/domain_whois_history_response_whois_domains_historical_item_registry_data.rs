@@ -22,11 +22,14 @@ pub struct DomainWhoisHistoryResponseWhoisDomainsHistoricalItemRegistryData {
     pub name_servers: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub domain_status: Option<Vec<String>>,
+    /// Deprecated: the API returns this field as `whois_raw_registery`; read `whois_raw_registery` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub whois_raw_registry: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub domain_registrar:
         Option<DomainWhoisHistoryResponseWhoisDomainsHistoricalItemRegistryDataDomainRegistrar>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub whois_raw_registery: Option<String>,
 }
 
 impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemRegistryData {
@@ -51,6 +54,7 @@ pub struct DomainWhoisHistoryResponseWhoisDomainsHistoricalItemRegistryDataBuild
     whois_raw_registry: Option<String>,
     domain_registrar:
         Option<DomainWhoisHistoryResponseWhoisDomainsHistoricalItemRegistryDataDomainRegistrar>,
+    whois_raw_registery: Option<String>,
 }
 
 impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemRegistryDataBuilder {
@@ -115,6 +119,11 @@ impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemRegistryDataBuilder {
         self
     }
 
+    pub fn whois_raw_registery(mut self, value: impl Into<String>) -> Self {
+        self.whois_raw_registery = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`DomainWhoisHistoryResponseWhoisDomainsHistoricalItemRegistryData`].
     pub fn build(
         self,
@@ -132,6 +141,7 @@ impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemRegistryDataBuilder {
                 domain_status: self.domain_status,
                 whois_raw_registry: self.whois_raw_registry,
                 domain_registrar: self.domain_registrar,
+                whois_raw_registery: self.whois_raw_registery,
             },
         )
     }

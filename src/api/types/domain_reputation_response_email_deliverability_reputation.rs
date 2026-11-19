@@ -7,8 +7,8 @@ pub struct DomainReputationResponseEmailDeliverabilityReputation {
     #[serde(default)]
     pub spam_blacklisted: bool,
     /// Indicates whether the domain was registered recently.
-    #[serde(default)]
-    pub newly_registered: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub newly_registered: Option<bool>,
     /// Age of the domain in days since registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub domain_age_days: Option<i64>,
@@ -47,7 +47,6 @@ impl DomainReputationResponseEmailDeliverabilityReputationBuilder {
     /// Consumes the builder and constructs a [`DomainReputationResponseEmailDeliverabilityReputation`].
     /// This method will fail if any of the following fields are not set:
     /// - [`spam_blacklisted`](DomainReputationResponseEmailDeliverabilityReputationBuilder::spam_blacklisted)
-    /// - [`newly_registered`](DomainReputationResponseEmailDeliverabilityReputationBuilder::newly_registered)
     pub fn build(
         self,
     ) -> Result<DomainReputationResponseEmailDeliverabilityReputation, BuildError> {
@@ -55,9 +54,7 @@ impl DomainReputationResponseEmailDeliverabilityReputationBuilder {
             spam_blacklisted: self
                 .spam_blacklisted
                 .ok_or_else(|| BuildError::missing_field("spam_blacklisted"))?,
-            newly_registered: self
-                .newly_registered
-                .ok_or_else(|| BuildError::missing_field("newly_registered"))?,
+            newly_registered: self.newly_registered,
             domain_age_days: self.domain_age_days,
         })
     }

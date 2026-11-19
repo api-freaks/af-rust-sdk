@@ -1,11 +1,12 @@
 pub use crate::prelude::*;
 
+/// The API returns an empty object `{}` when no extract instruction matched anything.
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct WebScrapeResponse {
-    /// Extracted data based on the extract instructions
+    /// Extracted data based on the extract instructions. Absent when nothing was extracted.
     #[serde(rename = "extractedData")]
-    #[serde(default)]
-    pub extracted_data: HashMap<String, serde_json::Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extracted_data: Option<HashMap<String, serde_json::Value>>,
 }
 
 impl WebScrapeResponse {
@@ -27,13 +28,9 @@ impl WebScrapeResponseBuilder {
     }
 
     /// Consumes the builder and constructs a [`WebScrapeResponse`].
-    /// This method will fail if any of the following fields are not set:
-    /// - [`extracted_data`](WebScrapeResponseBuilder::extracted_data)
     pub fn build(self) -> Result<WebScrapeResponse, BuildError> {
         Ok(WebScrapeResponse {
-            extracted_data: self
-                .extracted_data
-                .ok_or_else(|| BuildError::missing_field("extracted_data"))?,
+            extracted_data: self.extracted_data,
         })
     }
 }

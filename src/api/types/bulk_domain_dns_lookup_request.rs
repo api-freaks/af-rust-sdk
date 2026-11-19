@@ -12,15 +12,14 @@ pub struct BulkDomainDnsLookupRequest {
     pub ip_addresses: Option<Vec<String>>,
     /// Your API key
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
     /// Format of the response.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub format: Option<BulkDomainDnsLookupRequestFormat>,
-    /// A comma-separated list of DNS record types for lookup.
-    /// Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, or all
-    #[serde(skip_serializing)]
+    /// DNS record types to look up, sent as a comma-separated list (e.g. `A,MX`). Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, or all.
+    #[serde(skip)]
     #[serde(default)]
     pub r#type: Vec<Option<String>>,
 }

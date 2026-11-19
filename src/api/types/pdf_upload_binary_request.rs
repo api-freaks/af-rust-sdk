@@ -2,22 +2,22 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct PdfUploadBinaryRequest {
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub body: Vec<u8>,
     /// Your API key
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
     /// Specifies the desired format for the API response. Choose 'json' for a JSON object or 'xml' for an XML structure.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub format: Option<PdfUploadBinaryRequestFormat>,
     /// The desired name for the uploaded PDF file. This name will be used for storage on the server.
     ///
     ///
     /// **NOTE**: Please ensure file_name has extension `.pdf`.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub file_name: String,
 }

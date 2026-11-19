@@ -7,11 +7,11 @@ pub struct DomainReputationResponseEmailDeliverabilityAuthenticationSpf {
     #[serde(default)]
     pub present: bool,
     /// SPF enforcement policy qualifier found in the record (e.g. ~all, -all).
-    #[serde(default)]
-    pub policy: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub policy: Option<String>,
     /// Raw SPF DNS TXT record string.
-    #[serde(default)]
-    pub record: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub record: Option<String>,
 }
 
 impl DomainReputationResponseEmailDeliverabilityAuthenticationSpf {
@@ -47,8 +47,6 @@ impl DomainReputationResponseEmailDeliverabilityAuthenticationSpfBuilder {
     /// Consumes the builder and constructs a [`DomainReputationResponseEmailDeliverabilityAuthenticationSpf`].
     /// This method will fail if any of the following fields are not set:
     /// - [`present`](DomainReputationResponseEmailDeliverabilityAuthenticationSpfBuilder::present)
-    /// - [`policy`](DomainReputationResponseEmailDeliverabilityAuthenticationSpfBuilder::policy)
-    /// - [`record`](DomainReputationResponseEmailDeliverabilityAuthenticationSpfBuilder::record)
     pub fn build(
         self,
     ) -> Result<DomainReputationResponseEmailDeliverabilityAuthenticationSpf, BuildError> {
@@ -57,12 +55,8 @@ impl DomainReputationResponseEmailDeliverabilityAuthenticationSpfBuilder {
                 present: self
                     .present
                     .ok_or_else(|| BuildError::missing_field("present"))?,
-                policy: self
-                    .policy
-                    .ok_or_else(|| BuildError::missing_field("policy"))?,
-                record: self
-                    .record
-                    .ok_or_else(|| BuildError::missing_field("record"))?,
+                policy: self.policy,
+                record: self.record,
             },
         )
     }

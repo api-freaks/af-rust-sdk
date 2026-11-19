@@ -14,6 +14,9 @@ pub struct DomainWhoisHistoryResponseWhoisDomainsHistoricalItemDomainRegistrar {
     pub email_address: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone_number: Option<String>,
+    /// Registrar handle as published in the snapshot, when present (for example `292`, usually the same as `iana_id`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub handle: Option<String>,
 }
 
 impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemDomainRegistrar {
@@ -31,6 +34,7 @@ pub struct DomainWhoisHistoryResponseWhoisDomainsHistoricalItemDomainRegistrarBu
     website_url: Option<String>,
     email_address: Option<String>,
     phone_number: Option<String>,
+    handle: Option<String>,
 }
 
 impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemDomainRegistrarBuilder {
@@ -64,6 +68,11 @@ impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemDomainRegistrarBuilder 
         self
     }
 
+    pub fn handle(mut self, value: impl Into<String>) -> Self {
+        self.handle = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`DomainWhoisHistoryResponseWhoisDomainsHistoricalItemDomainRegistrar`].
     pub fn build(
         self,
@@ -77,6 +86,7 @@ impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemDomainRegistrarBuilder 
                 website_url: self.website_url,
                 email_address: self.email_address,
                 phone_number: self.phone_number,
+                handle: self.handle,
             },
         )
     }

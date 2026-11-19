@@ -7,7 +7,7 @@ pub struct FloodForecastQueryRequest {
     #[serde(rename = "apiKey")]
     #[serde(default)]
     pub api_key: String,
-    /// Response format returned by the API.
+    /// Response format returned by the API. Only JSON is supported.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub format: Option<FloodForecastRequestFormat>,
     /// Starting date for flood forecast data in YYYY-MM-DD format. Forecast dates must be current or future dates only. Past dates are not allowed for forecast data. The difference between endDate and startDate must not exceed 16 days.

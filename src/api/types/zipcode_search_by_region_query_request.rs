@@ -13,12 +13,15 @@ pub struct ZipcodeSearchByRegionQueryRequest {
     /// Country code in ISO 3166-1 alpha-2 format.
     #[serde(default)]
     pub country: String,
-    /// Name of the region, state or province associated with the country.
-    #[serde(default)]
-    pub region: String,
+    /// Name of the region, state or province associated with the country. Either region or region_code is required; region_code takes priority if both are given.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
     /// Page no. to retrieve paginated results.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub page: Option<i64>,
+    /// ISO code of the region, state, or province associated with the country. Either region or region_code is required. region_code takes priority if both are given.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub region_code: Option<String>,
 }
 
 impl ZipcodeSearchByRegionQueryRequest {
@@ -35,6 +38,7 @@ pub struct ZipcodeSearchByRegionQueryRequestBuilder {
     country: Option<String>,
     region: Option<String>,
     page: Option<i64>,
+    region_code: Option<String>,
 }
 
 impl ZipcodeSearchByRegionQueryRequestBuilder {
@@ -63,11 +67,15 @@ impl ZipcodeSearchByRegionQueryRequestBuilder {
         self
     }
 
+    pub fn region_code(mut self, value: impl Into<String>) -> Self {
+        self.region_code = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`ZipcodeSearchByRegionQueryRequest`].
     /// This method will fail if any of the following fields are not set:
     /// - [`api_key`](ZipcodeSearchByRegionQueryRequestBuilder::api_key)
     /// - [`country`](ZipcodeSearchByRegionQueryRequestBuilder::country)
-    /// - [`region`](ZipcodeSearchByRegionQueryRequestBuilder::region)
     pub fn build(self) -> Result<ZipcodeSearchByRegionQueryRequest, BuildError> {
         Ok(ZipcodeSearchByRegionQueryRequest {
             api_key: self
@@ -77,10 +85,9 @@ impl ZipcodeSearchByRegionQueryRequestBuilder {
             country: self
                 .country
                 .ok_or_else(|| BuildError::missing_field("country"))?,
-            region: self
-                .region
-                .ok_or_else(|| BuildError::missing_field("region"))?,
+            region: self.region,
             page: self.page,
+            region_code: self.region_code,
         })
     }
 }

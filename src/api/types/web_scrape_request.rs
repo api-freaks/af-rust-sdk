@@ -5,55 +5,55 @@ pub use crate::prelude::*;
 pub struct WebScrapeRequest {
     /// Your API key
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
     /// Response format returned by the API.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub format: Option<WebScrapeRequestFormat>,
     /// Target URL to scrape
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub url: String,
     /// Set to `true` to return the data in text format else `false` for data in html format with tags.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub text: Option<bool>,
     /// Set  `true` to handle websites with JavaScript. Set `false` to handle static html websites.
     ///
     ///
     /// Default value is `true`.
     #[serde(rename = "jsEnabled")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub js_enabled: Option<bool>,
-    /// Use proxy for requests
-    #[serde(skip_serializing)]
+    /// Use a proxy for the request. Pass true/false to toggle the default proxy pool, or a proxy URL string to use a specific proxy.
+    #[serde(skip)]
     pub proxy: Option<WebScrapeRequestProxy>,
     /// Ignore SSL certificate errors.
     ///
     ///
     /// Only works if **jsEnabled** is **true**.
     #[serde(rename = "sslIgnore")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub ssl_ignore: Option<bool>,
     /// Specify the browser window size in the format 'width,height' (e.g., "1920w,1080h"). Default value is the default resolutions provided by web/browser.
     ///
     ///
     /// Only works if **jsEnabled** is **true**.
     #[serde(rename = "windowSize")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub window_size: Option<String>,
     /// Set to `true` to apply ad-blocker to the specified URL else false or ignore to not apply.
     ///
     ///
     /// Only works if **jsEnabled** is **true**.
     #[serde(rename = "adBlock")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub ad_block: Option<bool>,
     /// if true user can provide captcha instructions in the instructions to solve image captchas.
     ///
     ///
     /// Only works if **jsEnabled** is **true**.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub captcha: Option<bool>,
     pub body: WebScrapeRequestBody,
 }

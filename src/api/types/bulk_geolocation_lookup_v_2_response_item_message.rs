@@ -2,7 +2,7 @@ pub use crate::prelude::*;
 
 /// Per-item error, returned in place of a location result when an individual IP is invalid, bogon/reserved, or not found in the database.
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
-#[serde(transparent)]
+// required fields kept strict for untagged-union matching (fix_rust_untagged_union_required.py)
 pub struct BulkGeolocationLookupV2ResponseItemMessage {
     /// Human-readable reason this IP could not be resolved.
     pub message: String,

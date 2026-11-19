@@ -74,25 +74,34 @@ async fn main() {
 This SDK allows you to configure different environments for API requests.
 
 ```rust
-use apifreaks::prelude::{*};
+use apifreaks::{prelude::*, ApiFreaksEnvironment};
 
 let config = ClientConfig {
-    base_url: Environment::Default.url().to_string(),
+    base_url: ApiFreaksEnvironment::Default.url().to_string(),
     ..Default::default()
 };
-let client = Client::new(config).expect("Failed to build client");
+let client = ApiFreaks::new(config).expect("Failed to build client");
 ```
 
 ## Errors
 
 When the API returns a non-success status code (4xx or 5xx response), an error will be returned.
+Each common status code has its own `ApiError` variant (`BadRequestError`, `ForbiddenError`,
+`UnsupportedMediaTypeError`, `ServiceUnavailableError`, ...) carrying the API's `message`; other codes
+come back as `ApiError::Http { status, message }`.
+
+> **Note:** `get_credits_usage` requires an organization **admin** API key; with any other key the API
+> returns 403 (`ApiError::ForbiddenError`).
 
 ```rust
 match client.bulk_geolocation_lookup(None)?.await {
     Ok(response) => {
         println!("Success: {:?}", response);
     },
-    Err(ApiError::HTTP { status, message }) => {
+    Err(ApiError::BadRequestError { message, .. }) => {
+        println!("Bad request: {}", message);
+    },
+    Err(ApiError::Http { status, message }) => {
         println!("API Error {}: {:?}", status, message);
     },
     Err(e) => {
@@ -112,6 +121,9 @@ let request = BulkGeolocationLookupRequest {
     ...
 };
 ```
+
+File upload fields (PDF, OCR, bulk-template CSV) take the raw file bytes, e.g. `std::fs::read("doc.pdf")?`.
+The SDK detects the format from the content and sends a matching file name and MIME type.
 
 ## Advanced
 

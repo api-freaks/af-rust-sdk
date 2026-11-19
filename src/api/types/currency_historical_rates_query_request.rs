@@ -66,7 +66,6 @@ impl CurrencyHistoricalRatesQueryRequestBuilder {
     /// Consumes the builder and constructs a [`CurrencyHistoricalRatesQueryRequest`].
     /// This method will fail if any of the following fields are not set:
     /// - [`api_key`](CurrencyHistoricalRatesQueryRequestBuilder::api_key)
-    /// - [`symbols`](CurrencyHistoricalRatesQueryRequestBuilder::symbols)
     /// - [`date`](CurrencyHistoricalRatesQueryRequestBuilder::date)
     pub fn build(self) -> Result<CurrencyHistoricalRatesQueryRequest, BuildError> {
         Ok(CurrencyHistoricalRatesQueryRequest {
@@ -75,9 +74,7 @@ impl CurrencyHistoricalRatesQueryRequestBuilder {
                 .ok_or_else(|| BuildError::missing_field("api_key"))?,
             format: self.format,
             base: self.base,
-            symbols: self
-                .symbols
-                .ok_or_else(|| BuildError::missing_field("symbols"))?,
+            symbols: self.symbols.unwrap_or_default(),
             date: self.date.ok_or_else(|| BuildError::missing_field("date"))?,
         })
     }

@@ -13,8 +13,8 @@ pub struct VatRateByCountryResponseItem {
     #[serde(default)]
     #[serde(with = "crate::core::number_serializers")]
     pub standard_rate: f64,
-    #[serde(default)]
-    pub reduced_rate: Vec<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reduced_rate: Option<Vec<f64>>,
     /// Optional super-reduced VAT rates applicable in specific categories.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub super_reduced_rate: Option<Vec<f64>>,
@@ -22,8 +22,8 @@ pub struct VatRateByCountryResponseItem {
     #[serde(default)]
     #[serde(with = "crate::core::number_serializers::option")]
     pub parking_rate: Option<f64>,
-    #[serde(default)]
-    pub categories: HashMap<String, f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub categories: Option<HashMap<String, f64>>,
 }
 
 impl VatRateByCountryResponseItem {
@@ -98,8 +98,6 @@ impl VatRateByCountryResponseItemBuilder {
     /// - [`r#type`](VatRateByCountryResponseItemBuilder::r#type)
     /// - [`currency`](VatRateByCountryResponseItemBuilder::currency)
     /// - [`standard_rate`](VatRateByCountryResponseItemBuilder::standard_rate)
-    /// - [`reduced_rate`](VatRateByCountryResponseItemBuilder::reduced_rate)
-    /// - [`categories`](VatRateByCountryResponseItemBuilder::categories)
     pub fn build(self) -> Result<VatRateByCountryResponseItem, BuildError> {
         Ok(VatRateByCountryResponseItem {
             country: self
@@ -115,14 +113,10 @@ impl VatRateByCountryResponseItemBuilder {
             standard_rate: self
                 .standard_rate
                 .ok_or_else(|| BuildError::missing_field("standard_rate"))?,
-            reduced_rate: self
-                .reduced_rate
-                .ok_or_else(|| BuildError::missing_field("reduced_rate"))?,
+            reduced_rate: self.reduced_rate,
             super_reduced_rate: self.super_reduced_rate,
             parking_rate: self.parking_rate,
-            categories: self
-                .categories
-                .ok_or_else(|| BuildError::missing_field("categories"))?,
+            categories: self.categories,
         })
     }
 }

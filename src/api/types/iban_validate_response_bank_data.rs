@@ -33,6 +33,15 @@ pub struct IbanValidateResponseBankData {
     /// Indicates whether given IBAN country supports Single Euro Payments Area (SEPA)
     #[serde(default)]
     pub sepa: bool,
+    /// Name of the branch or office. Null when not resolvable.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub branch_name: Option<String>,
+    /// Type of institution: "FIIN" (financial institution) or "NFIN" (non-financial institution). Null when not resolvable.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub instit_type: Option<String>,
+    /// Postal/ZIP code of the bank branch. Null when not resolvable.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
 }
 
 impl IbanValidateResponseBankData {
@@ -54,6 +63,9 @@ pub struct IbanValidateResponseBankDataBuilder {
     address: Option<String>,
     account: Option<String>,
     sepa: Option<bool>,
+    branch_name: Option<String>,
+    instit_type: Option<String>,
+    postal_code: Option<String>,
 }
 
 impl IbanValidateResponseBankDataBuilder {
@@ -107,6 +119,21 @@ impl IbanValidateResponseBankDataBuilder {
         self
     }
 
+    pub fn branch_name(mut self, value: impl Into<String>) -> Self {
+        self.branch_name = Some(value.into());
+        self
+    }
+
+    pub fn instit_type(mut self, value: impl Into<String>) -> Self {
+        self.instit_type = Some(value.into());
+        self
+    }
+
+    pub fn postal_code(mut self, value: impl Into<String>) -> Self {
+        self.postal_code = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`IbanValidateResponseBankData`].
     /// This method will fail if any of the following fields are not set:
     /// - [`country`](IbanValidateResponseBankDataBuilder::country)
@@ -128,6 +155,9 @@ impl IbanValidateResponseBankDataBuilder {
             address: self.address,
             account: self.account,
             sepa: self.sepa.ok_or_else(|| BuildError::missing_field("sepa"))?,
+            branch_name: self.branch_name,
+            instit_type: self.instit_type,
+            postal_code: self.postal_code,
         })
     }
 }

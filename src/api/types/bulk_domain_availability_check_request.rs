@@ -8,14 +8,14 @@ pub struct BulkDomainAvailabilityCheckRequest {
     pub domain_names: Vec<String>,
     /// Your API key
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
     /// Format of the response.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub format: Option<BulkDomainAvailabilityCheckRequestFormat>,
     /// Specify the data source for domain availability checks. Use "dns" for DNS-based lookups or "whois" for WHOIS-based lookups. By default, "dns" is used.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub source: Option<BulkDomainAvailabilityCheckRequestSource>,
 }
 

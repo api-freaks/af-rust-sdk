@@ -1,6 +1,5 @@
 pub use crate::prelude::*;
 
-/// OCR model to use. `mini-ocr-v1` for CAPTCHA OCR, `ocr-v1` for general OCR
 #[non_exhaustive]
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum OcrPredictRequestModel {

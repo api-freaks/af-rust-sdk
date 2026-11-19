@@ -14,6 +14,15 @@ pub struct AsnWhoisLookupResponseParsedWhoisResponse {
     pub technical_contacts: Vec<AsnWhoisLookupResponseParsedWhoisResponseTechnicalContactsItem>,
     #[serde(default)]
     pub abuse_contacts: Vec<AsnWhoisLookupResponseParsedWhoisResponseAbuseContactsItem>,
+    /// Timestamp when the WHOIS query was executed, in `YYYY-MM-DD HH:mm:ss` format — not ISO 8601 (no `T` separator, no milliseconds, no `Z`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub query_time: Option<String>,
+    /// Raw referral WHOIS (rwhois) text, when the registry delegates to a referral server.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub r_whois_raw_response: Option<String>,
+    /// Unparsed raw WHOIS text, when returned separately from whoisResponse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub whois_raw_response: Option<String>,
 }
 
 impl AsnWhoisLookupResponseParsedWhoisResponse {
@@ -31,6 +40,9 @@ pub struct AsnWhoisLookupResponseParsedWhoisResponseBuilder {
     organization: Option<AsnWhoisLookupResponseParsedWhoisResponseOrganization>,
     technical_contacts: Option<Vec<AsnWhoisLookupResponseParsedWhoisResponseTechnicalContactsItem>>,
     abuse_contacts: Option<Vec<AsnWhoisLookupResponseParsedWhoisResponseAbuseContactsItem>>,
+    query_time: Option<String>,
+    r_whois_raw_response: Option<String>,
+    whois_raw_response: Option<String>,
 }
 
 impl AsnWhoisLookupResponseParsedWhoisResponseBuilder {
@@ -76,6 +88,21 @@ impl AsnWhoisLookupResponseParsedWhoisResponseBuilder {
         self
     }
 
+    pub fn query_time(mut self, value: impl Into<String>) -> Self {
+        self.query_time = Some(value.into());
+        self
+    }
+
+    pub fn r_whois_raw_response(mut self, value: impl Into<String>) -> Self {
+        self.r_whois_raw_response = Some(value.into());
+        self
+    }
+
+    pub fn whois_raw_response(mut self, value: impl Into<String>) -> Self {
+        self.whois_raw_response = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`AsnWhoisLookupResponseParsedWhoisResponse`].
     /// This method will fail if any of the following fields are not set:
     /// - [`status`](AsnWhoisLookupResponseParsedWhoisResponseBuilder::status)
@@ -104,6 +131,9 @@ impl AsnWhoisLookupResponseParsedWhoisResponseBuilder {
             abuse_contacts: self
                 .abuse_contacts
                 .ok_or_else(|| BuildError::missing_field("abuse_contacts"))?,
+            query_time: self.query_time,
+            r_whois_raw_response: self.r_whois_raw_response,
+            whois_raw_response: self.whois_raw_response,
         })
     }
 }

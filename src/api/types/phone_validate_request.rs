@@ -13,11 +13,11 @@ pub struct PhoneValidateRequest {
     pub dialer_region: Option<String>,
     /// Your API key
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
     /// Specifies the desired format for the API response. Choose 'json' for a JSON object. If not provided, the API defaults to JSON format.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub format: Option<PhoneValidateRequestFormat>,
 }
 

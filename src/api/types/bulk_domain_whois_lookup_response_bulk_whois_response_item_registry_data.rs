@@ -22,8 +22,12 @@ pub struct BulkDomainWhoisLookupResponseBulkWhoisResponseItemRegistryData {
     pub name_servers: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub domain_status: Option<Vec<String>>,
+    /// Deprecated: the API never returns this key; the raw registry WHOIS text is in `whois_raw_registery`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub whois_raw_registry: Option<String>,
+    /// Raw WHOIS text returned by the registry's WHOIS server (the key is spelled `whois_raw_registery` by the API).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub whois_raw_registery: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub domain_registrar:
         Option<BulkDomainWhoisLookupResponseBulkWhoisResponseItemRegistryDataDomainRegistrar>,
@@ -50,6 +54,7 @@ pub struct BulkDomainWhoisLookupResponseBulkWhoisResponseItemRegistryDataBuilder
     name_servers: Option<Vec<String>>,
     domain_status: Option<Vec<String>>,
     whois_raw_registry: Option<String>,
+    whois_raw_registery: Option<String>,
     domain_registrar:
         Option<BulkDomainWhoisLookupResponseBulkWhoisResponseItemRegistryDataDomainRegistrar>,
 }
@@ -108,6 +113,11 @@ impl BulkDomainWhoisLookupResponseBulkWhoisResponseItemRegistryDataBuilder {
         self
     }
 
+    pub fn whois_raw_registery(mut self, value: impl Into<String>) -> Self {
+        self.whois_raw_registery = Some(value.into());
+        self
+    }
+
     pub fn domain_registrar(
         mut self,
         value: BulkDomainWhoisLookupResponseBulkWhoisResponseItemRegistryDataDomainRegistrar,
@@ -132,6 +142,7 @@ impl BulkDomainWhoisLookupResponseBulkWhoisResponseItemRegistryDataBuilder {
                 name_servers: self.name_servers,
                 domain_status: self.domain_status,
                 whois_raw_registry: self.whois_raw_registry,
+                whois_raw_registery: self.whois_raw_registery,
                 domain_registrar: self.domain_registrar,
             },
         )

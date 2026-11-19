@@ -14,13 +14,37 @@ pub struct CommoditySymbolsResponseSymbolsItem {
     /// The current status of the commodity. Possible value: "active".
     #[serde(default)]
     pub status: String,
-    /// The rate at which this commodity's price is updated.
+    /// The rate at which this commodity's price is updated. New values may be added over time.
     #[serde(rename = "updateInterval")]
     pub update_interval: CommoditySymbolsResponseSymbolsItemUpdateInterval,
     #[serde(default)]
     pub currency: CommoditySymbolsResponseSymbolsItemCurrency,
     #[serde(default)]
     pub unit: CommoditySymbolsResponseSymbolsItemUnit,
+    /// Short description of the commodity. May be an empty string for some symbols.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// Data source for the symbol (e.g., World Bank). Present only for some symbols.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub exchange: Option<String>,
+    /// Present only when status is "inactive". Date the symbol was deprecated (YYYY-MM-DD).
+    #[serde(rename = "deprecationDate")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deprecation_date: Option<NaiveDate>,
+    /// Optional. Present only for dated futures contracts (for example `WTIOIL-FUT-DEC26`). Contract type, currently always `futures`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub contract: Option<String>,
+    /// Optional. Present only for dated futures contracts. Delivery month of the contract (YYYY-MM), for example `2026-12`.
+    #[serde(rename = "deliveryMonth")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delivery_month: Option<String>,
+    /// Optional. Present for most dated futures contracts. Last trading date of the contract (YYYY-MM-DD), for example `2026-11-20`.
+    #[serde(rename = "expiresAt")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<NaiveDate>,
+    /// Optional. Present only for dated futures contracts. Symbol of the continuous futures series this contract belongs to (for example `WTIOIL-FUT`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub underlying: Option<String>,
 }
 
 impl CommoditySymbolsResponseSymbolsItem {
@@ -39,6 +63,13 @@ pub struct CommoditySymbolsResponseSymbolsItemBuilder {
     update_interval: Option<CommoditySymbolsResponseSymbolsItemUpdateInterval>,
     currency: Option<CommoditySymbolsResponseSymbolsItemCurrency>,
     unit: Option<CommoditySymbolsResponseSymbolsItemUnit>,
+    description: Option<String>,
+    exchange: Option<String>,
+    deprecation_date: Option<NaiveDate>,
+    contract: Option<String>,
+    delivery_month: Option<String>,
+    expires_at: Option<NaiveDate>,
+    underlying: Option<String>,
 }
 
 impl CommoditySymbolsResponseSymbolsItemBuilder {
@@ -80,6 +111,41 @@ impl CommoditySymbolsResponseSymbolsItemBuilder {
         self
     }
 
+    pub fn description(mut self, value: impl Into<String>) -> Self {
+        self.description = Some(value.into());
+        self
+    }
+
+    pub fn exchange(mut self, value: impl Into<String>) -> Self {
+        self.exchange = Some(value.into());
+        self
+    }
+
+    pub fn deprecation_date(mut self, value: NaiveDate) -> Self {
+        self.deprecation_date = Some(value);
+        self
+    }
+
+    pub fn contract(mut self, value: impl Into<String>) -> Self {
+        self.contract = Some(value.into());
+        self
+    }
+
+    pub fn delivery_month(mut self, value: impl Into<String>) -> Self {
+        self.delivery_month = Some(value.into());
+        self
+    }
+
+    pub fn expires_at(mut self, value: NaiveDate) -> Self {
+        self.expires_at = Some(value);
+        self
+    }
+
+    pub fn underlying(mut self, value: impl Into<String>) -> Self {
+        self.underlying = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`CommoditySymbolsResponseSymbolsItem`].
     /// This method will fail if any of the following fields are not set:
     /// - [`symbol`](CommoditySymbolsResponseSymbolsItemBuilder::symbol)
@@ -108,6 +174,13 @@ impl CommoditySymbolsResponseSymbolsItemBuilder {
                 .currency
                 .ok_or_else(|| BuildError::missing_field("currency"))?,
             unit: self.unit.ok_or_else(|| BuildError::missing_field("unit"))?,
+            description: self.description,
+            exchange: self.exchange,
+            deprecation_date: self.deprecation_date,
+            contract: self.contract,
+            delivery_month: self.delivery_month,
+            expires_at: self.expires_at,
+            underlying: self.underlying,
         })
     }
 }

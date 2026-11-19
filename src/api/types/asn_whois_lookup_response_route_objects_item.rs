@@ -1,6 +1,6 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct AsnWhoisLookupResponseRouteObjectsItem {
     #[serde(default)]
     pub route: String,
@@ -11,9 +11,11 @@ pub struct AsnWhoisLookupResponseRouteObjectsItem {
     pub origin_name: String,
     #[serde(default)]
     pub isp: String,
+    /// Number of IP addresses in the route. IPv6 routes exceed the 64-bit integer range, so this is a floating-point number.
     #[serde(rename = "numberOfIps")]
     #[serde(default)]
-    pub number_of_ips: i64,
+    #[serde(with = "crate::core::number_serializers")]
+    pub number_of_ips: f64,
 }
 
 impl AsnWhoisLookupResponseRouteObjectsItem {
@@ -29,7 +31,7 @@ pub struct AsnWhoisLookupResponseRouteObjectsItemBuilder {
     origin: Option<String>,
     origin_name: Option<String>,
     isp: Option<String>,
-    number_of_ips: Option<i64>,
+    number_of_ips: Option<f64>,
 }
 
 impl AsnWhoisLookupResponseRouteObjectsItemBuilder {
@@ -53,7 +55,7 @@ impl AsnWhoisLookupResponseRouteObjectsItemBuilder {
         self
     }
 
-    pub fn number_of_ips(mut self, value: i64) -> Self {
+    pub fn number_of_ips(mut self, value: f64) -> Self {
         self.number_of_ips = Some(value);
         self
     }

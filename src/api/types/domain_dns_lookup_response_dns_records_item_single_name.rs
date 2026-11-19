@@ -1,24 +1,19 @@
 pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
+// required fields kept strict for untagged-union matching (fix_rust_untagged_union_required.py)
 pub struct DomainDnsLookupResponseDnsRecordsItemSingleName {
-    #[serde(default)]
     pub name: String,
-    #[serde(default)]
     pub r#type: i64,
     #[serde(rename = "dnsType")]
     pub dns_type: DomainDnsLookupResponseDnsRecordsItemSingleNameDnsType,
-    #[serde(default)]
     pub ttl: i64,
     #[serde(rename = "rawText")]
-    #[serde(default)]
     pub raw_text: String,
     #[serde(rename = "rRsetType")]
-    #[serde(default)]
     pub r_rset_type: i64,
-    /// Name server for the domain
+    /// The name server (NS records), or the host name the IP address resolves to (PTR records from IP address lookups).
     #[serde(rename = "singleName")]
-    #[serde(default)]
     pub single_name: String,
 }
 

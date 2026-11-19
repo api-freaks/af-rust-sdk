@@ -1,36 +1,29 @@
 pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
+// required fields kept strict for untagged-union matching (fix_rust_untagged_union_required.py)
 pub struct AirQualityResponseLocationCity {
     /// Original location query string as submitted, including full address or place name.
-    #[serde(default)]
     pub location_string: String,
     /// Resolved country name derived from the geocoded location query.
-    #[serde(default)]
     pub country_name: String,
     /// State, province, or primary administrative division identified from the location.
-    #[serde(default)]
     pub state_prov: String,
     /// City or municipal area name extracted from the geocoded location.
-    #[serde(default)]
     pub city: String,
     /// Specific locality, neighborhood, suburb, or village within the geocoded area.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub locality: Option<String>,
     /// Geocoded latitude coordinate in decimal degrees, ranging from -90 to +90.
-    #[serde(default)]
     pub latitude: String,
     /// Geocoded longitude coordinate in decimal degrees, ranging from -180 to +180.
-    #[serde(default)]
     pub longitude: String,
     /// Elevation above mean sea level in meters at the geocoded coordinates.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub elevation: Option<String>,
     /// IANA timezone database identifier for the geocoded location (e.g., America/Los_Angeles).
-    #[serde(default)]
     pub timezone: String,
     /// Current timezone abbreviation for the location based on local offset (e.g., PDT, CET).
-    #[serde(default)]
     pub timezone_abbreviation: String,
 }
 

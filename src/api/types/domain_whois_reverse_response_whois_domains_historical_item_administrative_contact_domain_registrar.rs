@@ -15,6 +15,15 @@ pub struct DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeCon
     pub email_address: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone_number: Option<String>,
+    /// Normalized (lowercase, stripped) registrar name, when published.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub normalized_name: Option<String>,
+    /// RDAP (Registration Data Access Protocol) server URL of the registrar, when published.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rdap_server: Option<String>,
+    /// Accreditation status of the registrar (e.g., 'accredited'), when published.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
 }
 
 impl DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContactDomainRegistrar {
@@ -33,6 +42,9 @@ pub struct DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeCon
     website_url: Option<String>,
     email_address: Option<String>,
     phone_number: Option<String>,
+    normalized_name: Option<String>,
+    rdap_server: Option<String>,
+    status: Option<String>,
 }
 
 impl
@@ -68,6 +80,21 @@ impl
         self
     }
 
+    pub fn normalized_name(mut self, value: impl Into<String>) -> Self {
+        self.normalized_name = Some(value.into());
+        self
+    }
+
+    pub fn rdap_server(mut self, value: impl Into<String>) -> Self {
+        self.rdap_server = Some(value.into());
+        self
+    }
+
+    pub fn status(mut self, value: impl Into<String>) -> Self {
+        self.status = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`DomainWhoisReverseResponseWhoisDomainsHistoricalItemAdministrativeContactDomainRegistrar`].
     pub fn build(
         self,
@@ -82,6 +109,9 @@ impl
             website_url: self.website_url,
             email_address: self.email_address,
             phone_number: self.phone_number,
+            normalized_name: self.normalized_name,
+            rdap_server: self.rdap_server,
+            status: self.status,
         })
     }
 }

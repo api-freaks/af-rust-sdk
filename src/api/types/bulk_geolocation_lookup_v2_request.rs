@@ -7,23 +7,23 @@ pub struct BulkGeolocationLookupV2Request {
     pub ips: Vec<String>,
     /// Your API key
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
     /// Format of the response.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub format: Option<BulkGeolocationLookupV2RequestFormat>,
     /// Response language for location fields. Default: en.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub lang: Option<BulkGeolocationLookupV2RequestLang>,
     /// Comma-separated list of fields to include in the response. For example, `location` includes all location fields, `location.city` is a specific field.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub fields: Option<String>,
     /// Comma-separated list of fields to exclude from response.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub excludes: Option<String>,
     /// Comma-separated list of additional data modules to include. Possible values: security (threat intelligence), hostname (IP-Hostname lookup), liveHostname (live hostname lookup), user_agent (parse User-Agent header), abuse (abuse contact info), * (all modules).
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub include: Option<String>,
 }
 

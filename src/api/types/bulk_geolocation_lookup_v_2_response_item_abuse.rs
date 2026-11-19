@@ -2,9 +2,9 @@ pub use crate::prelude::*;
 
 /// Geolocation and threat intelligence result for one successfully resolved IP address.
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+// required fields kept strict for untagged-union matching (fix_rust_untagged_union_required.py)
 pub struct BulkGeolocationLookupV2ResponseItemAbuse {
     /// The IP address used for the lookup (IPv4 or IPv6).
-    #[serde(default)]
     pub ip: String,
     /// The input domain, returned only for domain-based lookups.
     #[serde(skip_serializing_if = "Option::is_none")]

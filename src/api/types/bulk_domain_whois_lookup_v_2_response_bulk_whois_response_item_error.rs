@@ -2,21 +2,18 @@ pub use crate::prelude::*;
 
 /// Per-item error, returned in place of a WHOIS result when an individual domain's extension is unsupported or its lookup otherwise fails.
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
+// required fields kept strict for untagged-union matching (fix_rust_untagged_union_required.py)
 pub struct BulkDomainWhoisLookupV2ResponseBulkWhoisResponseItemError {
     /// Always false for a per-item error.
-    #[serde(default)]
     pub status: bool,
     /// Domain name that this error applies to.
-    #[serde(default)]
     pub domain_name: String,
     /// HTTP-equivalent status code for this item's failure (e.g. 403 for an unsupported extension).
-    #[serde(default)]
     pub status_code: i64,
     /// Short error category or exception type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
     /// Human-readable reason this domain could not be resolved.
-    #[serde(default)]
     pub message: String,
 }
 

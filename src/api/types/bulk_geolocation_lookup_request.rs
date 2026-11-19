@@ -7,23 +7,23 @@ pub struct BulkGeolocationLookupRequest {
     pub ips: Vec<String>,
     /// Your API key
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
     /// Format of the response.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub format: Option<BulkGeolocationLookupRequestFormat>,
     /// Language of the response.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub lang: Option<String>,
     /// Comma-separated list of fields to include in the response. Can include "geo".
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub fields: Option<String>,
     /// Comma-separated list of fields to exclude from the response (except "ip").
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub excludes: Option<String>,
     /// Comma-separated list of additional information to include in the response.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub include: Option<String>,
 }
 

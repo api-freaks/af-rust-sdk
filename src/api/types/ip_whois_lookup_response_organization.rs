@@ -52,6 +52,27 @@ pub struct IpWhoisLookupResponseOrganization {
     pub languages: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remarks: Option<Vec<String>>,
+    /// Notify email addresses for this organization object.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub notify: Option<Vec<String>>,
+    /// Reference notification email addresses for this organization object.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ref_nfy: Option<Vec<String>>,
+    /// Maintainer handles for this organization object.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mnt_by: Option<Vec<String>>,
+    /// Referenced maintainer handles for this organization object.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mnt_ref: Option<Vec<String>>,
+    /// Registration date of this organization object (YYYY-MM-DD).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date_created: Option<NaiveDate>,
+    /// Last update date of this organization object (YYYY-MM-DD).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date_updated: Option<NaiveDate>,
+    /// WHOIS data source (RIR registry URL) for this object.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<String>,
 }
 
 impl IpWhoisLookupResponseOrganization {
@@ -86,6 +107,13 @@ pub struct IpWhoisLookupResponseOrganizationBuilder {
     abuse_contacts: Option<Vec<String>>,
     languages: Option<Vec<String>>,
     remarks: Option<Vec<String>>,
+    notify: Option<Vec<String>>,
+    ref_nfy: Option<Vec<String>>,
+    mnt_by: Option<Vec<String>>,
+    mnt_ref: Option<Vec<String>>,
+    date_created: Option<NaiveDate>,
+    date_updated: Option<NaiveDate>,
+    source: Option<String>,
 }
 
 impl IpWhoisLookupResponseOrganizationBuilder {
@@ -204,6 +232,41 @@ impl IpWhoisLookupResponseOrganizationBuilder {
         self
     }
 
+    pub fn notify(mut self, value: Vec<String>) -> Self {
+        self.notify = Some(value);
+        self
+    }
+
+    pub fn ref_nfy(mut self, value: Vec<String>) -> Self {
+        self.ref_nfy = Some(value);
+        self
+    }
+
+    pub fn mnt_by(mut self, value: Vec<String>) -> Self {
+        self.mnt_by = Some(value);
+        self
+    }
+
+    pub fn mnt_ref(mut self, value: Vec<String>) -> Self {
+        self.mnt_ref = Some(value);
+        self
+    }
+
+    pub fn date_created(mut self, value: NaiveDate) -> Self {
+        self.date_created = Some(value);
+        self
+    }
+
+    pub fn date_updated(mut self, value: NaiveDate) -> Self {
+        self.date_updated = Some(value);
+        self
+    }
+
+    pub fn source(mut self, value: impl Into<String>) -> Self {
+        self.source = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`IpWhoisLookupResponseOrganization`].
     pub fn build(self) -> Result<IpWhoisLookupResponseOrganization, BuildError> {
         Ok(IpWhoisLookupResponseOrganization {
@@ -230,6 +293,13 @@ impl IpWhoisLookupResponseOrganizationBuilder {
             abuse_contacts: self.abuse_contacts,
             languages: self.languages,
             remarks: self.remarks,
+            notify: self.notify,
+            ref_nfy: self.ref_nfy,
+            mnt_by: self.mnt_by,
+            mnt_ref: self.mnt_ref,
+            date_created: self.date_created,
+            date_updated: self.date_updated,
+            source: self.source,
         })
     }
 }

@@ -3,7 +3,7 @@ pub use crate::prelude::*;
 /// Overall risk assessment for the domain.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct DomainReputationResponseRiskCategory {
-    /// Final verdict of the risk assessment.
+    /// Final verdict of the risk assessment. `unknown` is returned when there is not enough data (e.g. the domain is not registered).
     pub verdict: DomainReputationResponseRiskCategoryVerdict,
     /// Confidence score for the verdict (0-1).
     #[serde(default)]

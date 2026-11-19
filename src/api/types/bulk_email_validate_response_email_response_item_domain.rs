@@ -11,8 +11,8 @@ pub struct BulkEmailValidateResponseEmailResponseItemDomain {
     #[serde(default)]
     pub free: bool,
     #[serde(rename = "catchAll")]
-    #[serde(default)]
-    pub catch_all: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub catch_all: Option<bool>,
     #[serde(rename = "validDomain")]
     #[serde(default)]
     pub valid_domain: bool,
@@ -72,7 +72,6 @@ impl BulkEmailValidateResponseEmailResponseItemDomainBuilder {
     /// - [`disposable`](BulkEmailValidateResponseEmailResponseItemDomainBuilder::disposable)
     /// - [`spam`](BulkEmailValidateResponseEmailResponseItemDomainBuilder::spam)
     /// - [`free`](BulkEmailValidateResponseEmailResponseItemDomainBuilder::free)
-    /// - [`catch_all`](BulkEmailValidateResponseEmailResponseItemDomainBuilder::catch_all)
     /// - [`valid_domain`](BulkEmailValidateResponseEmailResponseItemDomainBuilder::valid_domain)
     pub fn build(self) -> Result<BulkEmailValidateResponseEmailResponseItemDomain, BuildError> {
         Ok(BulkEmailValidateResponseEmailResponseItemDomain {
@@ -82,9 +81,7 @@ impl BulkEmailValidateResponseEmailResponseItemDomainBuilder {
                 .ok_or_else(|| BuildError::missing_field("disposable"))?,
             spam: self.spam.ok_or_else(|| BuildError::missing_field("spam"))?,
             free: self.free.ok_or_else(|| BuildError::missing_field("free"))?,
-            catch_all: self
-                .catch_all
-                .ok_or_else(|| BuildError::missing_field("catch_all"))?,
+            catch_all: self.catch_all,
             valid_domain: self
                 .valid_domain
                 .ok_or_else(|| BuildError::missing_field("valid_domain"))?,

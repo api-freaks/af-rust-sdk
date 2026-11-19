@@ -5,10 +5,10 @@ pub struct PdfUploadResourcesRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file: Option<Vec<Vec<u8>>>,
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub format: Option<PdfUploadResourcesRequestFormat>,
 }
 impl PdfUploadResourcesRequest {
@@ -20,8 +20,8 @@ impl PdfUploadResourcesRequest {
                 form = form.part(
                     "file",
                     reqwest::multipart::Part::bytes(file_data.clone())
-                        .file_name("file")
-                        .mime_str("application/octet-stream")
+                        .file_name(crate::core::upload_file_name(&file_data))
+                        .mime_str(crate::core::upload_mime_type(&file_data))
                         .unwrap(),
                 );
             }

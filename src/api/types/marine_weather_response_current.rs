@@ -71,6 +71,12 @@ pub struct MarineWeatherResponseCurrent {
     #[serde(default)]
     #[serde(with = "crate::core::number_serializers::option")]
     pub ocean_current_direction: Option<f64>,
+    /// Peak period of swell waves in seconds. Frequently null even at locations with other wave data present.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub swell_wave_peak_period: Option<f64>,
+    /// Peak period of locally generated wind waves in seconds. Frequently null even at locations with other wave data present.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wind_wave_peak_period: Option<f64>,
 }
 
 impl MarineWeatherResponseCurrent {
@@ -96,6 +102,8 @@ pub struct MarineWeatherResponseCurrentBuilder {
     sea_surface_temperature: Option<f64>,
     ocean_current_velocity: Option<f64>,
     ocean_current_direction: Option<f64>,
+    swell_wave_peak_period: Option<f64>,
+    wind_wave_peak_period: Option<f64>,
 }
 
 impl MarineWeatherResponseCurrentBuilder {
@@ -169,6 +177,16 @@ impl MarineWeatherResponseCurrentBuilder {
         self
     }
 
+    pub fn swell_wave_peak_period(mut self, value: f64) -> Self {
+        self.swell_wave_peak_period = Some(value);
+        self
+    }
+
+    pub fn wind_wave_peak_period(mut self, value: f64) -> Self {
+        self.wind_wave_peak_period = Some(value);
+        self
+    }
+
     /// Consumes the builder and constructs a [`MarineWeatherResponseCurrent`].
     pub fn build(self) -> Result<MarineWeatherResponseCurrent, BuildError> {
         Ok(MarineWeatherResponseCurrent {
@@ -186,6 +204,8 @@ impl MarineWeatherResponseCurrentBuilder {
             sea_surface_temperature: self.sea_surface_temperature,
             ocean_current_velocity: self.ocean_current_velocity,
             ocean_current_direction: self.ocean_current_direction,
+            swell_wave_peak_period: self.swell_wave_peak_period,
+            wind_wave_peak_period: self.wind_wave_peak_period,
         })
     }
 }

@@ -10,8 +10,8 @@ pub struct DomainReputationResponseEmailDeliverabilityInfrastructure {
     #[serde(default)]
     pub mx_records: Vec<String>,
     /// Email hosting provider inferred from the MX records.
-    #[serde(default)]
-    pub mx_provider: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mx_provider: Option<String>,
     /// Indicates whether the domain explicitly declines email via a null MX record.
     #[serde(default)]
     pub null_mx: bool,
@@ -57,7 +57,6 @@ impl DomainReputationResponseEmailDeliverabilityInfrastructureBuilder {
     /// This method will fail if any of the following fields are not set:
     /// - [`mx_count`](DomainReputationResponseEmailDeliverabilityInfrastructureBuilder::mx_count)
     /// - [`mx_records`](DomainReputationResponseEmailDeliverabilityInfrastructureBuilder::mx_records)
-    /// - [`mx_provider`](DomainReputationResponseEmailDeliverabilityInfrastructureBuilder::mx_provider)
     /// - [`null_mx`](DomainReputationResponseEmailDeliverabilityInfrastructureBuilder::null_mx)
     pub fn build(
         self,
@@ -69,9 +68,7 @@ impl DomainReputationResponseEmailDeliverabilityInfrastructureBuilder {
             mx_records: self
                 .mx_records
                 .ok_or_else(|| BuildError::missing_field("mx_records"))?,
-            mx_provider: self
-                .mx_provider
-                .ok_or_else(|| BuildError::missing_field("mx_provider"))?,
+            mx_provider: self.mx_provider,
             null_mx: self
                 .null_mx
                 .ok_or_else(|| BuildError::missing_field("null_mx"))?,

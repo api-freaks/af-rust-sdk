@@ -10,9 +10,9 @@ pub struct GetSubregionsQueryRequest {
     /// Format of the response
     #[serde(skip_serializing_if = "Option::is_none")]
     pub format: Option<GetSubregionsRequestFormat>,
-    /// Name of the region.
-    #[serde(default)]
-    pub region: String,
+    /// Name of the region. If omitted, all subregions are returned.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
 }
 
 impl GetSubregionsQueryRequest {
@@ -48,16 +48,13 @@ impl GetSubregionsQueryRequestBuilder {
     /// Consumes the builder and constructs a [`GetSubregionsQueryRequest`].
     /// This method will fail if any of the following fields are not set:
     /// - [`api_key`](GetSubregionsQueryRequestBuilder::api_key)
-    /// - [`region`](GetSubregionsQueryRequestBuilder::region)
     pub fn build(self) -> Result<GetSubregionsQueryRequest, BuildError> {
         Ok(GetSubregionsQueryRequest {
             api_key: self
                 .api_key
                 .ok_or_else(|| BuildError::missing_field("api_key"))?,
             format: self.format,
-            region: self
-                .region
-                .ok_or_else(|| BuildError::missing_field("region"))?,
+            region: self.region,
         })
     }
 }

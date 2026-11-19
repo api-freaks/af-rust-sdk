@@ -8,8 +8,8 @@ pub struct BulkScreenshotCaptureResponseResultsItemUrl {
     pub url: String,
     #[serde(default)]
     pub created_at: String,
-    #[serde(default)]
-    pub format: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub format: Option<String>,
     #[serde(default)]
     pub ttl: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -602,7 +602,6 @@ impl BulkScreenshotCaptureResponseResultsItemUrlBuilder {
     /// - [`screenshot`](BulkScreenshotCaptureResponseResultsItemUrlBuilder::screenshot)
     /// - [`url`](BulkScreenshotCaptureResponseResultsItemUrlBuilder::url)
     /// - [`created_at`](BulkScreenshotCaptureResponseResultsItemUrlBuilder::created_at)
-    /// - [`format`](BulkScreenshotCaptureResponseResultsItemUrlBuilder::format)
     /// - [`ttl`](BulkScreenshotCaptureResponseResultsItemUrlBuilder::ttl)
     pub fn build(self) -> Result<BulkScreenshotCaptureResponseResultsItemUrl, BuildError> {
         Ok(BulkScreenshotCaptureResponseResultsItemUrl {
@@ -613,9 +612,7 @@ impl BulkScreenshotCaptureResponseResultsItemUrlBuilder {
             created_at: self
                 .created_at
                 .ok_or_else(|| BuildError::missing_field("created_at"))?,
-            format: self
-                .format
-                .ok_or_else(|| BuildError::missing_field("format"))?,
+            format: self.format,
             ttl: self.ttl.ok_or_else(|| BuildError::missing_field("ttl"))?,
             file_type: self.file_type,
             extracted_html: self.extracted_html,

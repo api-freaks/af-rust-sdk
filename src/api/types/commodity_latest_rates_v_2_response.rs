@@ -17,6 +17,9 @@ pub struct CommodityLatestRatesV2Response {
     /// Present only when currency conversion for the requested `quote` is temporarily unavailable; rates are returned in each commodity's default currency instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub warning: Option<String>,
+    /// Present only on a 206 Partial Content response, when some requested symbols could not be resolved. Map of each unresolved symbol to a detail message and optional close-match suggestions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unresolved: Option<HashMap<String, CommodityLatestRatesV2ResponseUnresolvedValue>>,
 }
 
 impl CommodityLatestRatesV2Response {
@@ -33,6 +36,7 @@ pub struct CommodityLatestRatesV2ResponseBuilder {
     rates: Option<HashMap<String, f64>>,
     metadata: Option<HashMap<String, CommodityLatestRatesV2ResponseMetadataValue>>,
     warning: Option<String>,
+    unresolved: Option<HashMap<String, CommodityLatestRatesV2ResponseUnresolvedValue>>,
 }
 
 impl CommodityLatestRatesV2ResponseBuilder {
@@ -64,6 +68,14 @@ impl CommodityLatestRatesV2ResponseBuilder {
         self
     }
 
+    pub fn unresolved(
+        mut self,
+        value: HashMap<String, CommodityLatestRatesV2ResponseUnresolvedValue>,
+    ) -> Self {
+        self.unresolved = Some(value);
+        self
+    }
+
     /// Consumes the builder and constructs a [`CommodityLatestRatesV2Response`].
     /// This method will fail if any of the following fields are not set:
     /// - [`success`](CommodityLatestRatesV2ResponseBuilder::success)
@@ -85,6 +97,7 @@ impl CommodityLatestRatesV2ResponseBuilder {
                 .metadata
                 .ok_or_else(|| BuildError::missing_field("metadata"))?,
             warning: self.warning,
+            unresolved: self.unresolved,
         })
     }
 }

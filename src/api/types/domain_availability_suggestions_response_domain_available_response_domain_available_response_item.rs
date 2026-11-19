@@ -2,11 +2,11 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct DomainAvailabilitySuggestionsResponseDomainAvailableResponseDomainAvailableResponseItem {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub domain: Option<String>,
+    #[serde(default)]
+    pub domain: String,
     #[serde(rename = "domainAvailability")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub domain_availability: Option<bool>,
+    #[serde(default)]
+    pub domain_availability: bool,
     /// Extra details if the domain is not registered.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -46,6 +46,9 @@ impl
     }
 
     /// Consumes the builder and constructs a [`DomainAvailabilitySuggestionsResponseDomainAvailableResponseDomainAvailableResponseItem`].
+    /// This method will fail if any of the following fields are not set:
+    /// - [`domain`](DomainAvailabilitySuggestionsResponseDomainAvailableResponseDomainAvailableResponseItemBuilder::domain)
+    /// - [`domain_availability`](DomainAvailabilitySuggestionsResponseDomainAvailableResponseDomainAvailableResponseItemBuilder::domain_availability)
     pub fn build(
         self,
     ) -> Result<
@@ -53,8 +56,8 @@ impl
         BuildError,
     > {
         Ok(DomainAvailabilitySuggestionsResponseDomainAvailableResponseDomainAvailableResponseItem {
-            domain: self.domain,
-            domain_availability: self.domain_availability,
+            domain: self.domain.ok_or_else(|| BuildError::missing_field("domain"))?,
+            domain_availability: self.domain_availability.ok_or_else(|| BuildError::missing_field("domain_availability"))?,
             message: self.message,
         })
     }

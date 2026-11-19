@@ -24,6 +24,12 @@ pub struct IpWhoisLookupResponse {
     pub administrative_contacts: Option<Vec<IpWhoisLookupResponseAdministrativeContactsItem>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub whois_raw_response: Option<String>,
+    /// BGP route objects announced by this IP's network.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub routes: Option<Vec<IpWhoisLookupResponseRoutesItem>>,
+    /// WHOIS response from the rwhois server, if available.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub r_whois_raw_response: Option<String>,
 }
 
 impl IpWhoisLookupResponse {
@@ -46,6 +52,8 @@ pub struct IpWhoisLookupResponseBuilder {
     abuse_contacts: Option<Vec<IpWhoisLookupResponseAbuseContactsItem>>,
     administrative_contacts: Option<Vec<IpWhoisLookupResponseAdministrativeContactsItem>>,
     whois_raw_response: Option<String>,
+    routes: Option<Vec<IpWhoisLookupResponseRoutesItem>>,
+    r_whois_raw_response: Option<String>,
 }
 
 impl IpWhoisLookupResponseBuilder {
@@ -110,6 +118,16 @@ impl IpWhoisLookupResponseBuilder {
         self
     }
 
+    pub fn routes(mut self, value: Vec<IpWhoisLookupResponseRoutesItem>) -> Self {
+        self.routes = Some(value);
+        self
+    }
+
+    pub fn r_whois_raw_response(mut self, value: impl Into<String>) -> Self {
+        self.r_whois_raw_response = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`IpWhoisLookupResponse`].
     pub fn build(self) -> Result<IpWhoisLookupResponse, BuildError> {
         Ok(IpWhoisLookupResponse {
@@ -124,6 +142,8 @@ impl IpWhoisLookupResponseBuilder {
             abuse_contacts: self.abuse_contacts,
             administrative_contacts: self.administrative_contacts,
             whois_raw_response: self.whois_raw_response,
+            routes: self.routes,
+            r_whois_raw_response: self.r_whois_raw_response,
         })
     }
 }

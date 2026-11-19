@@ -7,14 +7,14 @@ pub struct BulkCurrentWeatherRequest {
     pub locations: Vec<BulkCurrentWeatherRequestLocationsItem>,
     /// Your API key
     #[serde(rename = "apiKey")]
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     #[serde(default)]
     pub api_key: String,
-    /// Response format returned by the API.
-    #[serde(skip_serializing)]
+    /// Response format returned by the API. Only JSON is supported.
+    #[serde(skip)]
     pub format: Option<BulkCurrentWeatherRequestFormat>,
     /// Timezone for the results.
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     pub timezone: Option<String>,
 }
 

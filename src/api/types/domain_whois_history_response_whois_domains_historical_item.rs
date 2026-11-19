@@ -1,6 +1,6 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct DomainWhoisHistoryResponseWhoisDomainsHistoricalItem {
     /// Shows the number of the record in the array.
     #[serde(default)]
@@ -12,13 +12,15 @@ pub struct DomainWhoisHistoryResponseWhoisDomainsHistoricalItem {
     #[serde(default)]
     pub domain_name: String,
     /// The timestamp when the query was made (format YYYY-MM-DD HH:mm:ss, not ISO 8601).
-    #[serde(default)]
-    pub query_time: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub query_time: Option<String>,
     /// The WHOIS server that provided the domain information.
     #[serde(default)]
     pub whois_server: String,
     /// Domain registration status.
-    pub domain_registered: DomainWhoisHistoryResponseWhoisDomainsHistoricalItemDomainRegistered,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub domain_registered:
+        Option<DomainWhoisHistoryResponseWhoisDomainsHistoricalItemDomainRegistered>,
     /// Date when the domain was initially registered.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub create_date: Option<NaiveDate>,
@@ -212,9 +214,7 @@ impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemBuilder {
     /// - [`num`](DomainWhoisHistoryResponseWhoisDomainsHistoricalItemBuilder::num)
     /// - [`status`](DomainWhoisHistoryResponseWhoisDomainsHistoricalItemBuilder::status)
     /// - [`domain_name`](DomainWhoisHistoryResponseWhoisDomainsHistoricalItemBuilder::domain_name)
-    /// - [`query_time`](DomainWhoisHistoryResponseWhoisDomainsHistoricalItemBuilder::query_time)
     /// - [`whois_server`](DomainWhoisHistoryResponseWhoisDomainsHistoricalItemBuilder::whois_server)
-    /// - [`domain_registered`](DomainWhoisHistoryResponseWhoisDomainsHistoricalItemBuilder::domain_registered)
     pub fn build(self) -> Result<DomainWhoisHistoryResponseWhoisDomainsHistoricalItem, BuildError> {
         Ok(DomainWhoisHistoryResponseWhoisDomainsHistoricalItem {
             num: self.num.ok_or_else(|| BuildError::missing_field("num"))?,
@@ -224,15 +224,11 @@ impl DomainWhoisHistoryResponseWhoisDomainsHistoricalItemBuilder {
             domain_name: self
                 .domain_name
                 .ok_or_else(|| BuildError::missing_field("domain_name"))?,
-            query_time: self
-                .query_time
-                .ok_or_else(|| BuildError::missing_field("query_time"))?,
+            query_time: self.query_time,
             whois_server: self
                 .whois_server
                 .ok_or_else(|| BuildError::missing_field("whois_server"))?,
-            domain_registered: self
-                .domain_registered
-                .ok_or_else(|| BuildError::missing_field("domain_registered"))?,
+            domain_registered: self.domain_registered,
             create_date: self.create_date,
             update_date: self.update_date,
             expiry_date: self.expiry_date,

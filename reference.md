@@ -285,7 +285,7 @@ async fn main() {
     let client = ApiFreaks::new(config).expect("Failed to build client");
     client
         .ip_security_lookup(
-            &IPSecurityLookupQueryRequest {
+            &IpSecurityLookupQueryRequest {
                 api_key: "apiKey".to_string(),
                 format: None,
                 ip: None,
@@ -391,7 +391,7 @@ async fn main() {
     let client = ApiFreaks::new(config).expect("Failed to build client");
     client
         .bulk_ip_security_lookup(
-            &BulkIPSecurityLookupRequest {
+            &BulkIpSecurityLookupRequest {
                 api_key: "apiKey".to_string(),
                 ips: vec!["ips".to_string()],
                 format: None,
@@ -905,7 +905,7 @@ async fn main() {
     let client = ApiFreaks::new(config).expect("Failed to build client");
     client
         .ip_whois_lookup(
-            &IPWhoisLookupQueryRequest {
+            &IpWhoisLookupQueryRequest {
                 api_key: "apiKey".to_string(),
                 ip: "ip".to_string(),
                 format: None,
@@ -1312,7 +1312,7 @@ async fn main() {
     let client = ApiFreaks::new(config).expect("Failed to build client");
     client
         .domain_dns_lookup(
-            &DomainDNSLookupQueryRequest {
+            &DomainDnsLookupQueryRequest {
                 api_key: "apiKey".to_string(),
                 r#type: vec![Some("type".to_string())],
                 format: None,
@@ -1353,7 +1353,7 @@ async fn main() {
 <dl>
 <dd>
 
-**host_name:** `Option<String>` — Hostname or URL whose DNS records are required.
+**host_name:** `Option<String>` — Hostname or URL whose DNS records are required. Give either `host-name` or `ipAddress`.
     
 </dd>
 </dl>
@@ -1361,7 +1361,7 @@ async fn main() {
 <dl>
 <dd>
 
-**ip_address:** `Option<String>` — The IP address for requested DNS's PTR record. 'type' parameter must be set to 'all'.
+**ip_address:** `Option<String>` — The IP address whose PTR (reverse DNS) record is required. Give either `host-name` or `ipAddress`; with `ipAddress`, set `type` to `all` or `PTR`.
     
 </dd>
 </dl>
@@ -1369,7 +1369,7 @@ async fn main() {
 <dl>
 <dd>
 
-**type_:** `Option<String>` — A comma-separated list of DNS record types for lookup. Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, or all. When ipAddress is provided, type must be "all".
+**type_:** `Option<String>` — DNS record types to look up, sent as a comma-separated list (e.g. `A,MX`). Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, PTR, or all. When ipAddress is provided, use "all" or "PTR".
     
 </dd>
 </dl>
@@ -1419,12 +1419,12 @@ async fn main() {
     let client = ApiFreaks::new(config).expect("Failed to build client");
     client
         .bulk_domain_dns_lookup(
-            &BulkDomainDNSLookupRequest {
+            &BulkDomainDnsLookupRequest {
                 api_key: "apiKey".to_string(),
                 r#type: vec![Some("type".to_string())],
                 domain_names: vec!["domainNames".to_string()],
-                ip_addresses: None,
                 format: None,
+                ip_addresses: None,
             },
             None,
         )
@@ -1452,7 +1452,7 @@ async fn main() {
 <dl>
 <dd>
 
-**ip_addresses:** `Option<Vec<String>>` — Optional list of IP addresses for reverse/PTR lookups
+**ip_addresses:** `Option<Vec<String>>` — Array of IP addresses to include in the lookup for PTR record enrichment.
     
 </dd>
 </dl>
@@ -1476,10 +1476,7 @@ async fn main() {
 <dl>
 <dd>
 
-**type_:** `Option<String>` 
-
-A comma-separated list of DNS record types for lookup.
-Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, or all
+**type_:** `Option<String>` — DNS record types to look up, sent as a comma-separated list (e.g. `A,MX`). Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, or all.
     
 </dd>
 </dl>
@@ -1529,7 +1526,7 @@ async fn main() {
     let client = ApiFreaks::new(config).expect("Failed to build client");
     client
         .domain_dns_history(
-            &DomainDNSHistoryQueryRequest {
+            &DomainDnsHistoryQueryRequest {
                 api_key: "apiKey".to_string(),
                 host_name: "host-name".to_string(),
                 r#type: vec![Some("type".to_string())],
@@ -1578,10 +1575,7 @@ async fn main() {
 <dl>
 <dd>
 
-**type_:** `Option<String>` 
-
-A comma-separated list of DNS record types for lookup.
-Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, or all
+**type_:** `Option<String>` — DNS record types to look up, sent as a comma-separated list (e.g. `A,MX`). Possible values: A, AAAA, MX, NS, SOA, SPF, TXT, CNAME, or all.
     
 </dd>
 </dl>
@@ -1638,9 +1632,9 @@ async fn main() {
     let client = ApiFreaks::new(config).expect("Failed to build client");
     client
         .domain_dns_reverse(
-            &DomainDNSReverseQueryRequest {
+            &DomainDnsReverseQueryRequest {
                 api_key: "apiKey".to_string(),
-                r#type: DomainDNSReverseRequestType::A,
+                r#type: DomainDnsReverseRequestType::A,
                 value: "value".to_string(),
                 format: None,
                 exact: None,
@@ -1761,56 +1755,56 @@ async fn main() {
         ..Default::default()
     };
     let client = ApiFreaks::new(config).expect("Failed to build client");
-    client.web_scrape(&WebScrapeRequest {
-        api_key: "apiKey".to_string(),
-        url: "https://example.com".to_string(),
-        body: WebScrapeRequestBody::WebScrapeRequestBodyBlockURL(WebScrapeRequestBodyBlockURL {
-            block_url: Some(vec!["https://example.com/ads.js".to_string(), "https://tracker.example.com/*".to_string()]),
-            cookies: Some(vec![WebScrapeRequestBodyBlockURLCookiesItem {
-                name: "sessionid".to_string(),
-                value: "abc123".to_string(),
-                ..Default::default()
-            }, WebScrapeRequestBodyBlockURLCookiesItem {
-                name: "user_pref".to_string(),
-                value: "darkmode".to_string(),
-                ..Default::default()
-            }]),
-            instructions: vec![WebScrapeRequestBodyBlockURLInstructionsItem::WebScrapeRequestBodyBlockURLInstructionsItemFill(WebScrapeRequestBodyBlockURLInstructionsItemFill {
-                fill: Some(WebScrapeRequestBodyBlockURLInstructionsItemFillFill {
-                    place: "#username".to_string(),
-                    value: "myuser".to_string(),
-                    ..Default::default()
-                }),
-                ..Default::default()
-            }), WebScrapeRequestBodyBlockURLInstructionsItem::WebScrapeRequestBodyBlockURLInstructionsItemFill(WebScrapeRequestBodyBlockURLInstructionsItemFill {
-                fill: Some(WebScrapeRequestBodyBlockURLInstructionsItemFillFill {
-                    place: "#password".to_string(),
-                    value: "mypassword".to_string(),
-                    ..Default::default()
-                }),
-                ..Default::default()
-            }), WebScrapeRequestBodyBlockURLInstructionsItem::WebScrapeRequestBodyBlockURLInstructionsItemFill(WebScrapeRequestBodyBlockURLInstructionsItemFill {
-                ..Default::default()
-            }), WebScrapeRequestBodyBlockURLInstructionsItem::WebScrapeRequestBodyBlockURLInstructionsItemFill(WebScrapeRequestBodyBlockURLInstructionsItemFill {
-                ..Default::default()
-            }), WebScrapeRequestBodyBlockURLInstructionsItem::WebScrapeRequestBodyBlockURLInstructionsItemFill(WebScrapeRequestBodyBlockURLInstructionsItemFill {
-                ..Default::default()
-            }), WebScrapeRequestBodyBlockURLInstructionsItem::WebScrapeRequestBodyBlockURLInstructionsItemFill(WebScrapeRequestBodyBlockURLInstructionsItemFill {
-                ..Default::default()
-            }), WebScrapeRequestBodyBlockURLInstructionsItem::WebScrapeRequestBodyBlockURLInstructionsItemFill(WebScrapeRequestBodyBlockURLInstructionsItemFill {
-                ..Default::default()
-            })],
-            ..Default::default()
-        }),
-        format: None,
-        text: None,
-        js_enabled: None,
-        proxy: None,
-        ssl_ignore: None,
-        window_size: None,
-        ad_block: None,
-        captcha: None
-    }, None).await;
+    client
+        .web_scrape(
+            &WebScrapeRequest {
+                api_key: "apiKey".to_string(),
+                url: "https://example.com".to_string(),
+                body: WebScrapeRequestBody::WebScrapeRequestBodyBlockUrl(
+                    WebScrapeRequestBodyBlockUrl {
+                        instructions: vec![
+                            WebScrapeRequestBodyBlockUrlInstructionsItem {
+                                ..Default::default()
+                            },
+                            WebScrapeRequestBodyBlockUrlInstructionsItem {
+                                ..Default::default()
+                            },
+                            WebScrapeRequestBodyBlockUrlInstructionsItem {
+                                ..Default::default()
+                            },
+                            WebScrapeRequestBodyBlockUrlInstructionsItem {
+                                ..Default::default()
+                            },
+                            WebScrapeRequestBodyBlockUrlInstructionsItem {
+                                extract: Some(HashMap::from([
+                                    ("profile".to_string(), "#profile".to_string()),
+                                    ("welcomeMessage".to_string(), "#welcome-message".to_string()),
+                                    ("userInfo".to_string(), "#user-info".to_string()),
+                                ])),
+                                ..Default::default()
+                            },
+                            WebScrapeRequestBodyBlockUrlInstructionsItem {
+                                ..Default::default()
+                            },
+                            WebScrapeRequestBodyBlockUrlInstructionsItem {
+                                ..Default::default()
+                            },
+                        ],
+                        ..Default::default()
+                    },
+                ),
+                format: None,
+                text: None,
+                js_enabled: None,
+                proxy: None,
+                ssl_ignore: None,
+                window_size: None,
+                ad_block: None,
+                captcha: None,
+            },
+            None,
+        )
+        .await;
 }
 ```
 </dd>
@@ -2121,6 +2115,205 @@ async fn main() {
 <dd>
 
 **format:** `Option<BulkEmailValidateRequestFormat>` — Format of the response
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">disposable_email_check_v2</a>(request: DisposableEmailCheckV2Request, api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;DisposableEmailCheckV2RequestFormat&gt;&gt;) -> Result&lt;DisposableEmailCheckV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Validates email syntax and checks the domain for disposable, free, spam, and role-account signals, plus MX/A DNS records. Send the email (and optionally an ip) as a JSON request body. When an ip is included, the response also carries geolocation and security data for it.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .disposable_email_check_v2(
+            &DisposableEmailCheckV2Request {
+                api_key: "apiKey".to_string(),
+                email: "test@sogetthis.com".to_string(),
+                format: None,
+                ip: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**email:** `String` — The email address to check.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ip:** `Option<String>` — Optional IP address to look up for location and security data, such as the IP the signup came from.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<DisposableEmailCheckV2RequestFormat>` — Format of the response.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">bulk_disposable_email_check_v2</a>(request: BulkDisposableEmailCheckV2Request, api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;BulkDisposableEmailCheckV2RequestFormat&gt;&gt;) -> Result&lt;BulkDisposableEmailCheckV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Checks a bulk of email addresses (each with an optional ip) and returns a disposable email check result for each, in the same order as the request. Maximum `100` entries per request.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .bulk_disposable_email_check_v2(
+            &BulkDisposableEmailCheckV2Request {
+                api_key: "apiKey".to_string(),
+                email_data: vec![
+                    BulkDisposableEmailCheckV2RequestEmailDataItem {
+                        email: "abc".to_string(),
+                        ..Default::default()
+                    },
+                    BulkDisposableEmailCheckV2RequestEmailDataItem {
+                        email: "john@microsoft.com".to_string(),
+                        ip: Some("8.8.8.8".to_string()),
+                        ..Default::default()
+                    },
+                    BulkDisposableEmailCheckV2RequestEmailDataItem {
+                        email: "test@mailinator.com".to_string(),
+                        ..Default::default()
+                    },
+                ],
+                format: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**email_data:** `Vec<BulkDisposableEmailCheckV2RequestEmailDataItem>` — Entries to check. Maximum 100 per request. Must not be empty, and must not contain null entries or entries without a valid email.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<BulkDisposableEmailCheckV2RequestFormat>` — Format of the response.
     
 </dd>
 </dl>
@@ -2824,7 +3017,7 @@ async fn main() {
 <dl>
 <dd>
 
-**count:** `Option<i64>` — Number of suggestions to retrieve.
+**count:** `Option<i64>` — Number of suggestions to retrieve. The API returns a minimum of 5 suggestions regardless of a lower value.
     
 </dd>
 </dl>
@@ -2832,7 +3025,7 @@ async fn main() {
 <dl>
 <dd>
 
-**sug:** `Option<bool>` — Whether to include domain name suggestions in the response.
+**sug:** `Option<bool>` — Controls the response shape. When `false`, returns a single availability object for the queried domain only. When omitted or `true`, returns an array of suggested domains instead.
     
 </dd>
 </dl>
@@ -2968,6 +3161,1535 @@ async fn main() {
 </dl>
 </details>
 
+<details><summary><code>client.<a href="/src/client.rs">domain_typosquatting</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;DomainTyposquattingRequestFormat&gt;&gt;, keyword: Option&lt;Option&lt;String&gt;&gt;, pattern: Option&lt;Option&lt;String&gt;&gt;, page_token: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;DomainTyposquattingResponse, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+The Domain Typosquatting API searches for registered domains that are typo or look-alike variants of a brand keyword, or that match a wildcard pattern. Results include registration lifecycle data and drop status across 1529+ TLDs, paginated at 100 domains per page.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .domain_typosquatting(
+            &DomainTyposquattingQueryRequest {
+                api_key: "apiKey".to_string(),
+                format: None,
+                keyword: None,
+                pattern: None,
+                page_token: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<DomainTyposquattingRequestFormat>` — Format of the response.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**keyword:** `Option<String>` — Brand or label to find typo variants for. 3-63 characters, letters, digits, or hyphens, a single label with no dots. Case-insensitive. Use either keyword or pattern, never both.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pattern:** `Option<String>` — Wildcard search string that combines fuzzy matching with * wildcards. 3-63 characters total, * is the only supported wildcard and each one matches zero or more characters, maximum 3 asterisks per request. Use either keyword or pattern, never both.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page_token:** `Option<String>` — Token from nextPageToken in the previous response. Required to retrieve page 2 and onward. The original keyword or pattern must be passed alongside the token on every page request. Results page at 100 domains per page.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">domain_reputation</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;DomainReputationRequestFormat&gt;&gt;, domain_name: Option&lt;String&gt;) -> Result&lt;DomainReputationResponse, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+The Domain Reputation API evaluates a domain against threat intelligence sources, DGA (domain generation algorithm) scoring, trust signals, and email deliverability configuration, returning a consolidated risk assessment with a verdict, severity, and supporting evidence.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .domain_reputation(
+            &DomainReputationQueryRequest {
+                api_key: "apiKey".to_string(),
+                domain_name: "domainName".to_string(),
+                format: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<DomainReputationRequestFormat>` — Format of the response.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**domain_name:** `String` — The domain name to assess (e.g. example.com). Must contain at least one dot and be at most 253 characters. Automatically lowercased.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">astronomy_lookup_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;AstronomyLookupV2RequestFormat&gt;&gt;, location: Option&lt;Option&lt;String&gt;&gt;, lat: Option&lt;Option&lt;String&gt;&gt;, long: Option&lt;Option&lt;String&gt;&gt;, ip: Option&lt;Option&lt;String&gt;&gt;, lang: Option&lt;Option&lt;AstronomyLookupV2RequestLang&gt;&gt;, date: Option&lt;Option&lt;String&gt;&gt;, elevation: Option&lt;Option&lt;String&gt;&gt;, time_zone: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;AstronomyLookupV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve sunrise and sunset times, current position of the moon, and other related information by specifying a location address, location coordinates, IP address, or using the client IP address if no parameter is passed.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .astronomy_lookup_v2(
+            &AstronomyLookupV2QueryRequest {
+                api_key: "apiKey".to_string(),
+                format: None,
+                location: None,
+                lat: None,
+                long: None,
+                ip: None,
+                lang: None,
+                date: None,
+                elevation: None,
+                time_zone: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<AstronomyLookupV2RequestFormat>` — Format of the response. Can be "json" or "xml".
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**location:** `Option<String>` — Extract astronomy information using location (preferably city)
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lat:** `Option<String>` — Latitude to extract astronomy information using location coordinates
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**long:** `Option<String>` — Longitude to extract astronomy information using location coordinates
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ip:** `Option<String>` — IPv4 or IPv6 address to extract astronomy information using IP address
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lang:** `Option<AstronomyLookupV2RequestLang>` — Response language of "location" field in case of lookup through IP address only.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**date:** `Option<String>` — Specific date (format YYYY-MM-DD) for which astronomy data is required
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**elevation:** `Option<String>` — Elevation above sea level at the location, in meters. The value should be between 0 meter and a maximum value of 10,000 meters. Negative value is set to 0.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**time_zone:** `Option<String>` — Time zone to receive all time-based data in your preferred local time.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">timezone_lookup_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;TimezoneLookupV2RequestFormat&gt;&gt;, ip: Option&lt;Option&lt;String&gt;&gt;, tz: Option&lt;Option&lt;String&gt;&gt;, location: Option&lt;Option&lt;String&gt;&gt;, lat: Option&lt;Option&lt;String&gt;&gt;, long: Option&lt;Option&lt;String&gt;&gt;, lang: Option&lt;Option&lt;TimezoneLookupV2RequestLang&gt;&gt;, iata_code: Option&lt;Option&lt;String&gt;&gt;, icao_code: Option&lt;Option&lt;String&gt;&gt;, lo_code: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;TimezoneLookupV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get current time, date, and timezone details by specifying a timezone name, location address, GPS coordinates, IP address, IATA/ICAO airport code, UN/LOCODE, or use the client IP if no parameter is provided.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .timezone_lookup_v2(
+            &TimezoneLookupV2QueryRequest {
+                api_key: "apiKey".to_string(),
+                format: None,
+                ip: None,
+                tz: None,
+                location: None,
+                lat: None,
+                long: None,
+                lang: None,
+                iata_code: None,
+                icao_code: None,
+                lo_code: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<TimezoneLookupV2RequestFormat>` — Format of the response. Possible values: json, xml.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ip:** `Option<String>` — IPv4 or IPv6 address to extract timezone information.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**tz:** `Option<String>` — Timezone name in IANA format (e.g., Asia/Kolkata) to retrieve information directly.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**location:** `Option<String>` — Location string (preferably city and country) to extract timezone.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lat:** `Option<String>` — Latitude for geolocation-based timezone lookup. Only time_zone is returned for this mode; no location object is included.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**long:** `Option<String>` — Longitude for geolocation-based timezone lookup. Only time_zone is returned for this mode; no location object is included.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lang:** `Option<TimezoneLookupV2RequestLang>` — Response language for location fields. Default: en.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**iata_code:** `Option<String>` — 3-letter IATA airport code (e.g., LHR) to extract timezone.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**icao_code:** `Option<String>` — 4-letter ICAO airport code (e.g., KJFK) to extract timezone.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lo_code:** `Option<String>` — 5-letter UN/LOCODE city code to extract timezone.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">geolocation_lookup_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;GeolocationLookupV2RequestFormat&gt;&gt;, ip: Option&lt;Option&lt;String&gt;&gt;, lang: Option&lt;Option&lt;GeolocationLookupV2RequestLang&gt;&gt;, fields: Option&lt;Option&lt;String&gt;&gt;, excludes: Option&lt;Option&lt;String&gt;&gt;, include: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;GeolocationLookupV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get detailed IP geolocation data for an IP address including country, city, timezone, currency, and optional threat intelligence and user-agent information.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .geolocation_lookup_v2(
+            &GeolocationLookupV2QueryRequest {
+                api_key: "apiKey".to_string(),
+                format: None,
+                ip: None,
+                lang: None,
+                fields: None,
+                excludes: None,
+                include: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<GeolocationLookupV2RequestFormat>` — Format of the response.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ip:** `Option<String>` — IPv4, IPv6, or hostname for geolocation lookup.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lang:** `Option<GeolocationLookupV2RequestLang>` — Response language for location fields. Default: en.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**fields:** `Option<String>` — Comma-separated list of fields to include in response. For example, `location` includes all location fields, `location.city` is a specific field.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**excludes:** `Option<String>` — Comma-separated list of fields to exclude from response.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**include:** `Option<String>` — Comma-separated list of additional data modules to include. Possible values: security (threat intelligence), hostname (IP-Hostname lookup), liveHostname (live hostname lookup), hostnameFallbackLive (hostname with live fallback), user_agent (parse User-Agent header), abuse (abuse contact info), dma_code (DMA code), geo_accuracy (accuracy_radius, confidence, locality), * (all modules).
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">bulk_geolocation_lookup_v2</a>(request: BulkGeolocationLookupV2Request, api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;BulkGeolocationLookupV2RequestFormat&gt;&gt;, lang: Option&lt;Option&lt;BulkGeolocationLookupV2RequestLang&gt;&gt;, fields: Option&lt;Option&lt;String&gt;&gt;, excludes: Option&lt;Option&lt;String&gt;&gt;, include: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;Vec&lt;BulkGeolocationLookupV2ResponseItem&gt;, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get detailed IP geolocation data for multiple IP addresses including country, city, timezone, currency, and optional threat intelligence information. Supports up to 50,000 IP addresses per request.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .bulk_geolocation_lookup_v2(
+            &BulkGeolocationLookupV2Request {
+                api_key: "apiKey".to_string(),
+                ips: vec!["ips".to_string()],
+                format: None,
+                lang: None,
+                fields: None,
+                excludes: None,
+                include: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**ips:** `Vec<String>` — List of IP addresses or hostnames to lookup.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<BulkGeolocationLookupV2RequestFormat>` — Format of the response.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lang:** `Option<BulkGeolocationLookupV2RequestLang>` — Response language for location fields. Default: en.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**fields:** `Option<String>` — Comma-separated list of fields to include in the response. For example, `location` includes all location fields, `location.city` is a specific field.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**excludes:** `Option<String>` — Comma-separated list of fields to exclude from response.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**include:** `Option<String>` — Comma-separated list of additional data modules to include. Possible values: security (threat intelligence), hostname (IP-Hostname lookup), liveHostname (live hostname lookup), user_agent (parse User-Agent header), abuse (abuse contact info), * (all modules).
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">domain_whois_lookup_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;DomainWhoisLookupV2RequestFormat&gt;&gt;, domain_name: Option&lt;String&gt;) -> Result&lt;DomainWhoisLookupV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the current WHOIS record for the specified domain, including registrar details, registrant/administrative/technical/billing/reseller contacts, name servers, status codes, and raw WHOIS text.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .domain_whois_lookup_v2(
+            &DomainWhoisLookupV2QueryRequest {
+                api_key: "apiKey".to_string(),
+                domain_name: "domainName".to_string(),
+                format: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<DomainWhoisLookupV2RequestFormat>` — Format of the response.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**domain_name:** `String` — Domain name to retrieve WHOIS data for (e.g. example.com).
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">bulk_domain_whois_lookup_v2</a>(request: BulkDomainWhoisLookupV2Request, api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;BulkDomainWhoisLookupV2RequestFormat&gt;&gt;) -> Result&lt;BulkDomainWhoisLookupV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the current WHOIS record for each requested domain, in request order. Supports up to 100 domain names per request; a domain that fails to resolve yields an error item instead of failing the whole batch.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .bulk_domain_whois_lookup_v2(
+            &BulkDomainWhoisLookupV2Request {
+                api_key: "apiKey".to_string(),
+                domain_names: vec!["domainNames".to_string()],
+                format: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**domain_names:** `Vec<String>` — List of domain names to retrieve WHOIS data for.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<BulkDomainWhoisLookupV2RequestFormat>` — Format of the response.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">commodity_latest_rates_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CommodityLatestRatesV2RequestFormat&gt;&gt;, quote: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;CommodityLatestRatesV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the current live price for the requested commodity symbols. Unresolved symbols degrade to a 206 partial response instead of failing the whole request.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .commodity_latest_rates_v2(
+            &CommodityLatestRatesV2QueryRequest {
+                api_key: "apiKey".to_string(),
+                symbols: vec![Some("symbols".to_string())],
+                format: None,
+                quote: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<CommodityLatestRatesV2RequestFormat>` — Response format. Currently only `json` is supported.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**symbols:** `Option<String>` — Comma-separated list of commodity symbols (e.g., XAU, WTIOIL-SPOT). Case-insensitive; duplicates are deduplicated server-side, with one response entry and one credit charge per unique symbol.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**quote:** `Option<String>` — Target currency for the exchange rate. If omitted (or set to `default`), the default quote currency of each commodity is used. Requires a premium plan; ignored on lower-tier plans.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">commodity_historical_rates_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CommodityHistoricalRatesV2RequestFormat&gt;&gt;, date: Option&lt;String&gt;) -> Result&lt;CommodityHistoricalRatesV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns OHLC price data for the requested commodity symbols on a specific date. Falls back to the nearest earlier rate if none exists for the exact date. Unresolved symbols degrade to a 206 partial response instead of failing the whole request.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .commodity_historical_rates_v2(
+            &CommodityHistoricalRatesV2QueryRequest {
+                api_key: "apiKey".to_string(),
+                symbols: vec![Some("symbols".to_string())],
+                date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+                format: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<CommodityHistoricalRatesV2RequestFormat>` — Response format. Currently only `json` is supported.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**symbols:** `Option<String>` — Comma-separated list of commodity symbols. Case-insensitive; duplicates are deduplicated server-side, with one response entry and one credit charge per unique symbol.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**date:** `String` — Date in YYYY-MM-DD format. Data available from 1990 onwards.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">commodity_fluctuation_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CommodityFluctuationV2RequestFormat&gt;&gt;, start_date: Option&lt;String&gt;, end_date: Option&lt;String&gt;) -> Result&lt;CommodityFluctuationV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns price fluctuation metrics (start, end, change, percent change) for the requested commodity symbols over a date range. For monthly-updated commodities the range snaps to month boundaries. Unresolved symbols degrade to a 206 partial response instead of failing the whole request.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .commodity_fluctuation_v2(
+            &CommodityFluctuationV2QueryRequest {
+                api_key: "apiKey".to_string(),
+                symbols: vec![Some("symbols".to_string())],
+                start_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+                end_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+                format: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<CommodityFluctuationV2RequestFormat>` — Response format. Currently only `json` is supported.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**symbols:** `Option<String>` — Comma-separated list of commodity symbols. Case-insensitive; duplicates are deduplicated server-side, with one response entry and one credit charge per unique symbol.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**start_date:** `String` — Start date (YYYY-MM-DD)
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**end_date:** `String` — End date (YYYY-MM-DD)
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">commodity_time_series_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CommodityTimeSeriesV2RequestFormat&gt;&gt;, start_date: Option&lt;String&gt;, end_date: Option&lt;String&gt;) -> Result&lt;CommodityTimeSeriesV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns day-by-day OHLC data for the requested commodity symbols within a date range, indexed by date. Non-trading days are excluded. Unresolved symbols degrade to a 206 partial response instead of failing the whole request.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .commodity_time_series_v2(
+            &CommodityTimeSeriesV2QueryRequest {
+                api_key: "apiKey".to_string(),
+                symbols: vec![Some("symbols".to_string())],
+                start_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+                end_date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+                format: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<CommodityTimeSeriesV2RequestFormat>` — Response format. Currently only `json` is supported.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**symbols:** `Option<String>` — Comma-separated list of commodity symbols. Case-insensitive; duplicates are deduplicated server-side, with one response entry and one credit charge per unique symbol.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**start_date:** `String` — Start date (YYYY-MM-DD)
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**end_date:** `String` — End date (YYYY-MM-DD). Maximum range is 365 days.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">commodity_symbols_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CommoditySymbolsV2RequestFormat&gt;&gt;) -> Result&lt;CommoditySymbolsV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the list of supported commodity symbols with metadata. Deprecated symbols stay listed with status "inactive" and a deprecationDate.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .commodity_symbols_v2(
+            &CommoditySymbolsV2QueryRequest {
+                api_key: "apiKey".to_string(),
+                format: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<CommoditySymbolsV2RequestFormat>` — Response format. Currently only `json` is supported.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">commodity_intraday_rates_v2</a>(api_key: Option&lt;String&gt;, symbols: Option&lt;String&gt;, interval: Option&lt;CommodityIntradayRatesV2RequestInterval&gt;, date: Option&lt;String&gt;, start_time: Option&lt;Option&lt;String&gt;&gt;, metadata: Option&lt;Option&lt;bool&gt;&gt;) -> Result&lt;CommodityIntradayRatesV2Response, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the prices of one commodity through a UTC day at the requested interval, keyed by UTC timestamp. Each request costs a flat 50 credits however many points it returns.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .commodity_intraday_rates_v2(
+            &CommodityIntradayRatesV2QueryRequest {
+                api_key: "apiKey".to_string(),
+                symbols: "symbols".to_string(),
+                interval: CommodityIntradayRatesV2RequestInterval::OneM,
+                date: NaiveDate::parse_from_str("2023-01-15", "%Y-%m-%d").unwrap(),
+                start_time: None,
+                metadata: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**symbols:** `String` — Exactly one commodity symbol. Case-insensitive. Sending two or more returns a 400. Only symbols updated every second, every minute, or every 10 minutes have intraday rates; symbols updated hourly or less often return a 400. Use the Commodity Symbols endpoint for all valid values.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**interval:** `CommodityIntradayRatesV2RequestInterval` — Spacing between points. Case-insensitive. Symbols updated every 10 minutes accept only `10m`, `30m`, `1h`, `2h`, `4h`, `8h`, `12h`, `1d`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**date:** `String` — The UTC day to read, in `YYYY-MM-DD` format. Cannot be in the future. For today, points stop at the current UTC minute.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**start_time:** `Option<String>` — First mark of the window, as a 24-hour UTC time in `HH:mm`. Must fall on a mark of the interval (for example, `14:30` works for `5m` or `30m`, but not for `1h`). For `1d` it can only be `00:00`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**metadata:** `Option<bool>` — Whether to include the `metadata` object. Pass `false` to receive only the prices.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.<a href="/src/client.rs">pdf_merge</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;PdfMergeRequestFormat&gt;&gt;, destroy: Option&lt;Option&lt;bool&gt;&gt;, output: Option&lt;Option&lt;String&gt;&gt;, webhook_url: Option&lt;Option&lt;String&gt;&gt;, webhook_failure_notification: Option&lt;Option&lt;bool&gt;&gt;) -> Result&lt;PdfMergeResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
@@ -3007,7 +4729,7 @@ async fn main() {
         .pdf_merge(
             &PdfMergeRequest {
                 api_key: "apiKey".to_string(),
-                file: vec![b"test file 1".to_vec(), b"test file 2".to_vec()],
+                file: Some(vec![std::fs::read("a.pdf").unwrap(), std::fs::read("b.pdf").unwrap()]),
                 format: None,
                 file_id: vec![],
                 destroy: None,
@@ -3133,7 +4855,7 @@ async fn main() {
             &PdfRemovePagesRequest {
                 api_key: "apiKey".to_string(),
                 pages: "pages".to_string(),
-                file: b"test file content".to_vec(),
+                file: Some(std::fs::read("document.pdf").unwrap()),
                 format: None,
                 file_id: None,
                 destroy: None,
@@ -3266,7 +4988,7 @@ async fn main() {
         .pdf_split(
             &PdfSplitRequest {
                 api_key: "apiKey".to_string(),
-                file: b"test file content".to_vec(),
+                file: Some(std::fs::read("document.pdf").unwrap()),
                 format: None,
                 file_id: None,
                 destroy: None,
@@ -3421,7 +5143,7 @@ async fn main() {
             &PdfRotateRequest {
                 api_key: "apiKey".to_string(),
                 rotate: 1,
-                file: b"test file content".to_vec(),
+                file: Some(std::fs::read("document.pdf").unwrap()),
                 format: None,
                 file_id: None,
                 destroy: None,
@@ -3564,7 +5286,7 @@ async fn main() {
             &PdfCompressRequest {
                 api_key: "apiKey".to_string(),
                 compression_level: PdfCompressRequestCompressionLevel::Low,
-                file: b"test file content".to_vec(),
+                file: Some(std::fs::read("document.pdf").unwrap()),
                 format: None,
                 file_id: None,
                 output: None,
@@ -3698,7 +5420,7 @@ async fn main() {
             &PdfExtractPagesRequest {
                 api_key: "apiKey".to_string(),
                 pages: "pages".to_string(),
-                file: b"test file content".to_vec(),
+                file: Some(std::fs::read("document.pdf").unwrap()),
                 format: None,
                 file_id: None,
                 destroy: None,
@@ -3840,7 +5562,7 @@ async fn main() {
         .pdf_linearize(
             &PdfLinearizeRequest {
                 api_key: "apiKey".to_string(),
-                file: b"test file content".to_vec(),
+                file: Some(std::fs::read("document.pdf").unwrap()),
                 format: None,
                 file_id: None,
                 destroy: None,
@@ -3966,7 +5688,7 @@ async fn main() {
             &PdfEncryptRequest {
                 api_key: "apiKey".to_string(),
                 user_password: "user_password".to_string(),
-                file: b"test file content".to_vec(),
+                file: Some(std::fs::read("document.pdf").unwrap()),
                 format: None,
                 file_id: None,
                 destroy: None,
@@ -4118,7 +5840,7 @@ async fn main() {
             &PdfDecryptRequest {
                 api_key: "apiKey".to_string(),
                 file_password: "file_password".to_string(),
-                file: b"test file content".to_vec(),
+                file: Some(std::fs::read("document.pdf").unwrap()),
                 format: None,
                 file_id: None,
                 destroy: None,
@@ -4253,7 +5975,7 @@ async fn main() {
                 api_key: "apiKey".to_string(),
                 user_password: "user_password".to_string(),
                 restrictions: vec![Some(PdfRestrictRequestRestrictionsItem::PrintHigh)],
-                file: b"test file content".to_vec(),
+                file: Some(std::fs::read("document.pdf").unwrap()),
                 format: None,
                 file_id: None,
                 destroy: None,
@@ -4385,7 +6107,7 @@ A comma-separated list of restrictions to apply to the PDF. These define what th
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">pdf_unrestrict</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;PdfUnrestrictRequestFormat&gt;&gt;, file_id: Option&lt;Option&lt;String&gt;&gt;, destroy: Option&lt;Option&lt;bool&gt;&gt;, output: Option&lt;Option&lt;String&gt;&gt;, file_password: Option&lt;String&gt;, user_password: Option&lt;Option&lt;String&gt;&gt;, owner_password: Option&lt;Option&lt;String&gt;&gt;, webhook_url: Option&lt;Option&lt;String&gt;&gt;, webhook_failure_notification: Option&lt;Option&lt;bool&gt;&gt;) -> Result&lt;PdfUnrestrictResponse, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">pdf_unrestrict</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;PdfUnrestrictRequestFormat&gt;&gt;, file_id: Option&lt;Option&lt;String&gt;&gt;, destroy: Option&lt;Option&lt;bool&gt;&gt;, output: Option&lt;Option&lt;String&gt;&gt;, file_password: Option&lt;String&gt;, user_password: Option&lt;String&gt;, owner_password: Option&lt;Option&lt;String&gt;&gt;, webhook_url: Option&lt;Option&lt;String&gt;&gt;, webhook_failure_notification: Option&lt;Option&lt;bool&gt;&gt;) -> Result&lt;PdfUnrestrictResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -4425,12 +6147,12 @@ async fn main() {
             &PdfUnrestrictRequest {
                 api_key: "apiKey".to_string(),
                 file_password: "file_password".to_string(),
-                file: b"test file content".to_vec(),
+                user_password: "user_password".to_string(),
+                file: Some(std::fs::read("document.pdf").unwrap()),
                 format: None,
                 file_id: None,
                 destroy: None,
                 output: None,
-                user_password: None,
                 owner_password: None,
                 webhook_url: None,
                 webhook_failure_notification: None,
@@ -4501,7 +6223,7 @@ async fn main() {
 <dl>
 <dd>
 
-**user_password:** `Option<String>` — Sets the user password for the PDF file. Password Length should be between 6 and 128 characters.
+**user_password:** `String` — Sets the user password for the PDF file. Password Length should be between 6 and 128 characters.
     
 </dd>
 </dl>
@@ -4576,7 +6298,7 @@ async fn main() {
         .pdf_convert_to_png(
             &PdfConvertToPngRequest {
                 api_key: "apiKey".to_string(),
-                file: b"test file content".to_vec(),
+                file: Some(std::fs::read("document.pdf").unwrap()),
                 format: None,
                 file_id: None,
                 destroy: None,
@@ -4737,7 +6459,7 @@ async fn main() {
         .pdf_convert_to_jpg(
             &PdfConvertToJpgRequest {
                 api_key: "apiKey".to_string(),
-                file: b"test file content".to_vec(),
+                file: Some(std::fs::read("document.pdf").unwrap()),
                 format: None,
                 file_id: None,
                 destroy: None,
@@ -4907,7 +6629,7 @@ async fn main() {
         .pdf_convert_to_tiff(
             &PdfConvertToTiffRequest {
                 api_key: "apiKey".to_string(),
-                file: b"test file content".to_vec(),
+                file: Some(std::fs::read("document.pdf").unwrap()),
                 format: None,
                 file_id: None,
                 destroy: None,
@@ -5068,7 +6790,7 @@ async fn main() {
         .pdf_convert_to_bmp(
             &PdfConvertToBmpRequest {
                 api_key: "apiKey".to_string(),
-                file: b"test file content".to_vec(),
+                file: Some(std::fs::read("document.pdf").unwrap()),
                 format: None,
                 file_id: None,
                 destroy: None,
@@ -5229,7 +6951,7 @@ async fn main() {
         .pdf_convert_to_gif(
             &PdfConvertToGifRequest {
                 api_key: "apiKey".to_string(),
-                file: b"test file content".to_vec(),
+                file: Some(std::fs::read("document.pdf").unwrap()),
                 format: None,
                 file_id: None,
                 destroy: None,
@@ -5351,6 +7073,103 @@ async fn main() {
 </dl>
 </details>
 
+<details><summary><code>client.<a href="/src/client.rs">pdf_upload_binary</a>(request: Vec&lt;u8&gt;, api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;PdfUploadBinaryRequestFormat&gt;&gt;, file_name: Option&lt;String&gt;) -> Result&lt;PdfUploadBinaryResponse, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+This API uploads a single PDF file, sent as the raw request body, to the API Freaks server and returns its unique file ID.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .pdf_upload_binary(
+            &PdfUploadBinaryRequest {
+                body: std::fs::read("document.pdf").unwrap(),
+                api_key: "apiKey".to_string(),
+                file_name: "document.pdf".to_string(),
+                format: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**body:** `Vec<u8>` — The raw bytes of the PDF file to upload.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<PdfUploadBinaryRequestFormat>` — Specifies the desired format for the API response. Choose 'json' for a JSON object or 'xml' for an XML structure.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**file_name:** `String` — The desired name for the uploaded PDF file. This name will be used for storage on the server. **NOTE**: Please ensure file_name has extension `.pdf`.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.<a href="/src/client.rs">pdf_upload_resources</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;PdfUploadResourcesRequestFormat&gt;&gt;) -> Result&lt;PdfUploadResourcesResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
@@ -5390,7 +7209,7 @@ async fn main() {
         .pdf_upload_resources(
             &PdfUploadResourcesRequest {
                 api_key: "apiKey".to_string(),
-                file: vec![b"test file 1".to_vec(), b"test file 2".to_vec()],
+                file: Some(vec![std::fs::read("a.pdf").unwrap(), std::fs::read("b.pdf").unwrap()]),
                 format: None,
             },
             None,
@@ -5407,14 +7226,6 @@ async fn main() {
 
 <dl>
 <dd>
-
-<dl>
-<dd>
-
-**file:** `Vec<Vec<u8>>` — The file(s) to upload. **Required**
-    
-</dd>
-</dl>
 
 <dl>
 <dd>
@@ -5870,7 +7681,189 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">screenshot_capture</a>(api_key: Option&lt;String&gt;, output: Option&lt;Option&lt;ScreenshotCaptureRequestOutput&gt;&gt;, file_type: Option&lt;Option&lt;ScreenshotCaptureRequestFileType&gt;&gt;, url: Option&lt;String&gt;, width: Option&lt;Option&lt;i64&gt;&gt;, height: Option&lt;Option&lt;i64&gt;&gt;, full_page: Option&lt;Option&lt;bool&gt;&gt;, fresh: Option&lt;Option&lt;bool&gt;&gt;, no_cookie_banners: Option&lt;Option&lt;bool&gt;&gt;, enable_caching: Option&lt;Option&lt;bool&gt;&gt;, block_ads: Option&lt;Option&lt;bool&gt;&gt;, block_chat_widgets: Option&lt;Option&lt;bool&gt;&gt;, extract_text: Option&lt;Option&lt;bool&gt;&gt;, extract_html: Option&lt;Option&lt;bool&gt;&gt;, destroy_screenshot: Option&lt;Option&lt;bool&gt;&gt;, lazy_load: Option&lt;Option&lt;bool&gt;&gt;, retina: Option&lt;Option&lt;bool&gt;&gt;, dark_mode: Option&lt;Option&lt;bool&gt;&gt;, block_tracking: Option&lt;Option&lt;bool&gt;&gt;, enable_incognito: Option&lt;Option&lt;bool&gt;&gt;, omit_background: Option&lt;Option&lt;bool&gt;&gt;, thumbnail_width: Option&lt;Option&lt;i64&gt;&gt;, adjust_top: Option&lt;Option&lt;i64&gt;&gt;, wait_for_event: Option&lt;Option&lt;ScreenshotCaptureRequestWaitForEvent&gt;&gt;, grayscale: Option&lt;Option&lt;i64&gt;&gt;, delay: Option&lt;Option&lt;i64&gt;&gt;, timeout: Option&lt;Option&lt;i64&gt;&gt;, ttl: Option&lt;Option&lt;i64&gt;&gt;, clip_x: Option&lt;Option&lt;i64&gt;&gt;, clip_y: Option&lt;Option&lt;i64&gt;&gt;, clip_width: Option&lt;Option&lt;i64&gt;&gt;, clip_height: Option&lt;Option&lt;i64&gt;&gt;, css_url: Option&lt;Option&lt;String&gt;&gt;, css: Option&lt;Option&lt;String&gt;&gt;, js_url: Option&lt;Option&lt;String&gt;&gt;, js: Option&lt;Option&lt;String&gt;&gt;, block_js: Option&lt;Option&lt;bool&gt;&gt;, block_stylesheets: Option&lt;Option&lt;bool&gt;&gt;, block_images: Option&lt;Option&lt;bool&gt;&gt;, block_media: Option&lt;Option&lt;bool&gt;&gt;, block_font: Option&lt;Option&lt;bool&gt;&gt;, block_text_track: Option&lt;Option&lt;bool&gt;&gt;, block_xhr: Option&lt;Option&lt;bool&gt;&gt;, block_fetch: Option&lt;Option&lt;bool&gt;&gt;, block_event_source: Option&lt;Option&lt;bool&gt;&gt;, block_web_socket: Option&lt;Option&lt;bool&gt;&gt;, block_manifest: Option&lt;Option&lt;bool&gt;&gt;, block_specific_requests: Option&lt;Option&lt;String&gt;&gt;, blur_selector: Option&lt;Option&lt;String&gt;&gt;, remove_selector: Option&lt;Option&lt;String&gt;&gt;, result_file_name: Option&lt;Option&lt;String&gt;&gt;, scrolling_screenshot: Option&lt;Option&lt;bool&gt;&gt;, scroll_speed: Option&lt;Option&lt;ScreenshotCaptureRequestScrollSpeed&gt;&gt;, scroll_back: Option&lt;Option&lt;bool&gt;&gt;, start_immediately: Option&lt;Option&lt;bool&gt;&gt;, multiple_scrolling: Option&lt;Option&lt;bool&gt;&gt;, duration: Option&lt;Option&lt;f64&gt;&gt;, fail_on_error: Option&lt;Option&lt;bool&gt;&gt;, longitude: Option&lt;Option&lt;f64&gt;&gt;, latitude: Option&lt;Option&lt;f64&gt;&gt;, proxy: Option&lt;Option&lt;String&gt;&gt;, headers: Option&lt;Option&lt;String&gt;&gt;, cookies: Option&lt;Option&lt;String&gt;&gt;, scroll_to_element: Option&lt;Option&lt;String&gt;&gt;, selector: Option&lt;Option&lt;String&gt;&gt;, user_agent: Option&lt;Option&lt;String&gt;&gt;, accept_languages: Option&lt;Option&lt;String&gt;&gt;, custom_html: Option&lt;Option&lt;String&gt;&gt;, image_quality: Option&lt;Option&lt;f64&gt;&gt;) -> Result&lt;Vec&lt;u8&gt;, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">pdf_generate_from_template</a>(request: std::collections::HashMap&lt;String, serde_json::Value&gt;, api_key: Option&lt;String&gt;, template_id: Option&lt;String&gt;, version: Option&lt;Option&lt;String&gt;&gt;, data_url: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;PdfGenerateFromTemplateResponse, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Renders the template identified by template_id with the JSON data supplied in the request body (or fetched from data_url). Returns a hosted URL for the generated PDF. Provide either a request body or a data_url; one of the two is required. The keys of the data object are the fields you bound when you designed the template in the APIFreaks PDF Template Builder, so the exact shape is up to you. Pin the version parameter to a specific template version (e.g. version=v2) so later design changes never touch what is already live; omit it to use the latest version.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client.pdf_generate_from_template(&PdfGenerateFromTemplateRequest {
+        api_key: "apiKey".to_string(),
+        template_id: "template_id".to_string(),
+        body: HashMap::from([("candidate_name".to_string(), serde_json::json!("Ava Thompson")), ("candidate_title".to_string(), serde_json::json!("Senior Operations Analyst")), ("email".to_string(), serde_json::json!("ava.thompson@example.com")), ("phone".to_string(), serde_json::json!("+1 (555) 381-2048")), ("city".to_string(), serde_json::json!("Austin, TX")), ("portfolio_url".to_string(), serde_json::json!("portfolio.example.com")), ("profile_summary".to_string(), serde_json::json!("Analytical operations professional with 8+ years of experience improving reporting pipelines, streamlining process documentation, and coordinating cross-functional delivery for distributed teams across multiple time zones.")), ("company_name".to_string(), serde_json::json!("Northwind Logistics")), ("job_title".to_string(), serde_json::json!("Operations Analyst")), ("employment_period".to_string(), serde_json::json!("2021 - Present")), ("job_achievement_1".to_string(), serde_json::json!("Led weekly KPI reporting for finance, fulfillment, and customer success stakeholders across three business units.")), ("job_achievement_2".to_string(), serde_json::json!("Reduced manual reconciliation work by 35% through workflow redesign and documentation automation.")), ("job_achievement_3".to_string(), serde_json::json!("Spearheaded a cross-team initiative that improved on-time delivery metrics by 18% within six months.")), ("skills".to_string(), serde_json::json!([{"skill":"Process Improvement","level":"Advanced","years":"7"},{"skill":"Stakeholder Reporting","level":"Expert","years":"8"},{"skill":"Cross-functional Coordination","level":"Advanced","years":"5"},{"skill":"Workflow Documentation","level":"Advanced","years":"6"}])), ("degree".to_string(), serde_json::json!("B.S. in Information Systems")), ("institution".to_string(), serde_json::json!("University of Texas")), ("graduation_year".to_string(), serde_json::json!("2018")), ("certification_1".to_string(), serde_json::json!("Certified Business Analysis Professional (CBAP)")), ("certification_2".to_string(), serde_json::json!("Six Sigma Green Belt")), ("languages".to_string(), serde_json::json!("English (Native), Spanish (Professional)"))]),
+        version: None,
+        data_url: None
+    }, None).await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**template_id:** `String` — The template to render, from the APIFreaks PDF Template Builder. Copy it from your dashboard when you save the template.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**version:** `Option<String>` — Template version to render, e.g. v2. Must start with v. Omit this parameter entirely to use the latest version; the literal value 'latest' is not accepted by the API.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**data_url:** `Option<String>` — A URL the API fetches your JSON data from, instead of the request body. Provide this when you are not sending a request body.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">bulk_pdf_generate_from_template</a>(api_key: Option&lt;String&gt;, template_id: Option&lt;String&gt;, version: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;Vec&lt;BulkPdfGenerateFromTemplateResponseItem&gt;, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Upload a CSV file where each row is one record. The API generates one PDF per row and returns an array of results, each with its own pdf_url. Rows are processed independently, so a failure in one row does not block the rest of the batch. The response gives a row-by-row breakdown of which PDFs succeeded and which failed.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use apifreaks::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        ..Default::default()
+    };
+    let client = ApiFreaks::new(config).expect("Failed to build client");
+    client
+        .bulk_pdf_generate_from_template(
+            &BulkPdfGenerateFromTemplateRequest {
+                api_key: "apiKey".to_string(),
+                template_id: "template_id".to_string(),
+                file: std::fs::read("document.csv").unwrap(),
+                version: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**api_key:** `String` — Your API key
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**template_id:** `String` — The template to render, from the APIFreaks PDF Template Builder. Copy it from your dashboard when you save the template.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**version:** `Option<String>` — Template version to render, e.g. v2. Must start with v. Omit this parameter entirely to use the latest version; the literal value 'latest' is not accepted by the API.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/client.rs">screenshot_capture</a>(api_key: Option&lt;String&gt;, output: Option&lt;Option&lt;ScreenshotCaptureRequestOutput&gt;&gt;, file_type: Option&lt;Option&lt;ScreenshotCaptureRequestFileType&gt;&gt;, url: Option&lt;String&gt;, width: Option&lt;Option&lt;i64&gt;&gt;, height: Option&lt;Option&lt;i64&gt;&gt;, full_page: Option&lt;Option&lt;bool&gt;&gt;, fresh: Option&lt;Option&lt;bool&gt;&gt;, no_cookie_banners: Option&lt;Option&lt;bool&gt;&gt;, enable_caching: Option&lt;Option&lt;bool&gt;&gt;, block_ads: Option&lt;Option&lt;bool&gt;&gt;, block_chat_widgets: Option&lt;Option&lt;bool&gt;&gt;, extract_text: Option&lt;Option&lt;bool&gt;&gt;, extract_html: Option&lt;Option&lt;bool&gt;&gt;, destroy_screenshot: Option&lt;Option&lt;bool&gt;&gt;, lazy_load: Option&lt;Option&lt;bool&gt;&gt;, retina: Option&lt;Option&lt;bool&gt;&gt;, dark_mode: Option&lt;Option&lt;bool&gt;&gt;, block_tracking: Option&lt;Option&lt;bool&gt;&gt;, enable_incognito: Option&lt;Option&lt;bool&gt;&gt;, omit_background: Option&lt;Option&lt;bool&gt;&gt;, thumbnail_width: Option&lt;Option&lt;i64&gt;&gt;, adjust_top: Option&lt;Option&lt;i64&gt;&gt;, wait_for_event: Option&lt;Option&lt;ScreenshotCaptureRequestWaitForEvent&gt;&gt;, grayscale: Option&lt;Option&lt;i64&gt;&gt;, delay: Option&lt;Option&lt;i64&gt;&gt;, timeout: Option&lt;Option&lt;i64&gt;&gt;, ttl: Option&lt;Option&lt;i64&gt;&gt;, clip_x: Option&lt;Option&lt;i64&gt;&gt;, clip_y: Option&lt;Option&lt;i64&gt;&gt;, clip_width: Option&lt;Option&lt;i64&gt;&gt;, clip_height: Option&lt;Option&lt;i64&gt;&gt;, css_url: Option&lt;Option&lt;String&gt;&gt;, css: Option&lt;Option&lt;String&gt;&gt;, js_url: Option&lt;Option&lt;String&gt;&gt;, js: Option&lt;Option&lt;String&gt;&gt;, block_js: Option&lt;Option&lt;bool&gt;&gt;, block_stylesheets: Option&lt;Option&lt;bool&gt;&gt;, block_images: Option&lt;Option&lt;bool&gt;&gt;, block_media: Option&lt;Option&lt;bool&gt;&gt;, block_font: Option&lt;Option&lt;bool&gt;&gt;, block_text_track: Option&lt;Option&lt;bool&gt;&gt;, block_xhr: Option&lt;Option&lt;bool&gt;&gt;, block_fetch: Option&lt;Option&lt;bool&gt;&gt;, block_event_source: Option&lt;Option&lt;bool&gt;&gt;, block_web_socket: Option&lt;Option&lt;bool&gt;&gt;, block_manifest: Option&lt;Option&lt;bool&gt;&gt;, block_specific_requests: Option&lt;Option&lt;String&gt;&gt;, blur_selector: Option&lt;Option&lt;String&gt;&gt;, remove_selector: Option&lt;Option&lt;String&gt;&gt;, result_file_name: Option&lt;Option&lt;String&gt;&gt;, scrolling_screenshot: Option&lt;Option&lt;bool&gt;&gt;, scroll_speed: Option&lt;Option&lt;ScreenshotCaptureRequestScrollSpeed&gt;&gt;, scroll_back: Option&lt;Option&lt;bool&gt;&gt;, start_immediately: Option&lt;Option&lt;bool&gt;&gt;, multiple_scrolling: Option&lt;Option&lt;bool&gt;&gt;, duration: Option&lt;Option&lt;f64&gt;&gt;, fail_on_error: Option&lt;Option&lt;bool&gt;&gt;, longitude: Option&lt;Option&lt;f64&gt;&gt;, latitude: Option&lt;Option&lt;f64&gt;&gt;, proxy: Option&lt;Option&lt;String&gt;&gt;, headers: Option&lt;Option&lt;String&gt;&gt;, cookies: Option&lt;Option&lt;String&gt;&gt;, scroll_to_element: Option&lt;Option&lt;String&gt;&gt;, selector: Option&lt;Option&lt;String&gt;&gt;, user_agent: Option&lt;Option&lt;String&gt;&gt;, accept_languages: Option&lt;Option&lt;String&gt;&gt;, custom_html: Option&lt;Option&lt;String&gt;&gt;, image_quality: Option&lt;Option&lt;f64&gt;&gt;, captcha_error: Option&lt;Option&lt;String&gt;&gt;, captcha_image: Option&lt;Option&lt;String&gt;&gt;, captcha_input: Option&lt;Option&lt;String&gt;&gt;, captcha_refresh: Option&lt;Option&lt;String&gt;&gt;, captcha_retries: Option&lt;Option&lt;i64&gt;&gt;, captcha_submit: Option&lt;Option&lt;String&gt;&gt;, classic_proxy: Option&lt;Option&lt;bool&gt;&gt;, click_recursion: Option&lt;Option&lt;i64&gt;&gt;, country: Option&lt;Option&lt;String&gt;&gt;, extract_markdown: Option&lt;Option&lt;bool&gt;&gt;, format: Option&lt;Option&lt;ScreenshotCaptureRequestFormat&gt;&gt;, get_image_urls: Option&lt;Option&lt;bool&gt;&gt;, gpu: Option&lt;Option&lt;bool&gt;&gt;, markdown: Option&lt;Option&lt;String&gt;&gt;, ocr_model: Option&lt;Option&lt;ScreenshotCaptureRequestOcrModel&gt;&gt;, pdf_options_format: Option&lt;Option&lt;ScreenshotCaptureRequestPdfOptionsFormat&gt;&gt;, pdf_options_landscape: Option&lt;Option&lt;bool&gt;&gt;, pdf_options_media: Option&lt;Option&lt;ScreenshotCaptureRequestPdfOptionsMedia&gt;&gt;, pdf_options_page_range: Option&lt;Option&lt;String&gt;&gt;, pdf_options_print_background: Option&lt;Option&lt;bool&gt;&gt;, premium_proxy: Option&lt;Option&lt;bool&gt;&gt;, scroll_delay: Option&lt;Option&lt;i64&gt;&gt;, selector_to_click: Option&lt;Option&lt;String&gt;&gt;, solve_captcha: Option&lt;Option&lt;bool&gt;&gt;, stealth: Option&lt;Option&lt;bool&gt;&gt;, timezone: Option&lt;Option&lt;String&gt;&gt;, video: Option&lt;Option&lt;bool&gt;&gt;) -> Result&lt;ScreenshotCaptureResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -5979,6 +7972,33 @@ async fn main() {
                 accept_languages: None,
                 custom_html: None,
                 image_quality: None,
+                captcha_error: None,
+                captcha_image: None,
+                captcha_input: None,
+                captcha_refresh: None,
+                captcha_retries: None,
+                captcha_submit: None,
+                classic_proxy: None,
+                click_recursion: None,
+                country: None,
+                extract_markdown: None,
+                format: None,
+                get_image_urls: None,
+                gpu: None,
+                markdown: None,
+                ocr_model: None,
+                pdf_options_format: None,
+                pdf_options_landscape: None,
+                pdf_options_media: None,
+                pdf_options_page_range: None,
+                pdf_options_print_background: None,
+                premium_proxy: None,
+                scroll_delay: None,
+                selector_to_click: None,
+                solve_captcha: None,
+                stealth: None,
+                timezone: None,
+                video: None,
             },
             None,
         )
@@ -6006,7 +8026,7 @@ async fn main() {
 <dl>
 <dd>
 
-**output:** `Option<ScreenshotCaptureRequestOutput>` — Output format for screenshot results
+**output:** `Option<ScreenshotCaptureRequestOutput>` — Output format for screenshot results. The SDKs support only `json`, which returns metadata with the captured file's URL in `screenshot`; download the file from that URL. (The API's `output=image`, which returns the raw file, is not supported by the SDK methods.)
     
 </dd>
 </dl>
@@ -6563,6 +8583,222 @@ Avoid using spaces or special characters; use hyphens or underscores to separate
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**captcha_error:** `Option<String>` — CSS selector of the message shown for a wrong answer. While it is visible, the solver tries again.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**captcha_image:** `Option<String>` — CSS selector of the captcha picture. Required when solve_captcha is true.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**captcha_input:** `Option<String>` — CSS selector of the box the answer is typed into. Required when solve_captcha is true.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**captcha_refresh:** `Option<String>` — CSS selector of the control that loads a new captcha picture before the next try.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**captcha_retries:** `Option<i64>` — Number of guesses the solver makes, from 1 to 5.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**captcha_submit:** `Option<String>` — CSS selector of the button to click after the answer is typed.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**classic_proxy:** `Option<bool>` — Loads the page through a datacenter proxy. Adds 20 credits per request. Ignored when premium_proxy is true or a custom proxy is set.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**click_recursion:** `Option<i64>` — Number of times to click the selector (when set via `selector_to_click`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**country:** `Option<String>` — Two-letter country code, such as US or DE, for the exit address of classic_proxy or premium_proxy. Ignored when you send your own proxy. Any two-letter code is sent, including one that is not listed. Classic proxy countries: BG, GE, DE, HN, MD, UA, GB, US. Premium proxy countries: AF, AL, DZ, AO, AG, AR, AM, AW, AU, AT, AZ, BS, BH, BD, BB, BY, BE, BZ, BJ, BT, BO, BQ, BA, BW, BR, BN, BG, BF, BI, CV, KH, CM, CA, KY, CF, TD, CL, CN, CO, KM, CG, CR, CI, HR, CU, CW, CY, CZ, CD, DK, DJ, DM, DO, EC, EG, SV, GQ, EE, SZ, ET, FO, FJ, FI, FR, GF, PF, GA, GM, GE, DE, GH, GI, GR, GL, GD, GP, GU, GT, GG, GN, GW, GY, HT, HN, HK, HU, IS, IN, ID, IR, IQ, IE, IL, IT, JM, JP, JE, JO, KZ, KE, XK, KW, KG, LA, LV, LB, LS, LR, LY, LT, MO, MG, MW, MY, MV, ML, MT, MQ, MR, MU, YT, MX, MD, MN, ME, MA, MZ, MM, NA, NP, NL, NC, NZ, NI, NE, NG, MK, NO, OM, PK, PS, PA, PG, PY, PE, PH, PL, PT, PR, QA, RE, RO, RU, RW, KN, LC, VC, WS, SA, SN, RS, SC, SL, SG, SK, SI, SB, SO, ZA, KR, SS, ES, LK, SD, SR, SE, CH, SY, TW, TJ, TZ, TH, TL, TG, TO, TT, TN, TR, TM, UG, UA, AE, GB, US, UY, UZ, VE, VN, YE, ZM, ZW.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**extract_markdown:** `Option<bool>` — Extracts rendered page content as a structured .md (Markdown) file. Preserves headings, lists, links. Only with output=json.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**format:** `Option<ScreenshotCaptureRequestFormat>` — Response format: json (default).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**get_image_urls:** `Option<bool>` — Extracts all image URLs from the rendered DOM and returns them in structured format. Only with output=json.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**gpu:** `Option<bool>` — Renders the page with a GPU, including WebGL and canvas content. Adds 20 credits per request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**markdown:** `Option<String>` — Markdown to render instead of loading a URL. Works like custom_html, so you can capture a README or notes without hosting a page.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ocr_model:** `Option<ScreenshotCaptureRequestOcrModel>` — Recognition model used by the captcha solver: mini-ocr-v1 (default) or ocr-v1.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pdf_options_format:** `Option<ScreenshotCaptureRequestPdfOptionsFormat>` — Paper size of the PDF. Applies when file_type is PDF. Without it, width and height are used if set, otherwise the page renders as one long page: A0, A1, A2, A3, A4, A5, A6, Letter, Legal, Tabloid, or Ledger.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pdf_options_landscape:** `Option<bool>` — Renders the PDF in landscape orientation, swapping the width and height of the paper size. Applies when file_type is PDF.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pdf_options_media:** `Option<ScreenshotCaptureRequestPdfOptionsMedia>` — CSS media type used to render the PDF: print or screen.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pdf_options_page_range:** `Option<String>` — Pages to keep in the PDF, as start-end, for example 1-3 or 5-5. Pages are rendered first and then trimmed. Has no effect on a single-page PDF. Applies when file_type is PDF.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pdf_options_print_background:** `Option<bool>` — Includes background colors and images in the PDF. Applies when file_type is PDF.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**premium_proxy:** `Option<bool>` — Loads the page through a residential proxy. Adds 200 credits per request. Used instead of classic_proxy.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**scroll_delay:** `Option<i64>` — Delay in milliseconds between scroll steps when `lazy_load` is enabled. Use higher values for heavy pages.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**selector_to_click:** `Option<String>` — CSS selector for an element to click before capturing the screenshot. Useful for opening dropdowns, modals, or triggering content.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**solve_captcha:** `Option<bool>` — Solves a captcha made of text drawn in a picture, then takes the screenshot. Requires captcha_image and captcha_input. Adds 20 credits per request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**stealth:** `Option<bool>` — Makes the browser look like a regular visitor for pages that block automated traffic. No extra credits.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**timezone:** `Option<String>` — IANA timezone the browser uses while rendering, such as Asia/Karachi or Europe/London. Useful for clocks and localized dates.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**video:** `Option<bool>` — Records visible viewport only for a specified duration. Use with `duration` parameter. Ideal for dashboards and animations.
+    
+</dd>
+</dl>
 </dd>
 </dl>
 
@@ -6611,7 +8847,7 @@ async fn main() {
         .bulk_screenshot_capture(
             &BulkScreenshotCaptureRequest {
                 api_key: "apiKey".to_string(),
-                urls: vec![BulkScreenshotCaptureRequestURLsItem {
+                urls: vec![BulkScreenshotCaptureRequestUrlsItem {
                     url: "url".to_string(),
                     ..Default::default()
                 }],
@@ -6875,7 +9111,7 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">currency_convert_latest</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CurrencyConvertLatestRequestFormat&gt;&gt;, from: Option&lt;String&gt;, to: Option&lt;String&gt;, amount: Option&lt;Option&lt;String&gt;&gt;, updates: Option&lt;Option&lt;CurrencyConvertLatestRequestUpdates&gt;&gt;) -> Result&lt;CurrencyConvertLatestResponse, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">currency_convert_latest</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CurrencyConvertLatestRequestFormat&gt;&gt;, from: Option&lt;String&gt;, to: Option&lt;String&gt;, amount: Option&lt;Option&lt;f64&gt;&gt;, updates: Option&lt;Option&lt;CurrencyConvertLatestRequestUpdates&gt;&gt;) -> Result&lt;CurrencyConvertLatestResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -6970,7 +9206,7 @@ async fn main() {
 <dl>
 <dd>
 
-**amount:** `Option<String>` — Amount to convert
+**amount:** `Option<f64>` — Amount to convert
     
 </dd>
 </dl>
@@ -6990,7 +9226,7 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">currency_convert_historical</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CurrencyConvertHistoricalRequestFormat&gt;&gt;, from: Option&lt;String&gt;, to: Option&lt;String&gt;, amount: Option&lt;Option&lt;String&gt;&gt;, date: Option&lt;String&gt;) -> Result&lt;CurrencyConvertHistoricalResponse, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">currency_convert_historical</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CurrencyConvertHistoricalRequestFormat&gt;&gt;, from: Option&lt;String&gt;, to: Option&lt;String&gt;, amount: Option&lt;Option&lt;f64&gt;&gt;, date: Option&lt;String&gt;) -> Result&lt;CurrencyConvertHistoricalResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -7085,7 +9321,7 @@ async fn main() {
 <dl>
 <dd>
 
-**amount:** `Option<String>` — The Amount to be converted
+**amount:** `Option<f64>` — The Amount to be converted
     
 </dd>
 </dl>
@@ -7335,7 +9571,7 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">currency_convert_by_ip</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CurrencyConvertByIpRequestFormat&gt;&gt;, updates: Option&lt;Option&lt;CurrencyConvertByIpRequestUpdates&gt;&gt;, from: Option&lt;String&gt;, ip: Option&lt;Option&lt;String&gt;&gt;, amount: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;CurrencyConvertByIpResponse, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">currency_convert_by_ip</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;CurrencyConvertByIpRequestFormat&gt;&gt;, updates: Option&lt;Option&lt;CurrencyConvertByIpRequestUpdates&gt;&gt;, from: Option&lt;String&gt;, ip: Option&lt;Option&lt;String&gt;&gt;, amount: Option&lt;Option&lt;f64&gt;&gt;) -> Result&lt;CurrencyConvertByIpResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -7372,7 +9608,7 @@ async fn main() {
     let client = ApiFreaks::new(config).expect("Failed to build client");
     client
         .currency_convert_by_ip(
-            &CurrencyConvertByIPQueryRequest {
+            &CurrencyConvertByIpQueryRequest {
                 api_key: "apiKey".to_string(),
                 from: "from".to_string(),
                 format: None,
@@ -7438,7 +9674,7 @@ async fn main() {
 <dl>
 <dd>
 
-**amount:** `Option<String>` — Amount to convert
+**amount:** `Option<f64>` — Amount to convert
     
 </dd>
 </dl>
@@ -8257,7 +10493,7 @@ async fn main() {
 <dl>
 <dd>
 
-**type_:** `Option<VatSupportedCountriesRequestType>` — Type of supported country. Supported values: IBAN, SWIFT, VAT. By default, it returns all supported countries for all types.
+**type_:** `Option<VatSupportedCountriesRequestType>` — Which list to return: VAT (`VAT_Supported_Countries_And_States`), IBAN (`IBAN_Supported_Countries`) or SWIFT (`SWIFT_Supported_Countries`). Each value returns only its own list. If omitted (or unknown), all three lists are returned.
     
 </dd>
 </dl>
@@ -8306,7 +10542,7 @@ async fn main() {
     let client = ApiFreaks::new(config).expect("Failed to build client");
     client
         .vat_rate_by_ip(
-            &VatRateByIPQueryRequest {
+            &VatRateByIpQueryRequest {
                 api_key: "apiKey".to_string(),
                 format: None,
                 ip_address: None,
@@ -8454,7 +10690,7 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">bulk_vat_rate_by_country</a>(request: BulkVatRateByCountryRequest, api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;BulkVatRateByCountryRequestFormat&gt;&gt;) -> Result&lt;BulkVatRateByCountryResponse, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">bulk_vat_rate_by_country</a>(request: BulkVatRateByCountryRequest, api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;BulkVatRateByCountryRequestFormat&gt;&gt;) -> Result&lt;Vec&lt;BulkVatRateByCountryResponseItem&gt;, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -9212,7 +11448,7 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">zipcode_search_by_region</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;ZipcodeSearchByRegionRequestFormat&gt;&gt;, country: Option&lt;String&gt;, region: Option&lt;String&gt;, page: Option&lt;Option&lt;i64&gt;&gt;) -> Result&lt;ZipcodeSearchByRegionResponse, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">zipcode_search_by_region</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;ZipcodeSearchByRegionRequestFormat&gt;&gt;, country: Option&lt;String&gt;, region: Option&lt;Option&lt;String&gt;&gt;, page: Option&lt;Option&lt;i64&gt;&gt;, region_code: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;ZipcodeSearchByRegionResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -9238,9 +11474,10 @@ async fn main() {
             &ZipcodeSearchByRegionQueryRequest {
                 api_key: "apiKey".to_string(),
                 country: "country".to_string(),
-                region: "region".to_string(),
                 format: None,
+                region: None,
                 page: None,
+                region_code: None,
             },
             None,
         )
@@ -9284,7 +11521,7 @@ async fn main() {
 <dl>
 <dd>
 
-**region:** `String` — Name of the region, state or province associated with the country.
+**region:** `Option<String>` — Name of the region, state or province associated with the country. Either region or region_code is required; region_code takes priority if both are given.
     
 </dd>
 </dl>
@@ -9293,6 +11530,14 @@ async fn main() {
 <dd>
 
 **page:** `Option<i64>` — Page no. to retrieve paginated results.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**region_code:** `Option<String>` — ISO code of the region, state, or province associated with the country. Either region or region_code is required. region_code takes priority if both are given.
     
 </dd>
 </dl>
@@ -9752,7 +11997,7 @@ async fn main() {
 <dl>
 <dd>
 
-**format:** `Option<CurrentWeatherRequestFormat>` — Response format returned by the API.
+**format:** `Option<CurrentWeatherRequestFormat>` — Response format returned by the API. Only JSON is supported.
     
 </dd>
 </dl>
@@ -9899,7 +12144,7 @@ async fn main() {
 <dl>
 <dd>
 
-**format:** `Option<BulkCurrentWeatherRequestFormat>` — Response format returned by the API.
+**format:** `Option<BulkCurrentWeatherRequestFormat>` — Response format returned by the API. Only JSON is supported.
     
 </dd>
 </dl>
@@ -9995,7 +12240,7 @@ async fn main() {
 <dl>
 <dd>
 
-**format:** `Option<WeatherForecastRequestFormat>` — Response format returned by the API.
+**format:** `Option<WeatherForecastRequestFormat>` — Response format returned by the API. Only JSON is supported.
     
 </dd>
 </dl>
@@ -10153,7 +12398,7 @@ async fn main() {
 <dl>
 <dd>
 
-**format:** `Option<HistoricalWeatherRequestFormat>` — Response format returned by the API.
+**format:** `Option<HistoricalWeatherRequestFormat>` — Response format returned by the API. Only JSON is supported.
     
 </dd>
 </dl>
@@ -10296,7 +12541,7 @@ async fn main() {
 <dl>
 <dd>
 
-**format:** `Option<WeatherTimeSeriesRequestFormat>` — Response format returned by the API.
+**format:** `Option<WeatherTimeSeriesRequestFormat>` — Response format returned by the API. Only JSON is supported.
     
 </dd>
 </dl>
@@ -10447,7 +12692,7 @@ async fn main() {
 <dl>
 <dd>
 
-**format:** `Option<MarineWeatherRequestFormat>` — Response format returned by the API.
+**format:** `Option<MarineWeatherRequestFormat>` — Response format returned by the API. Only JSON is supported.
     
 </dd>
 </dl>
@@ -10598,7 +12843,7 @@ async fn main() {
 <dl>
 <dd>
 
-**format:** `Option<AirQualityRequestFormat>` — Response format returned by the API.
+**format:** `Option<AirQualityRequestFormat>` — Response format returned by the API. Only JSON is supported.
     
 </dd>
 </dl>
@@ -10749,7 +12994,7 @@ async fn main() {
 <dl>
 <dd>
 
-**format:** `Option<FloodForecastRequestFormat>` — Response format returned by the API.
+**format:** `Option<FloodForecastRequestFormat>` — Response format returned by the API. Only JSON is supported.
     
 </dd>
 </dl>
@@ -11061,7 +13306,7 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">get_subregions</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;GetSubregionsRequestFormat&gt;&gt;, region: Option&lt;String&gt;) -> Result&lt;GetSubregionsResponse, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">get_subregions</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;GetSubregionsRequestFormat&gt;&gt;, region: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;GetSubregionsResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -11086,8 +13331,8 @@ async fn main() {
         .get_subregions(
             &GetSubregionsQueryRequest {
                 api_key: "apiKey".to_string(),
-                region: "region".to_string(),
                 format: None,
+                region: None,
             },
             None,
         )
@@ -11123,7 +13368,7 @@ async fn main() {
 <dl>
 <dd>
 
-**region:** `String` — Name of the region.
+**region:** `Option<String>` — Name of the region. If omitted, all subregions are returned.
     
 </dd>
 </dl>
@@ -11264,7 +13509,7 @@ async fn main() {
                 api_key: "apiKey".to_string(),
                 country: "country".to_string(),
                 format: None,
-                admin_levels: vec![],
+                admin_level: vec![],
             },
             None,
         )
@@ -11308,7 +13553,7 @@ async fn main() {
 <dl>
 <dd>
 
-**admin_levels:** `Option<String>` — Comma-separated list to filter results by one or more administrative levels.
+**admin_level:** `Option<String>` — Filter results by one or more administrative level names (e.g. `land`, `state`, `province`), sent as a comma-separated list. Use the admin levels endpoint to list the levels a country has.
     
 </dd>
 </dl>
@@ -11514,7 +13759,7 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">get_supported_flags</a>(api_key: Option&lt;String&gt;) -> Result&lt;Vec&lt;GetSupportedFlagsResponseItem&gt;, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">get_supported_flags</a>(api_key: Option&lt;String&gt;) -> Result&lt;GetSupportedFlagsResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -12073,7 +14318,7 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">user_agent_lookup</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;UserAgentLookupRequestFormat&gt;&gt;, user_agent: Option&lt;String&gt;) -> Result&lt;UserAgentLookupResponse, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">user_agent_lookup</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;UserAgentLookupRequestFormat&gt;&gt;) -> Result&lt;UserAgentLookupResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -12112,7 +14357,6 @@ async fn main() {
         .user_agent_lookup(
             &UserAgentLookupQueryRequest {
                 api_key: "apiKey".to_string(),
-                user_agent: "Mozilla/5.0".to_string(),
                 format: None,
             },
             None,
@@ -12145,14 +14389,6 @@ async fn main() {
     
 </dd>
 </dl>
-
-<dl>
-<dd>
-
-**user_agent:** `String` — The User-Agent string to parse. Sent as the `User-Agent` HTTP header. **Required**
-    
-</dd>
-</dl>
 </dd>
 </dl>
 
@@ -12173,7 +14409,7 @@ async fn main() {
 <dl>
 <dd>
 
-Parse up to `50,000 User-Agent strings` at once in a single request.
+Parse up to `20000 User-Agent strings` at once in a single request; exceeding that returns a 413, not a 400.
 </dd>
 </dl>
 </dd>
@@ -12221,7 +14457,7 @@ async fn main() {
 <dl>
 <dd>
 
-**ua_strings:** `Vec<String>` — List of user agent strings to parse
+**ua_strings:** `Vec<String>` — Array of User-Agent strings to parse. Maximum 20000 strings per request — exceeding that returns a 413.
     
 </dd>
 </dl>
@@ -12249,7 +14485,7 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">ocr_predict</a>(request: OcrPredictRequest, api_key: Option&lt;String&gt;, url: Option&lt;Option&lt;String&gt;&gt;, model: Option&lt;OcrPredictRequestModel&gt;, page_range: Option&lt;Option&lt;String&gt;&gt;, zone: Option&lt;Option&lt;String&gt;&gt;, new_line: Option&lt;Option&lt;i64&gt;&gt;) -> Result&lt;OcrPredictResponse, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">ocr_predict</a>(api_key: Option&lt;String&gt;, model: Option&lt;OcrPredictRequestModel&gt;, url: Option&lt;Option&lt;String&gt;&gt;, page_range: Option&lt;Option&lt;String&gt;&gt;, zone: Option&lt;Option&lt;String&gt;&gt;, new_line: Option&lt;Option&lt;i64&gt;&gt;) -> Result&lt;OcrPredictResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
@@ -12297,15 +14533,11 @@ async fn main() {
             &OcrPredictRequest {
                 api_key: "apiKey".to_string(),
                 model: OcrPredictRequestModel::MiniOcrV1,
-                ocr_predict_request_model: OcrPredictRequestModel::MiniOcrV1,
+                file: Some(std::fs::read("document.png").unwrap()),
                 url: None,
                 page_range: None,
                 zone: None,
                 new_line: None,
-                ocr_predict_request_url: None,
-                ocr_predict_request_page_range: None,
-                ocr_predict_request_zone: None,
-                ocr_predict_request_new_line: None,
             },
             None,
         )
@@ -12325,46 +14557,6 @@ async fn main() {
 <dl>
 <dd>
 
-**ocr_predict_request_url:** `Option<String>` — URL of the image or PDF (required if `file` not provided)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**ocr_predict_request_model:** `OcrPredictRequestModel` — OCR model to use. `mini-ocr-v1` for CAPTCHA OCR, `ocr-v1` for general OCR
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**ocr_predict_request_page_range:** `Option<String>` — Specify page range for multi-page PDFs (e.g., '1,3,5-10' or 'allpages'). **Note:** This parameter can only be used with .pdf file types.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**ocr_predict_request_zone:** `Option<String>` — Define OCR zones using coordinates (top:left:height:width). Multiple zones can be defined using commas. Only available for model 'ocr-v1'. **Note:** This parameter cannot be used with .pdf and .zip file types as it can only be applied to single image queries.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**ocr_predict_request_new_line:** `Option<i64>` — Set to 1 to split output text into individual lines (default: 0)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **api_key:** `String` — Your API key
     
 </dd>
@@ -12373,7 +14565,7 @@ async fn main() {
 <dl>
 <dd>
 
-**url:** `Option<String>` — URL of the image or PDF (required if `file` not provided)
+**model:** `OcrPredictRequestModel` — OCR model to use. `mini-ocr-v1` for CAPTCHA OCR, `ocr-v1` for general OCR.
     
 </dd>
 </dl>
@@ -12381,7 +14573,7 @@ async fn main() {
 <dl>
 <dd>
 
-**model:** `OcrPredictRequestModel` — OCR model to use.
+**url:** `Option<String>` — URL of the image or PDF (required if `file` is not uploaded).
     
 </dd>
 </dl>
@@ -12405,7 +14597,7 @@ async fn main() {
 <dl>
 <dd>
 
-**new_line:** `Option<i64>` — Set to 1 to split output text into individual lines (default: 0)
+**new_line:** `Option<i64>` — Set to 1 to split output text into individual lines (default: 0). This changes the shape of `OCRText` (see the response).
     
 </dd>
 </dl>
@@ -12889,22 +15081,19 @@ async fn main() {
 </dl>
 </details>
 
-
-<details><summary><code>client.<a href="/src/client.rs">geolocation_lookup_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;GeolocationLookupRequestFormat&gt;&gt;, ip: Option&lt;Option&lt;String&gt;&gt;, lang: Option&lt;Option&lt;GeolocationLookupRequestLang&gt;&gt;, fields: Option&lt;Option&lt;String&gt;&gt;, excludes: Option&lt;Option&lt;String&gt;&gt;, include: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;GeolocationLookupV2Response, ApiError&gt;</code></summary>
+<details><summary><code>client.<a href="/src/client.rs">get_credits_usage</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;GetCreditsUsageRequestFormat&gt;&gt;) -> Result&lt;GetCreditsUsageResponse, ApiError&gt;</code></summary>
 <dl>
 <dd>
 
 #### 📝 Description
 
-> `v2.0` endpoint (`v2.0/geolocation/lookup`). The legacy `v1.0` method `geolocation_lookup` is unchanged.
-
 <dl>
 <dd>
 
 <dl>
 <dd>
 
-Get detailed geolocation data for an IP address including country, city, timezone, currency, and optional security and user-agent information
+Returns subscription, subscription-surcharge, and one-off credit balances for the authenticated organization's account. Requires an organization **admin** API key; other keys get 403 (`ApiError::ForbiddenError`).
 </dd>
 </dl>
 </dd>
@@ -12928,265 +15117,9 @@ async fn main() {
     };
     let client = ApiFreaks::new(config).expect("Failed to build client");
     client
-        .geolocation_lookup_v2(
-            &GeolocationLookupQueryRequest {
+        .get_credits_usage(
+            &GetCreditsUsageQueryRequest {
                 api_key: "apiKey".to_string(),
-                format: None,
-                ip: None,
-                lang: None,
-                fields: None,
-                excludes: None,
-                include: None,
-            },
-            None,
-        )
-        .await;
-}
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**api_key:** `String` — Your API key
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**format:** `Option<GeolocationLookupRequestFormat>` — Format of the response.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**ip:** `Option<String>` — IPv4, IPv6, or hostname for geolocation lookup
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**lang:** `Option<GeolocationLookupRequestLang>` — Response language for location fields
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**fields:** `Option<String>` — Comma separated list of fields to include in response
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**excludes:** `Option<String>` — Comma separated list of fields to exclude from response
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**include:** `Option<String>` — Additional data to include (location, network, security, currency, time_zone, user_agent, country_metadata , hostname, liveHostname, hostnameFallbackLivet)
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.<a href="/src/client.rs">bulk_geolocation_lookup_v2</a>(request: BulkGeolocationLookupRequest, api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;BulkGeolocationLookupRequestFormat&gt;&gt;, lang: Option&lt;Option&lt;String&gt;&gt;, fields: Option&lt;Option&lt;String&gt;&gt;, excludes: Option&lt;Option&lt;String&gt;&gt;, include: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;Vec&lt;BulkGeolocationLookupV2ResponseItem&gt;, ApiError&gt;</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-> `v2.0` endpoint (`v2.0/geolocation/lookup`). The legacy `v1.0` method `bulk_geolocation_lookup` is unchanged.
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Retrieve detailed geolocation data for multiple IP addresses in a single request.
-Supports up to `50,000` IP-addresses/host-names per request.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```rust
-use apifreaks::prelude::*;
-
-#[tokio::main]
-async fn main() {
-    let config = ClientConfig {
-        ..Default::default()
-    };
-    let client = ApiFreaks::new(config).expect("Failed to build client");
-    client
-        .bulk_geolocation_lookup_v2(
-            &BulkGeolocationLookupRequest {
-                api_key: "apiKey".to_string(),
-                ips: vec!["ips".to_string()],
-                format: None,
-                lang: None,
-                fields: None,
-                excludes: None,
-                include: None,
-            },
-            None,
-        )
-        .await;
-}
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**ips:** `Vec<String>` — List of IP addresses or hostnames to lookup
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**api_key:** `String` — Your API key
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**format:** `Option<BulkGeolocationLookupRequestFormat>` — Format of the response.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**lang:** `Option<String>` — Language of the response.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**fields:** `Option<String>` — Comma-separated list of fields to include in the response. Can include "geo".
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**excludes:** `Option<String>` — Comma-separated list of fields to exclude from the response (except "ip").
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**include:** `Option<String>` — Comma-separated list of additional information to include in the response.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.<a href="/src/client.rs">domain_whois_lookup_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;DomainWhoisLookupRequestFormat&gt;&gt;, domain_name: Option&lt;String&gt;) -> Result&lt;DomainWhoisLookupV2Response, ApiError&gt;</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-> `v2.0` endpoint (`v2.0/domain/whois/live`). The legacy `v1.0` method `domain_whois_lookup` is unchanged.
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Retrieve current WHOIS information for a domain name.
-This endpoint provides detailed registration information including registrar details,
-dates, nameservers, and registrant information.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```rust
-use apifreaks::prelude::*;
-
-#[tokio::main]
-async fn main() {
-    let config = ClientConfig {
-        ..Default::default()
-    };
-    let client = ApiFreaks::new(config).expect("Failed to build client");
-    client
-        .domain_whois_lookup_v2(
-            &DomainWhoisLookupQueryRequest {
-                api_key: "apiKey".to_string(),
-                domain_name: "domainName".to_string(),
                 format: None,
             },
             None,
@@ -13215,15 +15148,7 @@ async fn main() {
 <dl>
 <dd>
 
-**format:** `Option<DomainWhoisLookupRequestFormat>` — Response format (defaults to json)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**domain_name:** `String` — Domain name for WHOIS lookup
+**format:** `Option<GetCreditsUsageRequestFormat>` — Format of the response. Possible values: json, xml.
     
 </dd>
 </dl>
@@ -13235,407 +15160,3 @@ async fn main() {
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/client.rs">bulk_domain_whois_lookup_v2</a>(request: BulkDomainWhoisLookupRequest, api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;BulkDomainWhoisLookupRequestFormat&gt;&gt;) -> Result&lt;BulkDomainWhoisLookupV2Response, ApiError&gt;</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-> `v2.0` endpoint (`v2.0/domain/whois/live`). The legacy `v1.0` method `bulk_domain_whois_lookup` is unchanged.
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Retrieve WHOIS information for `100 Domains per Request`.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```rust
-use apifreaks::prelude::*;
-
-#[tokio::main]
-async fn main() {
-    let config = ClientConfig {
-        ..Default::default()
-    };
-    let client = ApiFreaks::new(config).expect("Failed to build client");
-    client
-        .bulk_domain_whois_lookup_v2(
-            &BulkDomainWhoisLookupRequest {
-                api_key: "apiKey".to_string(),
-                domain_names: vec!["domainNames".to_string()],
-                format: None,
-            },
-            None,
-        )
-        .await;
-}
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**domain_names:** `Vec<String>` — A list of domain names for which WHOIS data is requested.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**api_key:** `String` — Your API key
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**format:** `Option<BulkDomainWhoisLookupRequestFormat>` — Format of the response.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.<a href="/src/client.rs">timezone_lookup_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;TimezoneLookupRequestFormat&gt;&gt;, ip: Option&lt;Option&lt;String&gt;&gt;, tz: Option&lt;Option&lt;String&gt;&gt;, location: Option&lt;Option&lt;String&gt;&gt;, lat: Option&lt;Option&lt;String&gt;&gt;, long: Option&lt;Option&lt;String&gt;&gt;, lang: Option&lt;Option&lt;TimezoneLookupRequestLang&gt;&gt;, iata_code: Option&lt;Option&lt;String&gt;&gt;, icao_code: Option&lt;Option&lt;String&gt;&gt;, lo_code: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;TimezoneLookupV2Response, ApiError&gt;</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-> `v2.0` endpoint (`v2.0/geolocation/timezone`). The legacy `v1.0` method `timezone_lookup` is unchanged.
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Retrieve current time, date, and timezone-related information by specifying a timezone name, location address, location coordinates, IP address, or use the client IP address if no parameter is passed.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```rust
-use apifreaks::prelude::*;
-
-#[tokio::main]
-async fn main() {
-    let config = ClientConfig {
-        ..Default::default()
-    };
-    let client = ApiFreaks::new(config).expect("Failed to build client");
-    client
-        .timezone_lookup_v2(
-            &TimezoneLookupQueryRequest {
-                api_key: "apiKey".to_string(),
-                format: None,
-                ip: None,
-                tz: None,
-                location: None,
-                lat: None,
-                long: None,
-                lang: None,
-                iata_code: None,
-                icao_code: None,
-                lo_code: None,
-            },
-            None,
-        )
-        .await;
-}
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**api_key:** `String` — Your API key
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**format:** `Option<TimezoneLookupRequestFormat>` — Format of the response
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**ip:** `Option<String>` — IPv4 or IPv6 address to extract timezone information.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**tz:** `Option<String>` — Timezone name (e.g., "Asia/Kolkata") to retrieve information directly.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**location:** `Option<String>` — Location string (preferably city and country) to extract timezone.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**lat:** `Option<String>` — Latitude for geolocation lookup.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**long:** `Option<String>` — Longitude for geolocation lookup.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**lang:** `Option<TimezoneLookupRequestLang>` — Language code for response localization (default is "en").
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**iata_code:** `Option<String>` — 3-letter IATA airport code (e.g., JFK).
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**icao_code:** `Option<String>` — 4-letter ICAO airport code (e.g., KJFK).
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**lo_code:** `Option<String>` — 5-letter UN/LO city code.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.<a href="/src/client.rs">astronomy_lookup_v2</a>(api_key: Option&lt;String&gt;, format: Option&lt;Option&lt;AstronomyLookupRequestFormat&gt;&gt;, location: Option&lt;Option&lt;String&gt;&gt;, lat: Option&lt;Option&lt;String&gt;&gt;, long: Option&lt;Option&lt;String&gt;&gt;, ip: Option&lt;Option&lt;String&gt;&gt;, lang: Option&lt;Option&lt;String&gt;&gt;, date: Option&lt;Option&lt;String&gt;&gt;, elevation: Option&lt;Option&lt;f64&gt;&gt;, time_zone: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;AstronomyLookupV2Response, ApiError&gt;</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-> `v2.0` endpoint (`v2.0/geolocation/astronomy`). The legacy `v1.0` method `astronomy_lookup` is unchanged.
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Retrieve sunrise and sunset times, current position of the moon, and other related information by specifying a location address, location coordinates, IP address, or using the client IP address if no parameter is passed.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```rust
-use apifreaks::prelude::*;
-
-#[tokio::main]
-async fn main() {
-    let config = ClientConfig {
-        ..Default::default()
-    };
-    let client = ApiFreaks::new(config).expect("Failed to build client");
-    client
-        .astronomy_lookup_v2(
-            &AstronomyLookupQueryRequest {
-                api_key: "apiKey".to_string(),
-                format: None,
-                location: None,
-                lat: None,
-                long: None,
-                ip: None,
-                lang: None,
-                date: None,
-                elevation: None,
-                time_zone: None,
-            },
-            None,
-        )
-        .await;
-}
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**api_key:** `String` — Your API key
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**format:** `Option<AstronomyLookupRequestFormat>` — Format of the response.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**location:** `Option<String>` — Location name or address
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**lat:** `Option<String>` — Latitude for location coordinates
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**long:** `Option<String>` — Longitude for location coordinates
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**ip:** `Option<String>` — IP address for location detection
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**lang:** `Option<String>` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**date:** `Option<String>` — Date for astronomy data (YYYY-MM-DD)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**elevation:** `Option<f64>` — Timezone of the location for which astronomy data is required
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**time_zone:** `Option<String>` — 
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>

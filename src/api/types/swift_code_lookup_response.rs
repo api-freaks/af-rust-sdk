@@ -21,6 +21,18 @@ pub struct SwiftCodeLookupResponse {
     pub city: String,
     #[serde(default)]
     pub country: String,
+    /// Name of the branch or office. Null when not resolvable.
+    #[serde(rename = "branchName")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub branch_name: Option<String>,
+    /// Type of institution: "FIIN" (financial institution) or "NFIN" (non-financial institution).
+    #[serde(rename = "institType")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub instit_type: Option<String>,
+    /// Postal/ZIP code of the bank branch. Null when not resolvable.
+    #[serde(rename = "postalCode")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
 }
 
 impl SwiftCodeLookupResponse {
@@ -39,6 +51,9 @@ pub struct SwiftCodeLookupResponseBuilder {
     bank_name: Option<String>,
     city: Option<String>,
     country: Option<String>,
+    branch_name: Option<String>,
+    instit_type: Option<String>,
+    postal_code: Option<String>,
 }
 
 impl SwiftCodeLookupResponseBuilder {
@@ -77,6 +92,21 @@ impl SwiftCodeLookupResponseBuilder {
         self
     }
 
+    pub fn branch_name(mut self, value: impl Into<String>) -> Self {
+        self.branch_name = Some(value.into());
+        self
+    }
+
+    pub fn instit_type(mut self, value: impl Into<String>) -> Self {
+        self.instit_type = Some(value.into());
+        self
+    }
+
+    pub fn postal_code(mut self, value: impl Into<String>) -> Self {
+        self.postal_code = Some(value.into());
+        self
+    }
+
     /// Consumes the builder and constructs a [`SwiftCodeLookupResponse`].
     /// This method will fail if any of the following fields are not set:
     /// - [`swift_code`](SwiftCodeLookupResponseBuilder::swift_code)
@@ -107,6 +137,9 @@ impl SwiftCodeLookupResponseBuilder {
             country: self
                 .country
                 .ok_or_else(|| BuildError::missing_field("country"))?,
+            branch_name: self.branch_name,
+            instit_type: self.instit_type,
+            postal_code: self.postal_code,
         })
     }
 }

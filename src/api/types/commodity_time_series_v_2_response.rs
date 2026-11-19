@@ -16,6 +16,9 @@ pub struct CommodityTimeSeriesV2Response {
     /// Map of trading dates (YYYY-MM-DD) to per-symbol OHLC data. Non-trading days are excluded.
     #[serde(default)]
     pub rates: HashMap<String, HashMap<String, CommodityTimeSeriesV2ResponseRatesValueValue>>,
+    /// Present only on a 206 Partial Content response, when some requested symbols could not be resolved on any date in the range. Map of each unresolved symbol to a detail message and optional close-match suggestions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unresolved: Option<HashMap<String, CommodityTimeSeriesV2ResponseUnresolvedValue>>,
 }
 
 impl CommodityTimeSeriesV2Response {
@@ -31,6 +34,7 @@ pub struct CommodityTimeSeriesV2ResponseBuilder {
     start_date: Option<String>,
     end_date: Option<String>,
     rates: Option<HashMap<String, HashMap<String, CommodityTimeSeriesV2ResponseRatesValueValue>>>,
+    unresolved: Option<HashMap<String, CommodityTimeSeriesV2ResponseUnresolvedValue>>,
 }
 
 impl CommodityTimeSeriesV2ResponseBuilder {
@@ -57,6 +61,14 @@ impl CommodityTimeSeriesV2ResponseBuilder {
         self
     }
 
+    pub fn unresolved(
+        mut self,
+        value: HashMap<String, CommodityTimeSeriesV2ResponseUnresolvedValue>,
+    ) -> Self {
+        self.unresolved = Some(value);
+        self
+    }
+
     /// Consumes the builder and constructs a [`CommodityTimeSeriesV2Response`].
     /// This method will fail if any of the following fields are not set:
     /// - [`success`](CommodityTimeSeriesV2ResponseBuilder::success)
@@ -77,6 +89,7 @@ impl CommodityTimeSeriesV2ResponseBuilder {
             rates: self
                 .rates
                 .ok_or_else(|| BuildError::missing_field("rates"))?,
+            unresolved: self.unresolved,
         })
     }
 }

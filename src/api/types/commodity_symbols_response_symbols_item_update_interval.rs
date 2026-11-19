@@ -1,11 +1,17 @@
 pub use crate::prelude::*;
 
-/// The rate at which this commodity's price is updated.
+/// The rate at which this commodity's price is updated. New values may be added over time.
 #[non_exhaustive]
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum CommoditySymbolsResponseSymbolsItemUpdateInterval {
     PerSecond,
     PerMinute,
+    Per10Minutes,
+    PerHour,
+    PerDay,
+    PerWeek,
+    PerMonth,
+    Per6Months,
     /// This variant is used for forward compatibility.
     /// If the server sends a value not recognized by the current SDK version,
     /// it will be captured here with the raw string value.
@@ -16,6 +22,12 @@ impl Serialize for CommoditySymbolsResponseSymbolsItemUpdateInterval {
         match self {
             Self::PerSecond => serializer.serialize_str("PER_SECOND"),
             Self::PerMinute => serializer.serialize_str("PER_MINUTE"),
+            Self::Per10Minutes => serializer.serialize_str("PER_10_MINUTES"),
+            Self::PerHour => serializer.serialize_str("PER_HOUR"),
+            Self::PerDay => serializer.serialize_str("PER_DAY"),
+            Self::PerWeek => serializer.serialize_str("PER_WEEK"),
+            Self::PerMonth => serializer.serialize_str("PER_MONTH"),
+            Self::Per6Months => serializer.serialize_str("PER_6_MONTHS"),
             Self::__Unknown(val) => serializer.serialize_str(val),
         }
     }
@@ -27,6 +39,12 @@ impl<'de> Deserialize<'de> for CommoditySymbolsResponseSymbolsItemUpdateInterval
         match value.as_str() {
             "PER_SECOND" => Ok(Self::PerSecond),
             "PER_MINUTE" => Ok(Self::PerMinute),
+            "PER_10_MINUTES" => Ok(Self::Per10Minutes),
+            "PER_HOUR" => Ok(Self::PerHour),
+            "PER_DAY" => Ok(Self::PerDay),
+            "PER_WEEK" => Ok(Self::PerWeek),
+            "PER_MONTH" => Ok(Self::PerMonth),
+            "PER_6_MONTHS" => Ok(Self::Per6Months),
             _ => Ok(Self::__Unknown(value)),
         }
     }
@@ -37,6 +55,12 @@ impl fmt::Display for CommoditySymbolsResponseSymbolsItemUpdateInterval {
         match self {
             Self::PerSecond => write!(f, "PER_SECOND"),
             Self::PerMinute => write!(f, "PER_MINUTE"),
+            Self::Per10Minutes => write!(f, "PER_10_MINUTES"),
+            Self::PerHour => write!(f, "PER_HOUR"),
+            Self::PerDay => write!(f, "PER_DAY"),
+            Self::PerWeek => write!(f, "PER_WEEK"),
+            Self::PerMonth => write!(f, "PER_MONTH"),
+            Self::Per6Months => write!(f, "PER_6_MONTHS"),
             Self::__Unknown(val) => write!(f, "{}", val),
         }
     }
