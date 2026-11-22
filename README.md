@@ -122,7 +122,7 @@ let request = BulkGeolocationLookupRequest {
 };
 ```
 
-File upload fields (PDF, OCR, bulk-template CSV) take the raw file bytes, e.g. `std::fs::read("doc.pdf")?`.
+File upload fields (PDF, bulk-template CSV) take the raw file bytes, e.g. `std::fs::read("doc.pdf")?`.
 The SDK detects the format from the content and sends a matching file name and MIME type.
 
 ## Advanced
